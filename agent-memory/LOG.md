@@ -5966,3 +5966,21 @@
   - v1.1 的 branch 写法在干涉中心可行，但右侧分离态显示 \(\hat C\) 有界性和守恒之间有真实张力；
   - 不能用一个全局 constant L2 penalty 作为最终正则性实现；
   - 下一步应改成局部不等式/投影式 \(\|\hat C\|_W\le K\)，并检查右侧 divergence outliers 是否集中于 \(\chi\ll1\)、低密度边缘或 patch 退化处。
+
+### 2026-05-08 完整 D 支 Cauchy 闭合快查
+
+- 新增研究笔记：
+  - `research-notes/184-完整D支Cauchy闭合快查.md`。
+- 结论修正：
+  - 加上物质 HJ 方程和连续性方程后，当前 equation-first 系统在主非退化 massive patch 内已具备局部 Cauchy 闭合的主部/计数希望；
+  - 缺的不是“再加一条物质方程”，而是 gauge 固定、约束传播证明、patch transition 和生产级独立演化器。
+- 关键理由：
+  - \(\Pi_E^\perp\mathcal R=0\) 给出 6 个 metric 主方程；
+  - harmonic gauge 给出 4 个坐标规范条件；
+  - 二者仍留一个 \(E\)-方向主部 null mode；
+  - trace0 在 \(w^2\neq0\) 时正好固定该模式；
+  - HJ + continuity 在非特征 massive branch 中给出 \(S,\tilde\rho\) 的一阶演化；
+  - 辅助场写法下，trace0 去掉 1 个 \(\lambda_I\)，守恒主符号 rank=3 给出剩余 3 个传播条件。
+- 文章口径：
+  - 可写：“该 equation-first 系统在非退化 massive patch 内通过 principal-symbol counting 局部闭合”；
+  - 不可写：“已证明全局适定”或“已有稳定独立 D 支演化器”。

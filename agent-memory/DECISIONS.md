@@ -3537,3 +3537,17 @@
     \]
   - \(\hat C\) 有界性下一步应写成局部不等式/投影条件 \(\|\hat C\|_W\le K\)，而不是普通全局二次惩罚；
   - 需要固定物理 \(\chi\) 尺度，不能长期依赖每个切片的 p95 归一化。
+
+## 决策 268：物质方程加入后，当前系统在主 patch 内是局部 Cauchy 闭合候选
+
+- 修正口径：
+  - 不应再说“物质方程加上当前几何候选显然不够”；
+  - 更准确是：在非退化 massive patch 内，方程在 principal-symbol/counting 层面已经接近闭合，但尚未证明适定。
+- 理由：
+  - 投影方程 6 个 metric 主方程 + harmonic gauge 4 个规范条件仍留 1 个 \(E\)-方向模式；
+  - trace0 在 \(w^2\neq0\) 时固定该模式；
+  - HJ + continuity 给出 \(S,\tilde\rho\) 的一阶演化；
+  - 辅助场写法下，trace0 + conservation 主符号也正好闭合 \(\lambda_I\) 的 3 个独立传播自由度。
+- 后续判断：
+  - 下一步重点是 gauge-fixed 约束传播、patch transition、massless branch 和独立演化器；
+  - 不是继续盲目寻找额外局域场方程。
