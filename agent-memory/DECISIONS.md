@@ -3551,3 +3551,15 @@
 - 后续判断：
   - 下一步重点是 gauge-fixed 约束传播、patch transition、massless branch 和独立演化器；
   - 不是继续盲目寻找额外局域场方程。
+
+## 决策 269：第一版独立演化理论采用 generalized harmonic gauge，ADM 暂后置
+
+- 原因：
+  - harmonic gauge 下主部和约束传播已经与前面投影/trace0 分析对齐；
+  - reduced Einstein-like 方程可直接作为 10 个 wave-like metric 方程；
+  - 总源守恒 \(\nabla(\tilde T/M_P^2+C)=0\) 可给出 harmonic 约束的齐次传播方程；
+  - ADM 对数值器有价值，但会提前引入 lapse/shift 和更多离散选择，暂不适合作为理论闭合首版。
+- patch 决策：
+  - \(C_{\mu\nu}\) 是主变量，\(\lambda_I\) 只是图册坐标；
+  - \(r\parallel u\) 可降到 \(E_u\)，但该图内守恒可能过定，不能把 \(E_u\) 当全局替代理论；
+  - \(w^2=0\) 是 trace0 主符号退化；若引入 \(\mathsf q_E\)-trace 补丁，应明确升级为 proposal v1.2。

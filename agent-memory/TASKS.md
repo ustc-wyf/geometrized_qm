@@ -1381,8 +1381,10 @@
   - branch-v1.1 在 \(\tau=0\) 有可用窗口，但右侧分离态显示 \(\hat C\) 有界性与守恒存在张力；
   - 已完成完整 D 支 Cauchy 闭合快查，见 `research-notes/184-完整D支Cauchy闭合快查.md`；
   - 快查结论是物质 HJ + continuity 加上当前几何候选后，在主非退化 massive patch 内方程主部/计数已经接近闭合；下一步不是再加场方程，而是做 gauge-fixed 约束传播和 patch transition；
+  - 已完成 generalized harmonic gauge 下的演化/约束传播与 patch 图册草案，见 `research-notes/185-gauge-fixed演化约束传播与patch图册.md`；
+  - 当前建议文章主线采用 harmonic gauge 做理论适定性草案，ADM 留给后续数值实现；
   - 下一步具体任务应把 \(\hat C\) 有界性从全局 L2 penalty 改成局部不等式/投影条件，并诊断右侧分离态 divergence outliers 的位置；
-  - 另一个下一步理论任务是把 harmonic gauge 或 ADM gauge 下的完整演化/约束分裂写成文章级定理草案；
+  - 另一个下一步理论任务是把 `185` 的草案压缩成文章级 proposition/theorem，并开始 standalone solver 的最小原型设计；
   - 下一步数值验证若继续，应使用 ALM 作为 hard conservation baseline，并只把 KKT 当作需要更好线性代数的严格求解方向；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：

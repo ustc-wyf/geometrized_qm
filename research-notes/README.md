@@ -107,6 +107,10 @@
 - `179-equation-first-trace0-proposal-v1.md`：把当前主候选整理为显式 equation-first 理论 proposal v1，统一列出变量、物质测地线方程、几何投影方程、trace0/守恒闭合、patch/branch 条件、三切片数值支持和 action 化 caveat。
 - `180-Qto0分支与约束传播.md`：细化 proposal v1 中尚未展开的 \(Q\to0\Rightarrow C\to0\) 分支规则与约束传播逻辑；区分精确方程中 Bianchi 推出的守恒、数值/初值中必须硬施加的守恒兼容，以及 trace0 作为真正状态方程的角色。
 - `181-branch-preservation与patch-transition首轮.md`：首轮分析 \(C=\chi(\mathcal q)\hat C\) 分支能否在 \(\chi\to0\) 时保持正则，并区分 \(\Delta=0/r^\perp=0\) 的基底降秩 patch 与 \(w^2=0\) 的 trace0 主符号退化。
+- `182-branch-patch数值检查.md`：在三切片 hard-ALM 代表元上检查 \(C/\chi\) 有界性和低维 \(E_u\) patch；结论是 \(Q\to0\Rightarrow C\to0\) 不是 trace0+守恒自动结果，分离态较接近 \(E_u\)，干涉中心仍需完整四方向 patch。
+- `183-branch正则化hard-ALM首轮.md`：直接求解 \(C=\chi\hat C\) 的 branch-regular hard-ALM；\(\tau=0\) 有可用正则化窗口，但右侧分离态显示 \(\hat C\) 有界性和 full conservation 存在张力。
+- `184-完整D支Cauchy闭合快查.md`：确认物质 HJ+连续性方程加当前几何候选后，在主非退化 massive patch 内已具备 principal-symbol/counting 局部闭合希望；缺的是 gauge-fixed 约束传播与 patch 适定性证明。
+- `185-gauge-fixed演化约束传播与patch图册.md`：给出 generalized harmonic gauge 下的 reduced Einstein-like 演化系统、约束传播草案、\(\Delta/r^\perp/w^2\) patch 图册和 standalone D 支演化器骨架。
 
 补充说明：
 

@@ -758,3 +758,4 @@
   - branch / patch 数值检查已完成：未加 branch 正则性时，hard-ALM 代表元在 \(q_{\rm rel}\le0.1\) 区域的 \(|C|/\chi\) weighted p95 仍很大，因此 \(Q\to0\Rightarrow C\to0\) 必须显式写成 \(C=\chi(\mathcal q)\hat C\)、\(\hat C\) 有界；低维 \(E_u\) 对分离态较好，但干涉中心不能替代完整四方向 patch；
   - branch 正则化 hard-ALM 首轮已完成：\(\tau=0\) 存在 `1e-4~5e-4` 的有界性惩罚可用窗口，但右侧分离态一旦压 \(\hat C\) 会显著恶化 full divergence；下一步不要把全局 L2 penalty 当最终规则，应转向局部不等式/投影条件 \(\|\hat C\|_W\le K\)，并固定物理 \(\chi\) 尺度。
   - 完整 D 支 Cauchy 闭合快查已完成：物质 HJ + continuity 加上当前几何候选后，在主非退化 massive patch 内方程主部/计数已经接近闭合；缺的是 gauge-fixed 约束传播证明、patch transition 和独立演化器，而不是再加一条随意的新方程。
+  - generalized harmonic gauge 下的演化/约束传播与 patch 图册草案已完成：第一版理论适定性分析采用 harmonic reduced Einstein-like 方程，ADM 后置；图册切换以 \(C_{\mu\nu}\) 连续为原则，\(\lambda_I\) 只是局部坐标。

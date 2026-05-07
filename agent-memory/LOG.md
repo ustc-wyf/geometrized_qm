@@ -5984,3 +5984,27 @@
 - 文章口径：
   - 可写：“该 equation-first 系统在非退化 massive patch 内通过 principal-symbol counting 局部闭合”；
   - 不可写：“已证明全局适定”或“已有稳定独立 D 支演化器”。
+
+### 2026-05-08 gauge-fixed 演化、约束传播与 patch 图册草案
+
+- 新增研究笔记：
+  - `research-notes/185-gauge-fixed演化约束传播与patch图册.md`。
+- 主要内容：
+  - 第一版理论分析采用 generalized harmonic gauge，而不是先进入 ADM；
+  - 写出 reduced Einstein-like 方程
+    \[
+    \tilde G^{(F)}_{\mu\nu}=\tilde T_{\mu\nu}/M_P^2+C_{\mu\nu}
+    \]
+    作为 10 个 wave-like metric 演化方程；
+  - 物质 HJ + continuity 推进 \(S,\tilde\rho\)；
+  - \(C=\lambda_I E^I\)、trace0 和 \(\tilde\nabla C=0\) 推进辅助几何应力 sector；
+  - 总源守恒 \(\tilde\nabla(\tilde T/M_P^2+C)=0\) 使 harmonic gauge 约束按齐次波方程传播；
+  - trace0 是状态方程，必须持续施加，不能只当初值约束。
+- patch 图册：
+  - 主图 \(P_{ur}\)：\(d>2,\Delta\neq0,w^2\neq0\)，用四方向 \(E=\mathrm{span}\{\tilde g,uu,rr,ur\}\) 和普通 trace0；
+  - \(r\parallel u\) 图：降到 \(E_u=\mathrm{span}\{\tilde g,uu\}\)，trace0 后 \(C=B(uu-u^2\tilde g/d)\)，但守恒可能过定，常迫使 \(B=0\) 或需要扩大基底；
+  - \(w^2=0\)：不是基底降秩，而是 trace0 主符号退化；若切换到 \(\mathsf q_E\)-trace，应标为 proposal v1.2；
+  - 图册切换时连续的是 \(C_{\mu\nu}\)，不是局部系数 \(\lambda_I\)。
+- standalone solver 骨架：
+  - 初值需给 \(\gamma_{ij},K_{ij},S,\tilde\rho,\lambda_I\) 或 harmonic 等价数据；
+  - 每步推进 metric、matter 和 \(\lambda\)，监控 harmonic/Einstein/trace/守恒/mass-shell 约束，并按 patch 图册换图。
