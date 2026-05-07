@@ -1353,8 +1353,9 @@
   - 已得到 Gram 矩阵 \(H_{IJ}\) 的退化条件，下一步要把 \(\Delta=0\) 写成 patch/branch 规则，避免把数值 `guard` 当成物理方程；
   - 检查 \(Q\to0\) 分支条件能否由 \(Q\)-门控辅助泛函、边界条件或正则化选择自然给出；
   - 已检验 \(\mathsf q_E\)-trace 最小硬闭合，结果不如普通 trace=0；也已确认 trace=0 的 \(w^2=0\) 风险主要集中在 \(r^\perp\) 退化 patch；
-  - 下一步应写出普通 trace=0 + full conservation + patch/branch 的显式最小方程组；
-  - 对投影方程做 Helmholtz/self-adjoint integrability 检查，判断是否可能来自作用量；
+  - 已写出普通 trace=0 + full conservation + patch/branch 的显式最小方程组，见 `research-notes/169-trace0最小投影方程组与patch条件.md`；
+  - 下一步对投影方程做 Helmholtz/self-adjoint integrability 检查，判断是否可能来自作用量；
+  - 下一步在 `n=384` 可信条纹分辨率上复查 trace=0 最小闭合，确认 `n=96` 结论不是低分辨率误导；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：
   - 后续所有硬守恒/硬测地线投影默认用 nullspace 或等价约束保持算法；

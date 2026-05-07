@@ -3271,3 +3271,34 @@
   - 普通 trace 对未定模式的收缩是 \(-w^2\)，只在 \(w^2=0\) 时漏掉；
   - \(w^2=0\) 退化面检查显示，接近退化的点确实存在，但主要集中在 \(r^\perp\) 也退化/近退化的 patch；
   - 因此 trace=0 可作为当前最小闭合，但必须显式附带 patch/branch 条件，不能作为全局单图册方程。
+
+## 决策 254：当前最小显式候选是守恒无迹投影修正张量
+
+- 方程组：
+  \[
+  \tilde G_{\mu\nu}
+  =
+  \tilde T_{\mu\nu}/M_P^2
+  +\mathcal C_{\mu\nu},
+  \quad
+  \mathcal C_{\mu\nu}\in
+  \mathrm{span}\{\tilde g_{\mu\nu},u_\mu u_\nu,r_\mu r_\nu,u_{(\mu}r_{\nu)}\},
+  \]
+  \[
+  \tilde g^{\mu\nu}\mathcal C_{\mu\nu}=0,
+  \qquad
+  \tilde\nabla^\mu\mathcal C_{\mu\nu}=0.
+  \]
+- 等价投影写法：
+  \[
+  \Pi_E^\perp
+  \left(\tilde G_{\mu\nu}-\tilde T_{\mu\nu}/M_P^2\right)=0,
+  \quad
+  \tilde g^{\mu\nu}\Pi_E
+  \left(\tilde G_{\mu\nu}-\tilde T_{\mu\nu}/M_P^2\right)=0.
+  \]
+- 关键 caveat：
+  - \(\rho\neq\tilde\rho\)，在 \(\tilde g\) 表象应以 \((\tilde\rho,S)\) 写物质变量；
+  - trace=0 不自动保证回 Einstein，仍需 \(Q\to0\Rightarrow\mathcal C_{\mu\nu}\to0\) 的分支/边界/正则性选择；
+  - 非退化 patch 需要 \(d>2\)、\(\Delta\neq0\)，并处理 \(w^2=0\)、\(r^\perp=0\) 和严格 \(1+1d\)；
+  - 该候选仍是 equation-first，是否可来自作用量要做 Helmholtz/self-adjoint 检查。

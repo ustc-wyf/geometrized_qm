@@ -685,3 +685,37 @@
   - `center_plus + source` 已被联合投影诊断否定为不健康路线；
   - 当前主线应视为 `plus-only` 初始加速度求解器，而不是大幅修改中心切片或 \(\rho^\tilde\)；
   - 旧 active-edge 解的可容许性失败主要来自边界/退化点，下一步要把局部可容许性守卫写成正式强约束。
+
+## 2026-05-08 trace=0 最小投影方程组当前入口
+
+- 当前主线不是构造 D 支数值器，而是寻找显式、可推广的 equation-first Einstein-like 方程；数值器只是检验工具。
+- 最新理论笔记：
+  `research-notes/169-trace0最小投影方程组与patch条件.md`
+- 当前最小候选：
+  \[
+  \tilde G_{\mu\nu}
+  =
+  \tilde T_{\mu\nu}/M_P^2
+  +\mathcal C_{\mu\nu},
+  \quad
+  \mathcal C_{\mu\nu}\in
+  \mathrm{span}\{\tilde g_{\mu\nu},u_\mu u_\nu,r_\mu r_\nu,u_{(\mu}r_{\nu)}\},
+  \]
+  \[
+  \tilde g^{\mu\nu}\mathcal C_{\mu\nu}=0,
+  \qquad
+  \tilde\nabla^\mu\mathcal C_{\mu\nu}=0.
+  \]
+- 同一候选的投影写法：
+  \[
+  \Pi_E^\perp
+  \left(\tilde G_{\mu\nu}-\tilde T_{\mu\nu}/M_P^2\right)=0,
+  \quad
+  \tilde g^{\mu\nu}\Pi_E
+  \left(\tilde G_{\mu\nu}-\tilde T_{\mu\nu}/M_P^2\right)=0.
+  \]
+- 重要 caveat：
+  - 不可混用 \(\rho\) 和 \(\tilde\rho\)；
+  - \(Q\to0\Rightarrow\mathcal C\to0\) 仍是分支/边界/正则性条件；
+  - 非退化 patch 需要 \(d>2\)、\(\Delta=u^2r^2-(u\cdot r)^2\neq0\)，并处理 \(w^2=0\)、\(r^\perp=0\) 和严格 \(1+1d\)；
+  - 下一步理论任务是 Helmholtz/self-adjoint integrability 检查和 `n=384` 复检。

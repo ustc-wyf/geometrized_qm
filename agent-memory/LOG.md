@@ -5558,3 +5558,34 @@
   - 明确 \(A,B,C,D\) 的本构/辅助场闭合；
   - 用三切片 guarded 结果说明哪些系数/约束结构被支持；
   - 不应把“多步演化器”说成目标，只能说成检验候选方程的工具。
+
+### 2026-05-08 trace=0 最小投影方程组整理
+
+- 使用 `agent-memory` 规则重载长期记忆，确认当前主线是寻找显式 equation-first Einstein-like 方程，而不是把 D 支数值器当作最终目标。
+- 新建研究笔记：
+  - `research-notes/169-trace0最小投影方程组与patch条件.md`。
+- 将当前最小候选整理为：
+  \[
+  \tilde G_{\mu\nu}
+  =
+  \tilde T_{\mu\nu}/M_P^2
+  +\mathcal C_{\mu\nu},
+  \quad
+  \mathcal C_{\mu\nu}\in
+  \mathrm{span}\{\tilde g_{\mu\nu},u_\mu u_\nu,r_\mu r_\nu,u_{(\mu}r_{\nu)}\},
+  \]
+  \[
+  \tilde g^{\mu\nu}\mathcal C_{\mu\nu}=0,
+  \qquad
+  \tilde\nabla^\mu\mathcal C_{\mu\nu}=0.
+  \]
+- 明确在 \(\tilde g\) 表象中变量应写为 \((\tilde\rho,S)\)，不能把 \(\rho\) 和 \(\tilde\rho\) 混用；与 A 支比较时必须先把 \(\tilde\rho\) 拉回 \(g\) 表象。
+- 记录当前 patch 条件：
+  - \(d>2\)；
+  - \(\Delta=u^2r^2-(u\cdot r)^2\neq0\)；
+  - trace=0 主符号还需避开或 patch 处理 \(w^2=0\)；
+  - \(r^\perp\to0\) 或严格 \(1+1d\) 需要换低维 basis。
+- 当前判断：
+  - trace=0 是目前最小 algebraic closure；
+  - \(\mathsf q_E\) 暂保留为主符号/辅助场正定范数候选；
+  - 仍需做 Helmholtz/self-adjoint 检查和 \(Q\to0\Rightarrow\mathcal C\to0\) 分支选择分析。

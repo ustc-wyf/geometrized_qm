@@ -94,6 +94,7 @@
 - `166-gBCD投影方程的3加1计数与主部.md`：分析 3+1d 下投影方程的方程计数和主部；确认它给出 6 个独立张量条件，主部是 harmonic gauge 下 Einstein 波算子的 \(\Pi_E^\perp\) 投影，但 Cauchy 适定性仍需 gauge-fixed principal symbol 检查。
 - `167-gBCD投影方程的主符号缺口与标量闭合条件.md`：检查 harmonic gauge 后的 reduced principal symbol，发现仍有一个 \(E\)-方向主部模式 \(-[(\xi\cdot r)u-(\xi\cdot u)r]^2\) 未定；因此完整理论还需一个协变标量状态方程，并提出 \(u-r\) 平面正定迹闭合类作为首个候选。
 - `168-qEtrace闭合三切片检验.md`：在高斯干涉三切片上检验 \(\mathsf q_E\)-trace 标量闭合；结果显示它的零源或简单 \(Q,Q^2\) 硬闭合版本均不如普通 trace=0，因此 \(\mathsf q_E\) 暂降级为主符号/辅助场正定范数候选。
+- `169-trace0最小投影方程组与patch条件.md`：把当前数据支持的最小 equation-first 候选写成显式方程组：Einstein 残差等于一个落在 \(\{\tilde g,uu,rr,ur\}\) 子空间内的守恒、无迹修正张量，并明确 \(\rho\neq\tilde\rho\)、\(Q\to0\) 分支和 \(\Delta,w^2,r^\perp\) patch 条件。
 
 补充说明：
 
