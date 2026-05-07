@@ -1386,6 +1386,9 @@
   - 已新增 `kg_examples/diagnose_d_cauchy_patch_atlas.py` 并完成 `n=384,core10` 当前高斯干涉三切片检查：主 patch 覆盖率 `100% / 99.902% / 100%`，说明主支撑区可作为独立 D 支 harmonic 演化器的初值测试场；
   - 当前建议文章主线采用 harmonic gauge 做理论适定性草案，ADM 留给后续数值实现；
   - 当前最高优先级已转为实现真正 generalized-harmonic D 支 standalone nonlinear evolution，而不是继续寻找额外闭合方程；
+  - 已实现首轮 standalone 原型 `kg_examples/simulate_d_harmonic_standalone.py`，见 `research-notes/187-D支standalone求解器首轮原型.md`；
+  - 首轮结果：冻结 \(C\) 会使 residual 约 `0.53`，每步局部重解 \(C\) 可降到约 `0.039`，但 trace0 局部版本仍约 `0.097`，说明当前主瓶颈是每步全局 \(C\)-sector 更新；
+  - 下一步最高优先级：把 `fit_gbcd_trace0_sparse_conservation.py` 的 trace0+full-conservation ALM/KKT 思路改造成 runtime per-step \(C\)-update，接入 standalone solver；
   - 下一步具体任务应把 \(\hat C\) 有界性从全局 L2 penalty 改成局部不等式/投影条件，并诊断右侧分离态 divergence outliers 的位置；
   - `186` 已承担文章级 proposition/theorem 草案功能；下一步代码任务是从该草案实现最小 harmonic solver，而不是再写一个 A-driven proxy；
   - 下一步数值验证若继续，应使用 ALM 作为 hard conservation baseline，并只把 KKT 当作需要更好线性代数的严格求解方向；

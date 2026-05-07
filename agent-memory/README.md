@@ -129,6 +129,7 @@
 - `kg_examples/diagnose_gbcd_conservation_principal_symbol.py`：检查 gBCD full-conservation 方程对 \(\lambda_I=(A,B,C,D)\) 的一阶主符号；当前确认 `2+1` 约化下 rank=3、nullity=1，需要额外状态方程
 - `kg_examples/fit_gbcd_trace_closure.py`：在 gBCD/full-conservation/nullspace 上测试额外代数状态方程；当前 `trace=F(Q)` 与 `D=0` 均不理想
 - `kg_examples/diagnose_d_cauchy_patch_atlas.py`：检查当前高斯干涉切片是否满足 D 支 generalized-harmonic Cauchy 主 patch 条件，包括 \(\Delta,w^2,u^t\) 和 trace0 后 \(\lambda\)-sector 时间主符号 rank。
+- `kg_examples/simulate_d_harmonic_standalone.py`：首轮 D 支 standalone generalized-harmonic 原型；从 D 初值包推进 D 物质/几何/\(C\)，A/KG 只用于后验比较。当前结论是物质短时可推进但 full \(C\)-sector 仍需全局守恒更新。
 - `research-notes/146-equation-first-gBCD闭合方程与守恒检验.md`：gBCD 方程、守恒展开式、三时刻 hard constraint 检验和本构闭合问题的最新理论索引
 - `research-notes/147-gBCD系数ABCD的可能产生机制.md`：整理 gBCD 系数的三类产生机制：简单局部本构函数、单势函数 metric variation、辅助各向异性应力场；当前支持第三类
 - `research-notes/148-gBCD辅助应力场代表元规范与nullspace硬约束.md`：记录 KKT hard constraint 的数值泄漏问题、nullspace 修正、三切片 `norm/time` 代表元结果与下一步闭合任务
@@ -144,6 +145,7 @@
 - `research-notes/168-qEtrace闭合三切片检验.md`：\(\mathsf q_E\)-trace 标量闭合的三切片检验；当前最小硬闭合版本不如普通 trace=0，下一步应检查 trace=0 的 \(w^2=0\) 退化面或把 \(\mathsf q_E\) 改作辅助场范数
 - `research-notes/159-n384三切片gBCD求解器升级与物理主线判断.md`：记录 `n=384,core10,tau=-3.5,0,+3.5` 三切片高分辨率 gBCD 求解器升级、残差结果和下一步物理主线判断
 - `research-notes/186-D支harmonic闭合定理草案与当前例子可演化性.md`：把 generalized harmonic gauge、完整约束/演化分裂、约束传播证明、patch transition 和 `n=384,core10` 可演化性诊断整理成当前 D 支独立演化理论的入口笔记。
+- `research-notes/187-D支standalone求解器首轮原型.md`：记录 `simulate_d_harmonic_standalone.py` 的首轮结果；定位下一步为 runtime trace0+full-conservation \(C\)-update。
 - `kg_examples/plot_gbcd_metric_update_diagnostics.py`：读取 full-linear metric update 的 `.npz`，生成包含 `rho`、残差、\(\delta g_+\)、`det(corrected g+)` 的诊断图，并在图内说明 white contour 与 `core10` 定义
 - `visualizations/full_dynamics_2p1/`：`2+1d` 全动力学数值结果图和 `summary.json`
 - `visualizations/boundary_driven_2p1/`：边界驱动版 A/B/C 三支结果

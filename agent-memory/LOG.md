@@ -6042,3 +6042,38 @@
   - 当前高斯干涉例子的主要物理支撑区已经通过局部 Cauchy patch admissibility 诊断；
   - 因此下一步不是继续怀疑“方程是否闭合”，而是实现真正 generalized-harmonic D 支独立非线性演化器；
   - 仍不能声称已经完成生产级 standalone D 支演化结果。
+
+### 2026-05-08 D 支 standalone 求解器首轮原型
+
+- 新增脚本：
+  - `kg_examples/simulate_d_harmonic_standalone.py`。
+- 新增研究笔记：
+  - `research-notes/187-D支standalone求解器首轮原型.md`。
+- 原型范围：
+  - 从现有 D 初值包出发；
+  - 演化中不读取 A 后续快照；
+  - A/KG 只用于后验比较；
+  - 物质用 D 支 mass shell + continuity 推进；
+  - 几何使用 generalized-harmonic principal 三层历史；
+  - 已修复一个时间层 bug：\(g_+\) 是下一张中心切片，不能同时当作中心和未来片。
+- 关键测试：
+  - `tau=0,n=384,core10`；
+  - 输入包 `visualizations/equation_first_gbcd_plus_initial_package_n384_tau0_core10_noactiveedge_guarded/gbcd_plus_initial_package.npz`。
+- 冻结 \(C\)：
+  - 2 步后 D residual weighted mean core10 约 `0.53`；
+  - \(\rho_{D\to A}\) core10 L1 约 `9.18e-5`。
+- 每步局部重解 \(C\)，无 trace0：
+  - 10 步后 D residual weighted mean core10 约 `0.0390`；
+  - residual p95 core10 约 `0.194`；
+  - \(\rho_{D\to A}\) core10 L1 约 `4.55e-4`；
+  - active 区 mass-shell discriminant 没有负值；
+  - \(|R^\tilde|\) 量级稳定，没有时间层爆炸。
+- 每步局部重解 \(C\)，加 trace0：
+  - 2 步后 D residual weighted mean core10 约 `0.0970`；
+  - residual p95 core10 约 `0.355`；
+  - 说明 trace0 不能只逐点后处理，必须和 full conservation 联立。
+- 结论：
+  - 当前已能从 D 初值短时推进并后验比较 A；
+  - 物质差异短时很小，但完整 D 方程残差还没有压回初值水平；
+  - 主瓶颈定位为每步 \(C\)-sector 更新：需要实现 \(C\in E,\mathrm{tr}C=0,\tilde\nabla C=0\) 的全局 ALM/KKT 更新；
+  - 不应继续拉长当前 local-C 原型时间窗来冒充最终 D 支预测。

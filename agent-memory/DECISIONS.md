@@ -3583,3 +3583,22 @@
   - 下一步应实现真正 generalized-harmonic D 支 standalone nonlinear evolution；
   - 低密度/support 边缘和 \(w^2=0,\Delta=0,Q=0\) 分支作为 patch/branch 规则处理，而不是改写主方程；
   - 对外表述仍必须保守：已有局部 Cauchy 闭合候选和当前例子 admissibility 诊断，尚未证明全局适定，也尚未完成生产级演化器。
+
+## 决策 271：standalone D 原型的当前瓶颈是全局 \(C\)-sector 更新，不是物质推进
+
+- 首轮 standalone 原型：
+  - `kg_examples/simulate_d_harmonic_standalone.py` 已能从 D 初值包出发短时推进；
+  - A/KG 只作后验比较，不在演化中刷新 D 场；
+  - 物质推进在 `tau=0,n=384,core10` 的 10 小步内保持可行，active 区 mass-shell discriminant 无负值。
+- 数值事实：
+  - 冻结 \(C\) 时，2 步后 D residual core10 weighted mean 约 `0.53`；
+  - 每步局部重解 \(C\in E\) 后，10 步 residual core10 weighted mean 降到约 `0.039`，\(\rho_{D\to A}\) core10 L1 约 `4.5e-4`；
+  - 每步局部 trace0 后，2 步 residual 约 `0.097`，比无 trace0 差但仍远好于冻结 \(C\)。
+- 决策：
+  - 当前不能把 local-C 原型的 D-A 小差异当作最终 D 支预测；
+  - 下一步必须实现每步全局 \(C\)-update：
+    \[
+    C\in E,\qquad \mathrm{tr}_{\tilde g}C=0,\qquad \tilde\nabla^\mu C_{\mu\nu}=0.
+    \]
+  - 只有当该 full-conservation \(C\)-update 接入后仍能保持小 residual，才可以继续拉长时间窗研究 D-A 差异；
+  - metric corrector 应在全局 \(C\)-update 后再接入，否则会用错误 \(C\) 去校正几何。

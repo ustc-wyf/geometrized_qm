@@ -112,6 +112,7 @@
 - `184-完整D支Cauchy闭合快查.md`：确认物质 HJ+连续性方程加当前几何候选后，在主非退化 massive patch 内已具备 principal-symbol/counting 局部闭合希望；缺的是 gauge-fixed 约束传播与 patch 适定性证明。
 - `185-gauge-fixed演化约束传播与patch图册.md`：给出 generalized harmonic gauge 下的 reduced Einstein-like 演化系统、约束传播草案、\(\Delta/r^\perp/w^2\) patch 图册和 standalone D 支演化器骨架。
 - `186-D支harmonic闭合定理草案与当前例子可演化性.md`：把 harmonic gauge 选择、完整演化/约束分裂、约束传播证明和 patch transition 规则整理成 theorem/proposition 级草案，并新增 `n=384,core10` Cauchy patch 图册诊断；当前高斯干涉主支撑区三切片主 patch 覆盖率为 `100%/99.902%/100%`。
+- `187-D支standalone求解器首轮原型.md`：新增 `simulate_d_harmonic_standalone.py`，从 D 初值包出发做不依赖 A 后续快照的短时推进；10 步 local-C 原型中 \(\rho_{D\to A}\) 的 core10 L1 约 `4.5e-4`，但完整 D 残差仍约 `3.9e-2`，定位下一步为每步 trace0+full-conservation 全局 \(C\)-update。
 
 补充说明：
 
