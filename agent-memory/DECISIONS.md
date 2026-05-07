@@ -3083,3 +3083,23 @@
   - 当 \(g_0\) 允许变化时，不能只改 Einstein 张量侧；
   - 必须同步处理 \(\tilde T_{\mu\nu}\)、\(\mathcal C_{\mu\nu}\)、\(\rho^\tilde\leftrightarrow\rho\)、质量壳、连续性和守恒；
   - 因此下一版“真正 D 初值求解器”应是联合投影，而不是单独 metric center-plus 更新。
+
+## 决策 243：D 初态求解的健康自由度是 plus-only 初始加速度，不是大幅改 \(\rho^\tilde\)
+
+- 已实现：
+  - `kg_examples/solve_gbcd_joint_initial_projection_sparse.py`：联合求 \(\delta\tilde g\) 和可选 \(\eta=\delta\log(\sqrt{|\tilde g|}\tilde\rho)\)，并完整回代质量壳和 \(\tilde T_{\mu\nu}\)；
+  - `kg_examples/scan_gbcd_joint_projection_alpha.py`：对联合解做 trust-region \(\alpha\) 扫描。
+- `center_plus+source` 结果：
+  - `n=384,tau=-3.5,core10` exact residual weighted mean `0.81379`；
+  - 未裁剪 \(\eta\) weighted mean 约 `1.05e12`；
+  - \(\eta\) 裁剪比例 `1.0`；
+  - \(\rho\) pullback 偏差约 `51%`；
+  - trust-region 下若限制 \(\rho\) 偏差 `<=5%`，残差仍约 `1.17`。
+- `plus-only,no-source` 结果：
+  - `LSQR1000` exact residual weighted mean `0.21334`；
+  - 既有 `CG6000` 对照 `0.13917`；
+  - \(\rho\) pullback 偏差 `0`，负判别式比例 `0`。
+- 决策：
+  - 不再把大幅 \(\delta\rho^\tilde\) 当作修 D 场方程的可接受自由度；
+  - 初始 D 求解应优先解释为 Cauchy 型问题：保持初始物质/中心度规近 A，由 D 场方程确定下一切片或初始加速度；
+  - 后续数值演化应从 `plus-only` 初始包出发，再用 hard/nullspace 或 augmented-Lagrangian 控制约束漂移。

@@ -1244,9 +1244,11 @@
   - full-linear metric update 与 sparse projection 的 matvec 已改为 entry-array 向量化，当前高分辨率三切片能在数分钟内调试。
   - `tau=-3.5` 阻尼线搜索显示 `alpha=1` 最优，欠阻尼不能解决残差；左侧分离态问题不是简单 Newton 过冲。
 - 下一步最高优先：
-  - 设计并实现真正的 D 初值联合投影器：未知量至少包含 \(\delta g_0,\delta g_+\)、\(\delta\lambda_I\) 或新的 \(\lambda_I\) 代表元，以及必要的 \(\delta\rho^\tilde,\delta S\) 或等价物质源校正；
-  - 联合投影器必须同时约束 D 场方程、\(\tilde\nabla^\mu\mathcal C_{\mu\nu}=0\)、质量壳、连续性、\(\rho^\tilde\leftrightarrow\rho\) 拉回与初态可观测偏差；
-  - 将 soft penalty principal/full-conservation projection 升级为 sparse hard/nullspace 或 augmented-Lagrangian 版本，至少先在 `tau=-3.5` 对照；
+  - 将 `plus-only` 解法包装为正式 D 初始加速度求解器：保持初始 \(\tilde g_0,\rho^\tilde,u_i\) 不变，由 D 场方程求 \(g_+\) 或 \(\partial_t^2\tilde g\)；
+  - 用充分迭代/预条件版本复现或超过 `tau=-3.5,core10` 既有 `plus-only+CG6000` exact residual weighted mean `0.13917`；
+  - 保存可被演化器直接读取的 \(g_-,g_0,g_+\)、\(\mathcal C_{\mu\nu}\)、\(\rho^\tilde,u_\mu\) 初始包；
+  - 在该初始包上推进一小步 D 物质方程，检查 \(\rho^\tilde\) 拉回偏差、D 方程 exact residual、\(\tilde\nabla^\mu\mathcal C_{\mu\nu}\)、质量壳判别式和 full tensor interface matching；
+  - 若一步演化后约束漂移明显，再把 soft penalty principal/full-conservation projection 升级为 sparse hard/nullspace 或 augmented-Lagrangian；
   - 基于 `tau=0` 与 `tau=+3.5` 高分辨率核心结果继续物理解释，但不要回避 `tau=-3.5` 闭合缺口；
   - 随后扩展到 `n=384,trusted`，并与 `n=512/640` 做收敛检查；
   - 接入连续性方程、质量壳/测地线条件，推进 \((\rho,S)\)；

@@ -5256,3 +5256,38 @@
   - 下一步应实现联合 D 初值投影，而不是继续只调单独 metric update。
 - 新建研究笔记：
   - `research-notes/160-tau负3p5残差来源与center-plus初值投影检验.md`。
+
+### 2026-05-07 D 初值联合投影与 plus-only 主自由度
+
+- Git 状态：
+  - 已本地初始化仓库并提交 `8cf55c0 Initial project snapshot`；
+  - 已配置远端 `https://github.com/ustc-wyf/geometrized_qm.git`；
+  - 推送时终端到 GitHub 超时，`curl` 10 秒超时，未完成远端 push；本地提交和远端配置保留。
+- 新建 `kg_examples/solve_gbcd_joint_initial_projection_sparse.py`：
+  - 同一稀疏线性系统中求 \(\delta\tilde g\) 与可选 \(\eta=\delta\log(\sqrt{|\tilde g|}\tilde\rho)\)；
+  - 求解后重新计算 \(\sqrt{|\tilde g|}\)、\(\tilde\rho\)、质量壳 \(u_t\)、\(\tilde T_{\mu\nu}\)，并做完整 nonlinear back-substitution。
+- 新建 `kg_examples/scan_gbcd_joint_projection_alpha.py`：
+  - 对联合解做 trust-region \(\alpha\) 扫描；
+  - 同时检查 D 张量残差、\(\rho\) pullback 偏差、质量壳判别式、\(\det\tilde g\)。
+- `center_plus+source` 高分辨率测试：
+  - 输出 `visualizations/equation_first_gbcd_joint_initial_projection_sparse_n384_taum3p5_core10_centerplus_rhoclose1e6_v2/`；
+  - exact residual weighted mean `0.81379`；
+  - 未裁剪 \(\eta\) weighted mean 约 `1.05e12`，裁剪比例 `1.0`；
+  - \(\rho\) pullback 加权相对 L1 偏差 `0.51344`；
+  - 负质量壳判别式比例 `0.01882`；
+  - 判断：源项密度幅值自由度在 \(M_P^2\) 压制下不健康，不能用于真实 D 初态。
+- `center_plus+source` trust-region 扫描：
+  - 输出 `visualizations/equation_first_gbcd_joint_projection_alpha_scan_n384_taum3p5_centerplus_rhoclose1e6_v2/`；
+  - 若限制 \(\rho\) 偏差 \(\le 5\%\)，可用 \(\alpha\lesssim0.1\)，exact residual 仍约 `1.16685`；
+  - 没有满足默认可接受条件的 feasible alpha。
+- `plus-only,no-source` 高分辨率测试：
+  - 输出 `visualizations/equation_first_gbcd_joint_initial_projection_sparse_n384_taum3p5_core10_plus_nosource_v2/`；
+  - `LSQR1000` exact residual weighted mean `0.21334`；
+  - \(\rho\) pullback 偏差 `0`，负判别式比例 `0`，中心切片 \(\delta g_0=0\)；
+  - 既有 `plus-only+CG6000` 对照 exact residual weighted mean `0.13917`。
+- 当前判断：
+  - 真正健康的 D 初值自由度是 `plus-only`/初始加速度，即保持初始 \(\tilde g_0,\rho^\tilde,u_i\) 不变，由 D 场方程确定下一切片 \(g_+\) 或 \(\partial_t^2\tilde g\)；
+  - 不应继续用大幅 \(\delta\rho^\tilde\) 修几何残差；
+  - 下一步应把 plus-only 解法包装为正式 D 初始加速度求解器，并接入短步物质演化与约束漂移检查。
+- 新建研究笔记：
+  - `research-notes/161-D初值联合投影与plus-only主自由度.md`。

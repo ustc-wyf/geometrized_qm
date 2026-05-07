@@ -86,6 +86,7 @@
 - `158-n384-core10首个高分辨率D支几何更新结果.md`：跑通 `n=384,tau=0,core10` 高分辨率 sparse pipeline，完整非线性残差加权均值约 `0.00644`，并确认 corrected metric 在核心区未退化；分离态快速尝试仍受求解器收敛限制。
 - `159-n384三切片gBCD求解器升级与物理主线判断.md`：把 full-linear metric update 和 principal projection 的稀疏 matvec 改为 entry-array 向量化，完成 `n=384,core10,tau=-3.5,0,+3.5` 三切片检查；干涉中心残差约 `0.00644`，右侧分离态约 `0.0386`，左侧分离态约 `0.146`，当前主卡点定位为左侧分离态的约束/代表元闭合而非低分辨率或简单阻尼问题。
 - `160-tau负3p5残差来源与center-plus初值投影检验.md`：对左侧分离态做残差分层，确认边缘层最差但非唯一根因；测试 edge-force、`time_weight=0`、`matter6_normal` 和 `center_plus` 初值投影，结论是只改几何的 center-plus 在线性层面有用但非线性不自洽，下一步必须联合处理几何、辅助应力、物质源和 \(\rho^\tilde\) 拉回。
+- `161-D初值联合投影与plus-only主自由度.md`：实现联合投影原型与 trust-region 扫描，确认 `center_plus+source` 会要求荒唐的 \(\eta=\delta\log(\sqrt{|\tilde g|}\tilde\rho)\) 且破坏 \(\rho\) pullback；当前健康自由度是 `plus-only`，即保持初始物质/中心度规不变，由 D 方程确定下一切片或初始加速度。
 
 补充说明：
 
