@@ -645,6 +645,10 @@
   - `kg_examples/solve_gbcd_full_linear_metric_update_sparse.py`
   - `kg_examples/diagnose_gbcd_metric_update_residual_sources.py`
   - `kg_examples/scan_gbcd_metric_update_alpha.py`
+  - `kg_examples/export_gbcd_plus_initial_package.py`
+  - `kg_examples/test_gbcd_plus_initial_package_one_step.py`
+  - `kg_examples/scan_gbcd_plus_alpha_admissibility.py`
+  - `kg_examples/scan_gbcd_plus_local_guard.py`
 - 新增选项：
   - `--atom-family matter4|matter4_plus_normal|matter6_normal`：用于辅助张量 \(\mathcal C_{\mu\nu}\) 的局域张量基底诊断；
   - `--metric-variable-slices plus|center_plus|minus_center_plus`：用于 metric 初值投影诊断，默认仍为 `plus`。
@@ -652,7 +656,16 @@
   - `matter4 + force-mask-erosion=0 + plus-only`；
   - exact nonlinear residual weighted mean `0.13917`；
   - 输出在 `visualizations/equation_first_gbcd_sparse_pipeline_n384_taum3p5_core10_pen1e4_forceedge_coeff_cg6000/`。
+- 当前最佳可推进 `tau=-3.5` 初始加速度包：
+  - `matter4 + plus-only + metric_active_dilation=0 + auto_bad_zero`；
+  - exact nonlinear residual weighted mean `0.13220`；
+  - 初始 \(\rho^\tilde\) 拉回偏差约 `1.4e-17`；
+  - 一步 \(g_+\) 测度偏差约 `1.09e-4`；
+  - 负质量壳判别式比例 `0`；
+  - 输出在 `visualizations/equation_first_gbcd_plus_initial_package_n384_taum3p5_core10_noactiveedge_guarded/` 和 `visualizations/equation_first_gbcd_plus_initial_package_one_step_n384_taum3p5_core10_noactiveedge_guarded/`。
 - 重要结论：
   - `matter6_normal` 改善 projection system residual，但不改善完整非线性回代；
   - `center_plus` 只改几何会出现“线性残差低、非线性残差高”的不自洽；
-  - 下一步不是继续调单独 metric update，而是联合投影几何、辅助应力和物质源。
+  - `center_plus + source` 已被联合投影诊断否定为不健康路线；
+  - 当前主线应视为 `plus-only` 初始加速度求解器，而不是大幅修改中心切片或 \(\rho^\tilde\)；
+  - 旧 active-edge 解的可容许性失败主要来自边界/退化点，下一步要把局部可容许性守卫写成正式强约束。

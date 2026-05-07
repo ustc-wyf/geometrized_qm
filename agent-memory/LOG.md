@@ -5309,3 +5309,51 @@
   - 给出关键数字时说明其含义、好坏方向和可接受性；
   - 不要直接堆 `weighted_mean/p95/eta/alpha` 等术语而不解释；
   - 复杂结果用“为什么做、怎么做、看到什么、所以怎么办”的顺序。
+
+### 2026-05-07 plus-only 初始加速度包与局部可容许性守卫
+
+- 按用户“继续”要求，接续 D/gBCD 初值求解器主线。
+- 新增/修改脚本：
+  - `kg_examples/export_gbcd_plus_initial_package.py`：导出 plus-only 三切片初始包，新增 `--plus-guard auto_bad_zero`；
+  - `kg_examples/test_gbcd_plus_initial_package_one_step.py`：读取初始包并做一步物质推进/重构诊断；
+  - `kg_examples/scan_gbcd_plus_alpha_admissibility.py`：扫描全局 \(\alpha\delta g_+\) 的 D 残差和物质可容许性；
+  - `kg_examples/scan_gbcd_plus_local_guard.py`：扫描局部 trust-region/guard 规则。
+- 旧 active-edge `plus-only+CG6000` 诊断：
+  - 输出 `visualizations/equation_first_gbcd_plus_initial_package_n384_taum3p5_core10_cg6000/`；
+  - D 方程 exact residual weighted mean `0.13917`；
+  - 一步 \(g_+\) 测度偏差 `14404.69`；
+  - 负质量壳判别式比例 `0.01922`；
+  - 全局阻尼扫描显示 `alpha=1e-5` 仍有负判别式，说明不能靠整体缩步解决。
+- 旧 active-edge 坏点分层：
+  - 坏点主要集中在支撑区边缘/低密度带；
+  - 但 p95 更新很小而 max 更新极大，说明少数局部自由度不可容许。
+- 新跑 `metric_active_dilation=0` 的 no-active-edge 重新求解：
+  - 输出 `visualizations/equation_first_gbcd_sparse_pipeline_n384_taum3p5_core10_pen1e4_noactiveedge_coeff_cg6000/`；
+  - D 方程 exact residual weighted mean `0.13192`；
+  - \(|\delta g_+|/|g_+|\) p95 `4.68e-5`，max `0.00931`；
+  - 消除了旧解的百万级局部异常。
+- no-active-edge 剩余坏点定位：
+  - 只剩 `1/6034` 个支撑点出现负判别式；
+  - 坐标约 \((-3.392\,\mu m,-6.013\,\mu m)\)；
+  - `rho/max(rho)=0.148`，不是低密度边缘；
+  - 参考 \(\tilde g\) 本身近退化，`det(g_plus_base) ~ 1.24e-24`，一个特征值约 `1e-17`；
+  - 该点 `delta g_+/g_+ ~ 3.1e-8`，因此问题是分支/退化点，不是更新幅度过大。
+- `auto_bad_zero` 局部守卫扫描：
+  - 输出 `visualizations/equation_first_gbcd_plus_local_guard_scan_n384_taum3p5_core10_noactiveedge_cg6000/`；
+  - 冻结 2 个不可容许支撑点；
+  - D 方程 exact residual weighted mean `0.13220`；
+  - 一步 \(g_+\) 测度偏差 `1.09e-4`；
+  - 负判别式比例和非正 det 比例均为 `0`。
+- guarded 初值包：
+  - 输出 `visualizations/equation_first_gbcd_plus_initial_package_n384_taum3p5_core10_noactiveedge_guarded/`；
+  - 初始 \(\rho^\tilde\) 拉回偏差 `1.4e-17`；
+  - mass-shell defect p95 `2.24e-13`。
+- guarded 一步测试：
+  - 输出 `visualizations/equation_first_gbcd_plus_initial_package_one_step_n384_taum3p5_core10_noactiveedge_guarded/`；
+  - 一步 \(g_+\) 测度偏差 `1.091e-4`；
+  - 负判别式比例 `0`；
+  - 守恒密度一步相对变化 `5.79e-7`。
+- 语法检查：
+  - `python3 -m py_compile` 覆盖新增/修改脚本，通过。
+- 新建研究笔记：
+  - `research-notes/162-plus-only初始加速度包与可容许性守卫.md`。

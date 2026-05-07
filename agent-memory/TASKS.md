@@ -99,10 +99,31 @@
 - 分支：D1-D2-E2-E3
 - 状态：当前主线已从“继续加密参考残差图”转为“先评估 C/D pure-`\tilde g` 作用量的理论健康性，再决定是否进入全作用量演化”。阶段性判断是：B 支在当前目标下基本排除；C 支保留为幂律饱和对照；D 支作为优先候选，但需先处理 `f_R -> 0`、过渡层导数项和 `f_{RR}<0` 稳定性风险。
 
+## 2026-05-07 当前 D/gBCD 数值主线更新
+
+- 当前 equation-first gBCD 主线已推进到 `plus-only` 初始加速度求解器：
+  - 保持 \(\tilde g_0,\rho^\tilde,u_i\) 不变；
+  - 由 D/gBCD 场方程求 \(g_+\)，即初始加速度；
+  - 不再通过大幅修改 \(\rho^\tilde\) 或中心切片 \(g_0\) 来硬配 D 方程。
+- `tau=-3.5,n=384,core10` 左侧分离态当前最佳可推进包：
+  - `metric_active_dilation=0` 的 plus-only 重新求解；
+  - `auto_bad_zero` 局部可容许性守卫；
+  - D 方程 exact residual weighted mean `0.13220`；
+  - 一步 \(g_+\) 测度偏差 `1.09e-4`；
+  - 负质量壳判别式比例 `0`。
+- 关键输出：
+  - `visualizations/equation_first_gbcd_sparse_pipeline_n384_taum3p5_core10_pen1e4_noactiveedge_coeff_cg6000/`
+  - `visualizations/equation_first_gbcd_plus_local_guard_scan_n384_taum3p5_core10_noactiveedge_cg6000/`
+  - `visualizations/equation_first_gbcd_plus_initial_package_n384_taum3p5_core10_noactiveedge_guarded/`
+  - `visualizations/equation_first_gbcd_plus_initial_package_one_step_n384_taum3p5_core10_noactiveedge_guarded/`
+- 新研究笔记：
+  - `research-notes/162-plus-only初始加速度包与可容许性守卫.md`。
+
 ## 下一步
 
 - 每一轮继续研究前，先按长记忆协议重读 `README.md`、`TASKS.md`、`LOG.md`、`DECISIONS.md` 与最新 handoff，再进入当前理论/数值主线
 - 当前主线下一步：不要把完整 \(\mathcal R_{\rm need}\) 的平凡 pure-geometry 拟合当作成功；应继续分析剥离 EH 主项后的非平凡剩余，尤其是 \(T^A-T^{(\tilde m)}\)、\(u,r,\rho\)-dependent gravitational sector，以及其 action-level metric/S/rho 变分是否可闭合。
+- 当前数值下一步：先把 `no-active-edge + auto_bad_zero` 流程扩展到 `tau=0,+3.5`，确认干涉中心和右侧分离态也能形成 guarded package；随后把每一步 metric solve 的局部可容许性守卫升级为正式强约束/patch 边界，而不是只做后处理。
 - 若继续检查 pure-\(\tilde g\) 希望，应从 action-level 必要条件入手：\(\tilde\nabla\)-守恒、Helmholtz/self-adjoint integrability、以及可能的高阶曲率/非局域泛函，而不是只做低阶曲率多项式拟合。
 - 若继续 pure-\(\tilde g\) 局域路线，优先级应改为：quadratic curvature basis -> 导数不变量 -> action-level integrability；不要再把单变量 \(f(\tilde R)\) 的高次多项式当主线。
 - 当前对“需要到多少阶才可能较好拟合”的经验判断已经更新：标准 4 阶 quadratic local action 仍几乎失败，最轻量 6 阶 pure-\(f(\tilde R)\) 复查也几乎没有改善，且最小真 6 阶 finite-jet 局域基底 \(\{1,\tilde R,I_2,\tilde R^2,\tilde R I_2,\tilde R^3\}\) 仍给出总体加权残差 \(\sim0.9987\)。因此下一步若继续 pure-\(\tilde g\) 局域路线，应扩到 \(I_3\) 与显式导数不变量，而不是继续在这些最小基底内打转。
