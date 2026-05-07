@@ -3480,3 +3480,16 @@
 - trace0 判断：
   - trace0 是真正的状态方程，用来固定投影方程主符号中的剩余 \(E\)-方向模式；
   - 它不能只作为初始切片约束，而应作为方程系统的一部分逐点成立。
+
+## 决策 265：branch preservation 需要二阶零点或无通量边界，patch transition 要区分基底退化与主符号退化
+
+- branch preservation：
+  - 写 \(C=\chi(\mathcal q)\hat C\) 后，守恒方程含有 \((\nabla\chi)\hat C\)；
+  - 若 \(\chi\sim|\mathcal q|^p\)，则 \(p>1\) 比 \(p=1\) 更正则；
+  - 首选 \(\chi(0)=\chi'(0)=0\) 的光滑二阶零点，并要求 \(\hat C\) 有界；
+  - 若使用一阶零点，则必须在 \(\mathcal q=0\) 面上补 \(n^\mu\hat C_{\mu\nu}=0\) 无通量条件。
+- patch transition：
+  - \(C_{\mu\nu}\) 是几何对象，\(\lambda_I\) 只是非退化 patch 中的局部坐标；
+  - \(\Delta=0\) 与 \(r^\perp=0\) 是张量基底降秩问题，可尝试低维 patch；
+  - \(w^2=0\) 是 trace0 主符号退化，不是单纯换基底可解决的问题；
+  - 若采用 \(\mathsf q_E\)-trace 或混合 trace 作为局部补丁，必须承认 theory 从 v1 升级为 patchwise scalar closure 版本，不能说完全同一方程。

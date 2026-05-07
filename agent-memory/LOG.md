@@ -5871,3 +5871,34 @@
 - 下一步理论任务：
   - branch preservation：检查 \(\lambda_I=\chi(\mathcal q)\hat\lambda_I\) 的有界性是否随演化保持；
   - patch transition：在 \(\Delta=0,w^2=0,r^\perp=0\) 附近寻找可连续延拓的替代张量基底。
+
+### 2026-05-08 branch preservation 与 patch transition 首轮
+
+- 新建研究笔记：
+  - `research-notes/181-branch-preservation与patch-transition首轮.md`。
+- branch preservation 结论：
+  - 写 \(C_{\mu\nu}=\chi(\mathcal q)\hat C_{\mu\nu}\) 后，守恒方程变为
+    \[
+    \chi\tilde\nabla^\mu\hat C_{\mu\nu}
+    +(\tilde\nabla^\mu\chi)\hat C_{\mu\nu}=0.
+    \]
+  - 若 \(\chi\sim|\mathcal q|^p\)，则 \(p>1\) 时 \(\tilde\nabla\chi\to0\)，较容易保持正则；\(p=1\) 需要 \(n^\mu\hat C_{\mu\nu}=0\) 的无通量边界条件；\(0<p<1\) 通常不正则。
+  - 推荐首版分支规则：
+    \[
+    \chi(0)=\chi'(0)=0,\qquad \hat C_{\mu\nu}\text{ 有界}.
+    \]
+- patch transition 结论：
+  - \(C_{\mu\nu}\) 应作为主变量，\(\lambda_I\) 只是局部坐标；\(\Delta\to0\) 时 \(\lambda_I\) 发散不等于 \(C_{\mu\nu}\) 真发散；
+  - 若 \(r\parallel u\)，四方向基底降为
+    \[
+    E_u=\mathrm{span}\{\tilde g,uu\}.
+    \]
+    此时 trace0 仍允许一个无迹方向
+    \[
+    u_\mu u_\nu-\frac{m^2}{d}\tilde g_{\mu\nu}.
+    \]
+  - \(r^\perp=0\) 是 \(\Delta=0\) 的常见子情形，不是独立新奇点；
+  - \(w^2=0\) 不是基底降秩，而是 trace0 状态方程对某些主符号方向失去控制，是 proposal v1 的主要理论风险之一。
+- 下一步数值/解析检查：
+  - 在三切片上统计 \(\mathcal q\approx0\) 区域的 \(C/\chi\) 是否有界；
+  - 在 \(\Delta\approx0,r^\perp\approx0\) 区域检查 \(\mathcal R\) 是否接近低维 patch \(E_u\)。

@@ -1373,6 +1373,8 @@
   - 下一步理论任务若继续 action 化，应转向真实辅助场 \(\chi\)-sector 的有效应力；否则应正式降级 action 化并继续 equation-first；
   - 下一步理论写作应检查 branch preservation：\(\lambda_I=\chi(\mathcal q)\hat\lambda_I\) 中 \(\hat\lambda_I\) 的有界性是否随演化保持；
   - 下一步还应写 patch transition：在 \(\Delta=0,w^2=0,r^\perp=0\) 退化面附近寻找替代张量基底，避免把投影坐标奇点误当物理奇点；
+  - 已完成 branch preservation 与 patch transition 首轮分析，见 `research-notes/181-branch-preservation与patch-transition首轮.md`；
+  - 下一步具体数值检查应统计 \(\mathcal q\approx0\) 区域的 \(C/\chi\) 是否有界，并检查 \(\Delta\approx0,r^\perp\approx0\) 区域的 \(\mathcal R\) 是否接近低维 patch \(E_u=\mathrm{span}\{\tilde g,uu\}\)；
   - 下一步数值验证若继续，应使用 ALM 作为 hard conservation baseline，并只把 KKT 当作需要更好线性代数的严格求解方向；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：

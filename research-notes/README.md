@@ -106,6 +106,7 @@
 - `178-trace0硬守恒KKT与ALM原型.md`：把 trace0 + full conservation 从 penalty 扫描推进到 hard-project、KKT 和增广拉格朗日原型；KKT 在难切片受病态求解限制，ALM 在三切片上进一步压低 full divergence 且只小幅增加代数残差，支持将其作为 equation-first 硬约束候选。
 - `179-equation-first-trace0-proposal-v1.md`：把当前主候选整理为显式 equation-first 理论 proposal v1，统一列出变量、物质测地线方程、几何投影方程、trace0/守恒闭合、patch/branch 条件、三切片数值支持和 action 化 caveat。
 - `180-Qto0分支与约束传播.md`：细化 proposal v1 中尚未展开的 \(Q\to0\Rightarrow C\to0\) 分支规则与约束传播逻辑；区分精确方程中 Bianchi 推出的守恒、数值/初值中必须硬施加的守恒兼容，以及 trace0 作为真正状态方程的角色。
+- `181-branch-preservation与patch-transition首轮.md`：首轮分析 \(C=\chi(\mathcal q)\hat C\) 分支能否在 \(\chi\to0\) 时保持正则，并区分 \(\Delta=0/r^\perp=0\) 的基底降秩 patch 与 \(w^2=0\) 的 trace0 主符号退化。
 
 补充说明：
 
