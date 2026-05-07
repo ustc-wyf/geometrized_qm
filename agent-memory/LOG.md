@@ -5266,6 +5266,9 @@
   - 初次推送时终端到 GitHub 超时；网络恢复后 HTTPS push 报 `could not read Username for 'https://github.com'`，说明命令行 Git 缺少 GitHub token/credential；
   - SSH 测试显示本机有 `~/.ssh/id_ed25519`，但未绑定 GitHub：`Permission denied (publickey)`；
   - 因此远端 push 尚未完成，本地仓库干净，远端配置保留。
+  - 用户绑定 SSH key 后，`ssh -T git@github.com` 已认证为 `ustc-wyf`；
+  - 已将 `origin` 切到 `git@github.com:ustc-wyf/geometrized_qm.git`；
+  - 已成功 `git push -u origin main`，当前 `main...origin/main` 干净同步。
 - 新建 `kg_examples/solve_gbcd_joint_initial_projection_sparse.py`：
   - 同一稀疏线性系统中求 \(\delta\tilde g\) 与可选 \(\eta=\delta\log(\sqrt{|\tilde g|}\tilde\rho)\)；
   - 求解后重新计算 \(\sqrt{|\tilde g|}\)、\(\tilde\rho\)、质量壳 \(u_t\)、\(\tilde T_{\mu\nu}\)，并做完整 nonlinear back-substitution。
@@ -5294,3 +5297,15 @@
   - 下一步应把 plus-only 解法包装为正式 D 初始加速度求解器，并接入短步物质演化与约束漂移检查。
 - 新建研究笔记：
   - `research-notes/161-D初值联合投影与plus-only主自由度.md`。
+
+### 2026-05-07 沟通偏好修正
+
+- 用户反馈刚才的数值结果报告“看不懂，语言跳跃太大”。
+- 后续报告要求：
+  - 先给一句话结论；
+  - 再说明本轮“在问什么问题”；
+  - 明确定义新变量、新名词和图中每个量；
+  - 区分“物理结论”和“数值算法诊断”；
+  - 给出关键数字时说明其含义、好坏方向和可接受性；
+  - 不要直接堆 `weighted_mean/p95/eta/alpha` 等术语而不解释；
+  - 复杂结果用“为什么做、怎么做、看到什么、所以怎么办”的顺序。
