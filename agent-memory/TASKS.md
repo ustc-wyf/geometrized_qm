@@ -133,6 +133,23 @@
   - 每一步执行 plus-only metric solve、matter step、可容许性守卫、D residual 与测度偏差记录；
   - 将 `auto_bad_zero` 从后处理升级为求解器内部 active-set/强约束；
   - 继续单独优化 `tau=-3.5` 的高 residual 来源。
+
+## 目标层级纠偏
+
+- 重要纠偏：当前目标不是“完成一个 D 支数值计算器”。
+- 真正目标是：
+  - 在当前高斯波包干涉例子上寻找一个能描述变换后几何的、类似 Einstein 方程的显式 equation-first 场方程；
+  - 该方程应尽量一般化，而不是只作为逐点数值拟合；
+  - 它还要与物质部分的等价性和隐变量粒子的 \(\tilde g\)-测地线解释兼容。
+- 数值工作的位置：
+  - 高斯干涉数值结果是“方程形式筛选器”和“反例检查器”；
+  - 初值包、guarded package、多步推进原型都只是检验候选方程闭合性和稳定性的工具；
+  - 不得把数值器本身当作最终研究路线。
+- 当前理论下一步应优先写清：
+  - gBCD 方程的最终候选形式；
+  - \(A,B,C,D\) 是局部本构函数、辅助场，还是由某个变分/最小化原则产生；
+  - \(\tilde\nabla^\mu\mathcal C_{\mu\nu}=0\) 如何保证测地线；
+  - 三切片数值结果对上述方程形式提供了什么支持、暴露了什么缺口。
 - 若继续检查 pure-\(\tilde g\) 希望，应从 action-level 必要条件入手：\(\tilde\nabla\)-守恒、Helmholtz/self-adjoint integrability、以及可能的高阶曲率/非局域泛函，而不是只做低阶曲率多项式拟合。
 - 若继续 pure-\(\tilde g\) 局域路线，优先级应改为：quadratic curvature basis -> 导数不变量 -> action-level integrability；不要再把单变量 \(f(\tilde R)\) 的高次多项式当主线。
 - 当前对“需要到多少阶才可能较好拟合”的经验判断已经更新：标准 4 阶 quadratic local action 仍几乎失败，最轻量 6 阶 pure-\(f(\tilde R)\) 复查也几乎没有改善，且最小真 6 阶 finite-jet 局域基底 \(\{1,\tilde R,I_2,\tilde R^2,\tilde R I_2,\tilde R^3\}\) 仍给出总体加权残差 \(\sim0.9987\)。因此下一步若继续 pure-\(\tilde g\) 局域路线，应扩到 \(I_3\) 与显式导数不变量，而不是继续在这些最小基底内打转。
