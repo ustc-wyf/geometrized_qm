@@ -3563,3 +3563,23 @@
   - \(C_{\mu\nu}\) 是主变量，\(\lambda_I\) 只是图册坐标；
   - \(r\parallel u\) 可降到 \(E_u\)，但该图内守恒可能过定，不能把 \(E_u\) 当全局替代理论；
   - \(w^2=0\) 是 trace0 主符号退化；若引入 \(\mathsf q_E\)-trace 补丁，应明确升级为 proposal v1.2。
+
+## 决策 270：当前 D 支已到“实现独立 harmonic 演化器”的阶段，而不是继续找额外闭合方程
+
+- 背景：
+  - 已把 generalized harmonic gauge、metric/matter/\(C\)-sector 演化分裂、约束传播证明和 patch transition 规则整理成 `research-notes/186-D支harmonic闭合定理草案与当前例子可演化性.md`；
+  - 新增 `kg_examples/diagnose_d_cauchy_patch_atlas.py` 检查当前高斯干涉切片是否满足局部 Cauchy patch 条件。
+- 核心判断：
+  - matter HJ + continuity 推出 \(\nabla T=0\)；
+  - \(\nabla C=0\) 使总源守恒；
+  - Bianchi 恒等式使 harmonic 约束按齐次波方程传播；
+  - 在 \(\Delta\neq0,w^2\neq0,u^t\neq0,\mathrm{rank}M=3\) 的主 patch 内，系统是局部 Cauchy 闭合候选。
+- 当前例子支持：
+  - `n=384,core10` 三切片主 patch 覆盖率为 `100% / 99.902% / 100%`；
+  - 干涉中心仅 1 个点出现 \(\lambda\) time-rank bad；
+  - 主要物理支撑区没有显示出需要额外场方程才能演化的结构性缺口。
+- 决策：
+  - 不再把“寻找另一条额外闭合方程”作为当前最高优先；
+  - 下一步应实现真正 generalized-harmonic D 支 standalone nonlinear evolution；
+  - 低密度/support 边缘和 \(w^2=0,\Delta=0,Q=0\) 分支作为 patch/branch 规则处理，而不是改写主方程；
+  - 对外表述仍必须保守：已有局部 Cauchy 闭合候选和当前例子 admissibility 诊断，尚未证明全局适定，也尚未完成生产级演化器。

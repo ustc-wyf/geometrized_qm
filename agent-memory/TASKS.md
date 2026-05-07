@@ -1382,9 +1382,12 @@
   - 已完成完整 D 支 Cauchy 闭合快查，见 `research-notes/184-完整D支Cauchy闭合快查.md`；
   - 快查结论是物质 HJ + continuity 加上当前几何候选后，在主非退化 massive patch 内方程主部/计数已经接近闭合；下一步不是再加场方程，而是做 gauge-fixed 约束传播和 patch transition；
   - 已完成 generalized harmonic gauge 下的演化/约束传播与 patch 图册草案，见 `research-notes/185-gauge-fixed演化约束传播与patch图册.md`；
+  - 已把 harmonic gauge 选择、完整演化/约束分裂、约束传播证明和 patch transition 写成 theorem/proposition 级草案，见 `research-notes/186-D支harmonic闭合定理草案与当前例子可演化性.md`；
+  - 已新增 `kg_examples/diagnose_d_cauchy_patch_atlas.py` 并完成 `n=384,core10` 当前高斯干涉三切片检查：主 patch 覆盖率 `100% / 99.902% / 100%`，说明主支撑区可作为独立 D 支 harmonic 演化器的初值测试场；
   - 当前建议文章主线采用 harmonic gauge 做理论适定性草案，ADM 留给后续数值实现；
+  - 当前最高优先级已转为实现真正 generalized-harmonic D 支 standalone nonlinear evolution，而不是继续寻找额外闭合方程；
   - 下一步具体任务应把 \(\hat C\) 有界性从全局 L2 penalty 改成局部不等式/投影条件，并诊断右侧分离态 divergence outliers 的位置；
-  - 另一个下一步理论任务是把 `185` 的草案压缩成文章级 proposition/theorem，并开始 standalone solver 的最小原型设计；
+  - `186` 已承担文章级 proposition/theorem 草案功能；下一步代码任务是从该草案实现最小 harmonic solver，而不是再写一个 A-driven proxy；
   - 下一步数值验证若继续，应使用 ALM 作为 hard conservation baseline，并只把 KKT 当作需要更好线性代数的严格求解方向；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：

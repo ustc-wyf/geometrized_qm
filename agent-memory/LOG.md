@@ -6008,3 +6008,37 @@
 - standalone solver 骨架：
   - 初值需给 \(\gamma_{ij},K_{ij},S,\tilde\rho,\lambda_I\) 或 harmonic 等价数据；
   - 每步推进 metric、matter 和 \(\lambda\)，监控 harmonic/Einstein/trace/守恒/mass-shell 约束，并按 patch 图册换图。
+
+### 2026-05-08 D 支 harmonic 闭合定理草案与当前例子可演化性
+
+- 用户指出上一轮只是总结，要求实际处理：
+  - 选定 harmonic/ADM；
+  - 写出完整约束/演化分裂；
+  - 证明约束传播；
+  - 处理 \(\Delta=0,r^\perp=0,w^2=0\) 的 patch transition；
+  - 判断当前例子是否能独立求解 D 支演化。
+- 新增研究笔记：
+  - `research-notes/186-D支harmonic闭合定理草案与当前例子可演化性.md`。
+- 新增诊断脚本：
+  - `kg_examples/diagnose_d_cauchy_patch_atlas.py`。
+- 理论处理：
+  - 第一版明确选 generalized harmonic gauge，ADM 后置；
+  - 写出 metric/matter/\(C\)-sector 的演化与约束分裂；
+  - 用 matter HJ+continuity 推出 \(\nabla T=0\)，再加 \(\nabla C=0\) 和 Bianchi，得到 harmonic 约束的齐次波动传播；
+  - patch transition 明确区分 \(\Delta=0,r^\perp=0\) 的基底降秩、\(w^2=0\) 的 trace0 主符号退化、以及 \(Q\to0\) 的 branch 正则性。
+- 数值诊断：
+  - 命令：
+    `python3 kg_examples/diagnose_d_cauchy_patch_atlas.py --output visualizations/d_cauchy_patch_atlas_n384_core10 --full-resolution 384 --region core10 --taus=-3.5,0,3.5`
+  - 输出：
+    - `visualizations/d_cauchy_patch_atlas_n384_core10/summary.json`
+    - `visualizations/d_cauchy_patch_atlas_n384_core10/d_cauchy_patch_atlas_taum3p5.png`
+    - `visualizations/d_cauchy_patch_atlas_n384_core10/d_cauchy_patch_atlas_tau0.png`
+    - `visualizations/d_cauchy_patch_atlas_n384_core10/d_cauchy_patch_atlas_taup3p5.png`
+  - `core10` 主 patch 覆盖率：
+    - \(\tau=-3.5\)：2550/2550，100%；
+    - \(\tau=0\)：1023/1024，99.902%，仅 1 个 \(\lambda\) time-rank bad 点；
+    - \(\tau=+3.5\)：3589/3589，100%。
+- 判断：
+  - 当前高斯干涉例子的主要物理支撑区已经通过局部 Cauchy patch admissibility 诊断；
+  - 因此下一步不是继续怀疑“方程是否闭合”，而是实现真正 generalized-harmonic D 支独立非线性演化器；
+  - 仍不能声称已经完成生产级 standalone D 支演化结果。

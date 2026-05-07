@@ -111,6 +111,7 @@
 - `183-branch正则化hard-ALM首轮.md`：直接求解 \(C=\chi\hat C\) 的 branch-regular hard-ALM；\(\tau=0\) 有可用正则化窗口，但右侧分离态显示 \(\hat C\) 有界性和 full conservation 存在张力。
 - `184-完整D支Cauchy闭合快查.md`：确认物质 HJ+连续性方程加当前几何候选后，在主非退化 massive patch 内已具备 principal-symbol/counting 局部闭合希望；缺的是 gauge-fixed 约束传播与 patch 适定性证明。
 - `185-gauge-fixed演化约束传播与patch图册.md`：给出 generalized harmonic gauge 下的 reduced Einstein-like 演化系统、约束传播草案、\(\Delta/r^\perp/w^2\) patch 图册和 standalone D 支演化器骨架。
+- `186-D支harmonic闭合定理草案与当前例子可演化性.md`：把 harmonic gauge 选择、完整演化/约束分裂、约束传播证明和 patch transition 规则整理成 theorem/proposition 级草案，并新增 `n=384,core10` Cauchy patch 图册诊断；当前高斯干涉主支撑区三切片主 patch 覆盖率为 `100%/99.902%/100%`。
 
 补充说明：
 
