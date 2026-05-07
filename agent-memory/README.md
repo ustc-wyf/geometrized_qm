@@ -709,6 +709,8 @@
   `research-notes/177-trace0稀疏全局守恒扫描.md`
 - trace0 硬守恒 KKT 与 ALM 原型：
   `research-notes/178-trace0硬守恒KKT与ALM原型.md`
+- equation-first trace0 proposal v1：
+  `research-notes/179-equation-first-trace0-proposal-v1.md`
 - 当前最小候选：
   \[
   \tilde G_{\mu\nu}
@@ -746,4 +748,5 @@
   - trace0 局部守恒检查显示干涉中点几乎自然守恒，但分离态自然散度很大；
   - trace0 稀疏全局守恒扫描显示 `trace0 + full conservation` 兼容；
   - trace0 硬守恒原型显示 ALM 在三切片上比 penalty 进一步压低 full divergence，且只小幅增加代数残差；
-  - 下一步应整理 equation-first 显式 proposal；action 化若继续则转向真实辅助场 \(\chi\)-sector；严格 KKT 数值求解若继续则需要 MINRES/Schur complement/更强预条件器。
+  - equation-first trace0 proposal v1 已整理完成，明确列出变量、物质测地线、几何方程、投影写法、patch/branch 条件、数值支持和 action caveat；
+  - 下一步应细化 \(Q\to0\Rightarrow C\to0\) 的具体分支/边界条件并检查约束传播；action 化若继续则转向真实辅助场 \(\chi\)-sector；严格 KKT 数值求解若继续则需要 MINRES/Schur complement/更强预条件器。

@@ -5817,3 +5817,30 @@
   - `trace0 + full conservation` 可以作为 equation-first 候选的硬约束结构继续保留；
   - ALM 只是数值实现，不改变物理方程；
   - 这一步不是 action 化成功，也不是完整演化理论完成，而是说明当前候选没有被高斯干涉三切片硬守恒检验否定。
+
+### 2026-05-08 equation-first trace0 proposal v1
+
+- 新建研究笔记：
+  - `research-notes/179-equation-first-trace0-proposal-v1.md`。
+- 目的：
+  - 把当前主候选从“诊断结果”整理成显式可写的理论 proposal；
+  - 明确这不是 D 支数值器，也不是 action 化完成，而是 equation-first 场方程候选。
+- proposal v1 内容：
+  - 基本变量：\(\tilde g_{\mu\nu},S,\tilde\rho\)，且必须记住 \(\rho\neq\tilde\rho\)；
+  - 物质方程：\(\tilde g^{\mu\nu}u_\mu u_\nu=m^2\)、\(\tilde\nabla_\mu(\tilde\rho\,\tilde g^{\mu\nu}u_\nu)=0\)，由 \(u=dS\) 推出 \(\tilde g\)-测地线；
+  - 几何方程：
+    \[
+    \tilde G_{\mu\nu}=\tilde T_{\mu\nu}/M_P^2+C_{\mu\nu},
+    \quad
+    C\in\mathrm{span}\{\tilde g,uu,rr,ur\},
+    \quad
+    C^\mu{}_\mu=0,
+    \quad
+    \tilde\nabla^\mu C_{\mu\nu}=0.
+    \]
+  - 等价投影写法：\(\Pi_E^\perp\mathcal R=0\)、\(\mathrm{Tr}(\Pi_E\mathcal R)=0\)、\(\tilde\nabla^\mu\Pi_E\mathcal R_{\mu\nu}=0\)。
+  - patch/branch 条件：\(d>2\)、\(\Delta=u^2r^2-(u\cdot r)^2\neq0\)、处理 \(r^\perp=0,w^2=0,1+1d,m=0\)，并额外要求 \(Q\to0\Rightarrow C\to0\)。
+- 下一步：
+  - 写清 \(Q\to0\Rightarrow C\to0\) 的具体分支/边界条件；
+  - 检查约束传播；
+  - 如继续 action 化，转向真实辅助场 \(\chi\)-sector。

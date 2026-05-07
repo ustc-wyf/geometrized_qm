@@ -1368,8 +1368,9 @@
   - 已把 sparse penalty 扫描升级为 hard-project、KKT 和 ALM 原型，见 `research-notes/178-trace0硬守恒KKT与ALM原型.md`；
   - 当前最稳口径是 `hard-alm`：三切片 full divergence 进一步压到 `~2e-5` 到 `~2e-3`，中心代数残差只小幅增加；
   - `hard-kkt` 在小规模有效，但当前 LSQR saddle-point 版本在左侧分离态病态，后续若追求严格 KKT 需 MINRES/Schur complement/预条件器；
+  - 已整理 equation-first trace0 proposal v1，见 `research-notes/179-equation-first-trace0-proposal-v1.md`；
   - 下一步理论任务若继续 action 化，应转向真实辅助场 \(\chi\)-sector 的有效应力；否则应正式降级 action 化并继续 equation-first；
-  - 下一步理论写作应把当前 equation-first 方程组整理成显式 proposal，包括变量、方程、patch、分支条件、测地线兼容条件和 action 化 no-go 关系；
+  - 下一步理论写作应把 proposal v1 继续细化为 \(Q\to0\Rightarrow C\to0\) 的具体分支/边界/正则性条件与约束传播检查；
   - 下一步数值验证若继续，应使用 ALM 作为 hard conservation baseline，并只把 KKT 当作需要更好线性代数的严格求解方向；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：
