@@ -101,6 +101,7 @@
 - `173-shadow-stress与物理分支传播条件.md`：进一步检查 shadow-field action 的 stress 和分支传播；结论是线性乘子和 \(Q_{\rm sh}\)-门控 action 会产生额外 stress/source，物理分支传播要求状态项在目标分支上对 \(\Phi,\sigma\) 一阶静默，因此需要 stealth-state 构造或退回 equation-first。
 - `174-stealth-state-action候选的最小no-go.md`：尝试构造具体 stealth-state action，发现最小局域 ansatz 存在结构性冲突：线性源项能产生 metric 源但使 \(C\)-变分不成立，抵消 \(C\)-变分又会取消 metric 源；因此 action 化需转向真实辅助场 \(\chi\)-sector 或把 trace=0 投影方程作为 equation-first 理论。
 - `175-n384-trace0局部复检.md`：新增 `n=384` 轻量局部代数复检，比较普通 trace=0 与 \(\mathsf q_E\)-trace；结果支持普通 trace=0 继续作为最小 equation-first 标量闭合，\(\mathsf q_E\) 暂降级为主符号/正定范数诊断工具。
+- `176-trace0局部守恒兼容性.md`：检查逐点 trace=0 代表元是否自然满足 \(\tilde\nabla^\mu C_{\mu\nu}=0\)；干涉中点自然守恒很好，但分离态散度很大，说明 trace=0 必须和完整守恒联立求解，不能分步后处理。
 
 补充说明：
 

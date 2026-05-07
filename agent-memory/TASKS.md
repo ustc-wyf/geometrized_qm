@@ -1361,8 +1361,10 @@
   - 已检查具体 stealth-state action 候选，见 `research-notes/174-stealth-state-action候选的最小no-go.md`，结论是最小局域 ansatz 不能生成非零 trace=0 投影源；
   - 已完成 `n=384` 可信条纹分辨率上的 trace=0 局部代数复检，见 `research-notes/175-n384-trace0局部复检.md`；
   - 复检结论是普通 trace=0 比 \(\mathsf q_E\)-trace 更稳定，继续作为主标量闭合；\(\mathsf q_E\) 暂降级为主符号/正定范数诊断工具；
+  - 已完成 trace0 局部守恒兼容性检查，见 `research-notes/176-trace0局部守恒兼容性.md`；
+  - 守恒检查结论是干涉中点局部 trace0 几乎自然守恒，但分离态自然散度很大，因此 trace0 必须和 full conservation 联立求解；
   - 下一步理论任务若继续 action 化，应转向真实辅助场 \(\chi\)-sector 的有效应力；否则应正式降级 action 化并继续 equation-first；
-  - 下一步数值验证应检查 `trace0 + full conservation` 的高分辨率兼容性，确认局部代数闭合在加入守恒后仍可闭合；
+  - 下一步数值验证应实现高分辨率 sparse/global 求解器：trace0 逐点硬消元，联立代数残差和完整守恒残差做 force-weight 扫描；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：
   - 后续所有硬守恒/硬测地线投影默认用 nullspace 或等价约束保持算法；

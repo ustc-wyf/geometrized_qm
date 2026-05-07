@@ -5747,3 +5747,26 @@
   - 普通 trace=0 在干涉中心和右侧分离态明显更稳；
   - \(\mathsf q_E\)-trace 只在左侧分离态局部略优，且有不可定义/退化跳点，不应作为主闭合；
   - 当前主候选仍是普通 trace=0 + full conservation + patch/branch 条件的 equation-first 方程。
+
+### 2026-05-08 trace=0 局部守恒兼容性检查
+
+- 新增脚本：
+  - `kg_examples/diagnose_gbcd_trace_local_conservation.py`。
+- 新建研究笔记：
+  - `research-notes/176-trace0局部守恒兼容性.md`。
+- 检查口径：
+  - `n=384, core10, window=[-9,9] um`；
+  - 逐点求局部 \(C_{\mu\nu}\)，再直接计算中心切片 \(\tilde\nabla^\mu C_{\mu\nu}\)；
+  - 这不是 hard conservation solve，而是判断局部闭合是否自然守恒。
+- trace0 结果：
+  - tau=-3.5：代数残差 `0.004064`，full divergence scale `0.783756`；
+  - tau=0：代数残差 `0.000598`，full divergence scale `0.000937`；
+  - tau=+3.5：代数残差 `0.006150`，full divergence scale `0.254636`。
+- unconstrained 基线：
+  - tau=-3.5：代数残差 `0.000648`，full divergence scale `0.023113`；
+  - tau=0：代数残差 `0.000069`，full divergence scale `0.000236`；
+  - tau=+3.5：代数残差 `0.001647`，full divergence scale `0.007245`。
+- 当前判断：
+  - 干涉中点 trace0 局部代表元几乎自然守恒；
+  - 分离态 trace0 局部代表元不自然守恒，且比 unconstrained 基线更差；
+  - 因此 trace0 仍是主闭合，但必须和 full conservation 联立求解，不能先逐点 trace0 再事后检查守恒。

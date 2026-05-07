@@ -703,6 +703,8 @@
   `research-notes/174-stealth-state-action候选的最小no-go.md`
 - n=384 trace=0 局部复检：
   `research-notes/175-n384-trace0局部复检.md`
+- trace0 局部守恒兼容性：
+  `research-notes/176-trace0局部守恒兼容性.md`
 - 当前最小候选：
   \[
   \tilde G_{\mu\nu}
@@ -737,4 +739,5 @@
   - shadow stress 检查显示线性乘子和 \(Q_{\rm sh}\)-门控 variational weight 会产生额外 source；物理分支传播要求状态项对 \(\Phi,\sigma\) 一阶静默；
   - 具体 stealth-state action 候选检查显示最小局域 ansatz 有 no-go：抵消 \(C\)-变分会同时取消 metric 源；
   - `n=384` 局部复检支持普通 trace=0 继续作为主标量闭合，\(\mathsf q_E\) 暂降级为主符号/正定范数诊断工具；
-  - 下一步应检查 `trace0 + full conservation` 的高分辨率兼容性；action 化若继续则转向真实辅助场 \(\chi\)-sector。
+  - trace0 局部守恒检查显示干涉中点几乎自然守恒，但分离态自然散度很大；
+  - 下一步应做 `trace0 + full conservation` 的 sparse/global 联立求解；action 化若继续则转向真实辅助场 \(\chi\)-sector。
