@@ -92,6 +92,7 @@
 - `164-gBCD投影型Einstein-like方程候选.md`：把 gBCD 从逐点 \(A,B,C,D\) 拟合提升为显式投影型 Einstein-like 方程；主方程是 Einstein 残差落在 \(\{\tilde g,uu,rr,ur\}\) 张量子空间，配合投影修正张量守恒、物质壳方程/连续性方程和 \(Q\to0\) 回 Einstein 分支条件。
 - `165-gBCD投影方程闭合条件.md`：进一步分析投影方程的闭合条件，证明 \(W\) 不改变在壳解集，给出 Gram 行列式 \(\det H=\frac{d-2}{2}(u^2r^2-(u\cdot r)^2)^3\)，并区分守恒约束、测地线来源、\(Q\to0\) 分支和 action/Helmholtz 检查。
 - `166-gBCD投影方程的3加1计数与主部.md`：分析 3+1d 下投影方程的方程计数和主部；确认它给出 6 个独立张量条件，主部是 harmonic gauge 下 Einstein 波算子的 \(\Pi_E^\perp\) 投影，但 Cauchy 适定性仍需 gauge-fixed principal symbol 检查。
+- `167-gBCD投影方程的主符号缺口与标量闭合条件.md`：检查 harmonic gauge 后的 reduced principal symbol，发现仍有一个 \(E\)-方向主部模式 \(-[(\xi\cdot r)u-(\xi\cdot u)r]^2\) 未定；因此完整理论还需一个协变标量状态方程，并提出 \(u-r\) 平面正定迹闭合类作为首个候选。
 
 补充说明：
 

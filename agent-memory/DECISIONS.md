@@ -3224,3 +3224,31 @@
 - 风险：
   - 计数合理不等于 Cauchy 适定；
   - 下一步必须检查 gauge-fixed principal symbol 在 \(E^\perp\) 子空间上的双曲性、约束传播和 Helmholtz/self-adjoint integrability。
+
+## 决策 252：投影方程还需一个标量状态方程来闭合主符号
+
+- 结果：
+  - harmonic gauge 后，reduced principal system 是
+    \[
+    \xi^2\Pi_E^\perp\bar h_{\mu\nu}=0,\qquad
+    \xi^\mu\bar h_{\mu\nu}=0.
+    \]
+  - 对 \(\bar h=\lambda_I E^I\)，gauge 条件给出
+    \(M_{\nu I}\lambda_I=0\)，其中 \(M_{\nu I}=\xi^\mu E^I_{\mu\nu}\)。
+  - 泛型 \(\mathrm{rank}\,M=3\)，所以还剩一个未定模式
+    \[
+    N^I=(0,-q^2,-p^2,2pq),\quad p=\xi\cdot u,\quad q=\xi\cdot r.
+    \]
+- 决策：
+  - \(\Pi_E^\perp\mathcal R=0\) 不能单独作为完整 Cauchy 动力学方程；
+  - 需要再加一个协变标量状态方程，且它必须满足 \(s_I N^I(\xi)\neq0\)；
+  - 这不是数值补丁，而是主符号闭合要求。
+- 首个候选：
+  - 构造 massive branch 中 \(u-r\) 二平面的正定收缩 \(\mathsf q_E^{\mu\nu}\)；
+  - 测试
+    \[
+    \mathsf q_E^{\mu\nu}(\Pi_E\mathcal R)_{\mu\nu}
+    =
+    \chi(\mathcal Q)\Theta,\qquad \chi(0)=0.
+    \]
+  - 它能看见未定模式 \(-w_\mu w_\nu\)，因此比普通 trace 更符合主符号闭合要求。

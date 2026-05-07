@@ -182,6 +182,25 @@
   \Pi_E^\perp\delta\tilde G^{\rm prin}_{\mu\nu}.
   \]
   harmonic gauge 下近似为 \(-\frac12\Pi_E^\perp\tilde\square\bar h_{\mu\nu}\)。
+- 已完成 harmonic gauge 后主符号缺口检查：
+  \[
+  M_{\nu I}(\xi)=\xi^\mu E^I_{\mu\nu}
+  \]
+  泛型 rank 为 3，因此还剩一个 \(E\)-方向主部模式
+  \[
+  N^I=(0,-q^2,-p^2,2pq),\qquad
+  p=\xi\cdot u,\quad q=\xi\cdot r.
+  \]
+  对应张量是
+  \[
+  \bar h^{(0)}_{\mu\nu}=-[(\xi\cdot r)u_\mu-(\xi\cdot u)r_\mu]^2.
+  \]
+- 当前明确需求：完整理论必须补一个协变标量状态方程，且其主部必须满足 \(s_I N^I(\xi)\neq0\)。首个候选闭合类是
+  \[
+  \mathsf q_E^{\mu\nu}(\Pi_E\mathcal R)_{\mu\nu}
+  =
+  \chi(\mathcal Q)\Theta.
+  \]
 - 历史上先测试过的最小三项候选是
   \[
   \mathcal C_{\mu\nu}=Buu+Crr+D\,u_{(\mu}r_{\nu)}
@@ -1324,7 +1343,7 @@
   - 已明确投影内积 \(W^{\mu\nu\rho\sigma}\) 对在壳解集不是物理自由参数，下一步只需记录不同 \(W\) 对离壳诊断/代表元的影响；
   - 已得到 Gram 矩阵 \(H_{IJ}\) 的退化条件，下一步要把 \(\Delta=0\) 写成 patch/branch 规则，避免把数值 `guard` 当成物理方程；
   - 检查 \(Q\to0\) 分支条件能否由 \(Q\)-门控辅助泛函、边界条件或正则化选择自然给出；
-  - 写出 gauge-fixed principal symbol 在 \(E^\perp\) 子空间上的双曲性/可逆性条件；
+  - 已写出 gauge-fixed principal symbol 的缺口；下一步要检验 \(\mathsf q_E\)-trace 标量闭合是否能在高斯干涉三切片上通过；
   - 对投影方程做 Helmholtz/self-adjoint integrability 检查，判断是否可能来自作用量；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：

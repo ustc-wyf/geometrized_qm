@@ -94,6 +94,49 @@
   - \(Q\to0\) 分支条件 \(\lambda_I=\chi(\mathcal Q)\hat\lambda_I,\chi(0)=0\) 会把 \(E\) 方向也压回零，从而恢复完整 Einstein 方程。
 - 下一步剩余理论任务：写出 gauge-fixed principal symbol 在 \(\Pi_E^\perp\) 子空间上的双曲性条件，并继续做 Helmholtz/self-adjoint 检查。
 
+### 2026-05-07 gBCD 主符号缺口与标量闭合条件
+
+- 已继续检查 harmonic gauge 后的 reduced principal symbol，并写入 `research-notes/167-gBCD投影方程的主符号缺口与标量闭合条件.md`。
+- 关键结论：
+  - 投影方程加 harmonic gauge 的主符号可写成
+    \[
+    \xi^2\Pi_E^\perp\bar h_{\mu\nu}=0,\qquad
+    \xi^\mu\bar h_{\mu\nu}=0.
+    \]
+  - 若 \(\xi^2\neq0\)，第一式要求 \(\bar h_{\mu\nu}=\lambda_I E^I_{\mu\nu}\)，第二式变为
+    \[
+    M_{\nu I}(\xi)\lambda_I=0,\qquad
+    M_{\nu I}=\xi^\mu E^I_{\mu\nu}.
+    \]
+  - 因为 \(M\) 的列都在 \(\mathrm{span}\{\xi,u,r\}\) 内，泛型 rank 为 3，所以还剩一个 \(E\)-方向主部模式。
+  - 该未定模式显式为
+    \[
+    N^I=(0,-q^2,-p^2,2pq),\qquad p=\xi\cdot u,\quad q=\xi\cdot r,
+    \]
+    或
+    \[
+    \bar h^{(0)}_{\mu\nu}=-w_\mu w_\nu,\qquad
+    w_\mu=q u_\mu-p r_\mu.
+    \]
+- 理论判断：
+  - 投影方程本身不是完整 Cauchy 动力学方程；
+  - 必须额外加入一个协变标量状态方程，并且它的主部必须满足 \(s_I N^I(\xi)\neq0\)；
+  - 这解释了此前辅助场守恒主符号 rank=3、nullity=1 的根源。
+- 首个自然候选闭合类：
+  - 在 massive branch 中构造 \(u-r\) 二平面正定收缩张量 \(\mathsf q_E^{\mu\nu}\)；
+  - 加入
+    \[
+    \mathsf q_E^{\mu\nu}(\Pi_E\mathcal R)_{\mu\nu}
+    =
+    \chi(\mathcal Q)\Theta,\qquad \chi(0)=0.
+    \]
+  - 因为对未定模式 \(N_{\mu\nu}=-w_\mu w_\nu\)，有
+    \[
+    \mathsf q_E^{\mu\nu}N_{\mu\nu}<0,
+    \]
+    所以它能看见并固定该主部缺口。
+- 下一步：在高斯干涉三切片上检验 \(\mathsf q_E\)-trace 闭合是否比普通 trace 更合理，并做 Helmholtz/action 检查。
+
 ### 2026-05-07 放宽 pure-gtilde 限制后的 u/r 引力作用量路线
 
 - 用户提出新路线：仍采用强约束，但暂时放开“引力作用量必须完全由 `gtilde` 衍生”的限制，允许在 `gtilde` 表象下显含 \(u^\mu\) 与 \(r^\mu\)。
