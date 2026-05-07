@@ -5844,3 +5844,30 @@
   - 写清 \(Q\to0\Rightarrow C\to0\) 的具体分支/边界条件；
   - 检查约束传播；
   - 如继续 action 化，转向真实辅助场 \(\chi\)-sector。
+
+### 2026-05-08 \(Q\to0\) 分支与约束传播
+
+- 新建研究笔记：
+  - `research-notes/180-Qto0分支与约束传播.md`。
+- 核心结论：
+  - \(Q\to0\Rightarrow C_{\mu\nu}\to0\) 不是 trace0 或守恒自动推出的结论，而是必须额外选择的 GR branch / boundary / regularity 条件；
+  - 在 \(\tilde g\) 表象中更自然的量子强度标量是
+    \[
+    \tilde Q_\rho=\tilde\square\sqrt{\tilde\rho}/\sqrt{\tilde\rho}
+    =\tilde\nabla_\mu r^\mu+r_\mu r^\mu.
+    \]
+  - massive branch 可用 \(\mathcal q=\tilde Q_\rho/m^2\)，massless branch 不能除以 \(m^2\)，需要外部或局部尺度；
+  - 推荐分支条件是张量范数/系数范数消失：
+    \[
+    \|C\|_W\le K\chi(|\mathcal q|),\quad \chi(0)=0,
+    \]
+    或 \(\lambda_I=\chi(|\mathcal q|)\hat\lambda_I\)，\(\hat\lambda_I\) 有界；
+  - 不应写成 \(C^\mu{}_\mu=F(Q)\)，因为这只约束 trace，且此前数值已不支持简单 trace/Q 闭合。
+- 约束传播判断：
+  - 在精确场方程上，若物质方程给出 \(\tilde\nabla^\mu\tilde T_{\mu\nu}=0\)，则 Bianchi 恒等式和 \(\mathcal R=C\) 自动给出 \(\tilde\nabla^\mu C_{\mu\nu}=0\)；
+  - 因此守恒不是额外新物理，而是相容性条件；
+  - 但在初值构造、逐点投影和数值近似中，守恒包含相邻点/时间切片导数信息，必须硬性施加，不能靠逐点代数拟合自动满足；
+  - trace0 不是 Bianchi 自动推出的，它是真正的状态方程，用于补投影主符号缺口。
+- 下一步理论任务：
+  - branch preservation：检查 \(\lambda_I=\chi(\mathcal q)\hat\lambda_I\) 的有界性是否随演化保持；
+  - patch transition：在 \(\Delta=0,w^2=0,r^\perp=0\) 附近寻找可连续延拓的替代张量基底。
