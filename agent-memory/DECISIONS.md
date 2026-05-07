@@ -3252,3 +3252,22 @@
     \chi(\mathcal Q)\Theta,\qquad \chi(0)=0.
     \]
   - 它能看见未定模式 \(-w_\mu w_\nu\)，因此比普通 trace 更符合主符号闭合要求。
+
+## 决策 253：最小 \(\mathsf q_E\)-trace 硬闭合被三切片数据削弱
+
+- 结果：
+  - 在 `n=96,trusted,tau=-3.5/0/+3.5` 上比较 ordinary trace 与 \(\mathsf q_E\)-trace；
+  - 普通 trace=0 的中心 residual 加权均值为 `0.1185, 0.0264, 0.1103`；
+  - 最好的 \(\mathsf q_E\)-trace 版本约为 `0.1810, 0.2907, 0.1941`。
+- 决策：
+  - 暂时不把
+    \[
+    \mathsf q_E^{\mu\nu}\mathcal C_{\mu\nu}=0
+    \]
+    或简单 \(Q,Q^2\) RHS 作为主状态方程；
+  - 当前最小 algebraic closure 反而是普通 trace=0；
+  - \(\mathsf q_E\) 仍保留为主符号安全诊断或辅助场正定范数候选。
+- 理论修正：
+  - 普通 trace 对未定模式的收缩是 \(-w^2\)，只在 \(w^2=0\) 时漏掉；
+  - \(w^2=0\) 退化面检查显示，接近退化的点确实存在，但主要集中在 \(r^\perp\) 也退化/近退化的 patch；
+  - 因此 trace=0 可作为当前最小闭合，但必须显式附带 patch/branch 条件，不能作为全局单图册方程。

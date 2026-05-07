@@ -201,6 +201,15 @@
   =
   \chi(\mathcal Q)\Theta.
   \]
+- 已完成 \(\mathsf q_E\)-trace 最小硬闭合三切片检验：
+  - 普通 trace=0 的中心 residual 加权均值为 `tau=-3.5:0.1185, tau=0:0.0264, tau=+3.5:0.1103`；
+  - 最好的 \(\mathsf q_E\)-trace 版本约为 `0.1810, 0.2907, 0.1941`；
+  - 因此 \(\mathsf q_E^{\mu\nu}\mathcal C_{\mu\nu}=0\) 或简单 \(Q,Q^2\) RHS 暂不作为主状态方程。
+- 当前标量闭合优先级更新：普通 trace=0 是当前最小 algebraic closure；\(\mathsf q_E\)-trace 保留为主符号诊断/辅助场正定范数候选。
+- 已检查普通 trace=0 的主符号退化风险：
+  - 接近 \(w^2=0\) 的 trusted 点比例约为 `tau=-3.5:12%~14%`、`tau=0:2.7%`、`tau=+3.5:3.7%~5.5%`；
+  - 这些点主要对应 \(r^\perp\) 退化/近退化 patch；
+  - 因此 trace=0 可作为当前最小闭合，但必须配合 patch/branch 规则，不能声称全局无退化。
 - 历史上先测试过的最小三项候选是
   \[
   \mathcal C_{\mu\nu}=Buu+Crr+D\,u_{(\mu}r_{\nu)}
@@ -1343,7 +1352,8 @@
   - 已明确投影内积 \(W^{\mu\nu\rho\sigma}\) 对在壳解集不是物理自由参数，下一步只需记录不同 \(W\) 对离壳诊断/代表元的影响；
   - 已得到 Gram 矩阵 \(H_{IJ}\) 的退化条件，下一步要把 \(\Delta=0\) 写成 patch/branch 规则，避免把数值 `guard` 当成物理方程；
   - 检查 \(Q\to0\) 分支条件能否由 \(Q\)-门控辅助泛函、边界条件或正则化选择自然给出；
-  - 已写出 gauge-fixed principal symbol 的缺口；下一步要检验 \(\mathsf q_E\)-trace 标量闭合是否能在高斯干涉三切片上通过；
+  - 已检验 \(\mathsf q_E\)-trace 最小硬闭合，结果不如普通 trace=0；也已确认 trace=0 的 \(w^2=0\) 风险主要集中在 \(r^\perp\) 退化 patch；
+  - 下一步应写出普通 trace=0 + full conservation + patch/branch 的显式最小方程组；
   - 对投影方程做 Helmholtz/self-adjoint integrability 检查，判断是否可能来自作用量；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：

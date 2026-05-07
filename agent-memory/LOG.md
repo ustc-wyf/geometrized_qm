@@ -137,6 +137,34 @@
     所以它能看见并固定该主部缺口。
 - 下一步：在高斯干涉三切片上检验 \(\mathsf q_E\)-trace 闭合是否比普通 trace 更合理，并做 Helmholtz/action 检查。
 
+### 2026-05-07 \(\mathsf q_E\)-trace 标量闭合三切片检验
+
+- 已修改 `kg_examples/fit_gbcd_trace_closure.py`，新增闭合：
+  - `qe0`: \(\mathsf q_E^{\mu\nu}\mathcal C_{\mu\nu}=0\)
+  - `qe_q1`: \(\mathsf q_E^{\mu\nu}\mathcal C_{\mu\nu}=\alpha Q/Q_0\)
+  - `qe_q2`: \(\mathsf q_E^{\mu\nu}\mathcal C_{\mu\nu}=\alpha Q/Q_0+\beta(Q/Q_0)^2\)
+- 已在 `full_resolution=96, fit_region=trusted, force_region=trusted` 下跑三组中心切片：
+  - `tau=-3.5`: `visualizations/equation_first_gbcd_qe_trace_closure_n96_taum3p5_trusted/`
+  - `tau=0`: `visualizations/equation_first_gbcd_qe_trace_closure_n96_tau0_trusted/`
+  - `tau=+3.5`: `visualizations/equation_first_gbcd_qe_trace_closure_n96_taup3p5_trusted/`
+- 关键结果已写入 `research-notes/168-qEtrace闭合三切片检验.md`：
+  - 普通 trace=0 的中心 residual 加权均值分别为 `0.1185, 0.0264, 0.1103`；
+  - 最好的 \(\mathsf q_E\)-trace 版本分别约为 `0.1810, 0.2907, 0.1941`；
+  - 因此最小硬闭合 \(\mathsf q_E^{\mu\nu}\mathcal C_{\mu\nu}=0\) 及其简单 \(Q,Q^2\) RHS 版本不被当前数据支持；
+  - 普通 trace=0 在这一轮中反而是最小代数闭合。
+- 理论修正：
+  - 普通 trace 对主符号未定模式的收缩为 \(-w^2\)，所以它只在 \(w^2=0\) 时漏掉该模式；
+  - \(\mathsf q_E\)-trace 对未定模式是负定收缩，更安全但不等于更符合代数数据。
+- 已补充检查普通 trace 的退化面：
+  - 输出 `visualizations/equation_first_gbcd_trace_w2_degeneracy_n96_3tau/summary.json`；
+  - \(\tau=-3.5\) 约 `12%~14%` trusted 点在采样主方向上接近 \(w^2=0\)；
+  - \(\tau=0\) 约 `2.7%`；
+  - \(\tau=+3.5\) 约 `3.7%~5.5%`；
+  - 这些点高度对应 \(r^\perp\) 退化/近退化区域，也就是 \(\mathsf q_E\) 自身也需要换 patch 的地方。
+- 下一步应改为：
+  - 检查普通 trace=0 的潜在退化面 \(w^2=0\) 是否在高斯干涉可信区域出现；
+  - 或把 \(\mathsf q_E\)-trace 放入辅助场正定范数，而不是作为硬代数状态方程。
+
 ### 2026-05-07 放宽 pure-gtilde 限制后的 u/r 引力作用量路线
 
 - 用户提出新路线：仍采用强约束，但暂时放开“引力作用量必须完全由 `gtilde` 衍生”的限制，允许在 `gtilde` 表象下显含 \(u^\mu\) 与 \(r^\mu\)。

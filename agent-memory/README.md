@@ -140,6 +140,7 @@
 - `research-notes/165-gBCD投影方程闭合条件.md`：投影方程的首轮理论闭合检查；说明 \(W\) 不改变在壳成员关系，给出 \(\det H=\frac{d-2}{2}(u^2r^2-(u\cdot r)^2)^3\)，并明确 \(1+1d\)、\(\Delta=0\)、守恒/测地线和 Helmholtz 问题
 - `research-notes/166-gBCD投影方程的3加1计数与主部.md`：投影方程的 3+1d 方程计数与主部检查；说明 6 个投影方程和 4 个坐标规范自由度的关系，以及 harmonic gauge 下 \(\Pi_E^\perp\delta G\) 主部
 - `research-notes/167-gBCD投影方程的主符号缺口与标量闭合条件.md`：投影方程加 harmonic gauge 后仍有一个 \(E\)-方向主部 null mode；给出 \(N^I=(0,-q^2,-p^2,2pq)\)，并提出 \(u-r\) 平面正定迹作为首个标量闭合候选
+- `research-notes/168-qEtrace闭合三切片检验.md`：\(\mathsf q_E\)-trace 标量闭合的三切片检验；当前最小硬闭合版本不如普通 trace=0，下一步应检查 trace=0 的 \(w^2=0\) 退化面或把 \(\mathsf q_E\) 改作辅助场范数
 - `research-notes/159-n384三切片gBCD求解器升级与物理主线判断.md`：记录 `n=384,core10,tau=-3.5,0,+3.5` 三切片高分辨率 gBCD 求解器升级、残差结果和下一步物理主线判断
 - `kg_examples/plot_gbcd_metric_update_diagnostics.py`：读取 full-linear metric update 的 `.npz`，生成包含 `rho`、残差、\(\delta g_+\)、`det(corrected g+)` 的诊断图，并在图内说明 white contour 与 `core10` 定义
 - `visualizations/full_dynamics_2p1/`：`2+1d` 全动力学数值结果图和 `summary.json`

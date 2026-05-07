@@ -61,6 +61,50 @@ def trace_coefficients(case) -> np.ndarray:
     return out
 
 
+def qe_trace_coefficients(case) -> np.ndarray:
+    """Positive u-r plane contraction coefficients q_E^{mu nu} E^I_{mu nu}.
+
+    q_E is a diagnostic/closure tensor on the two-plane spanned by u and r:
+    e0 is the unit timelike u direction and e1 is the unit spacelike part of r
+    orthogonal to u.  The contraction is positive definite on this two-plane,
+    so it detects the rank-one principal null mode found in note 167.
+    """
+
+    atoms = base.tensor_atoms(case, "matter4")
+    g_inv = case.metric_inv
+    u = case.u_cov
+    r = case.r_cov
+    u_up = np.einsum("...ab,...b->...a", g_inv, u, optimize=True)
+    r_up = np.einsum("...ab,...b->...a", g_inv, r, optimize=True)
+    u2 = np.einsum("...a,...a->...", u_up, u, optimize=True)
+    ur = np.einsum("...a,...a->...", u_up, r, optimize=True)
+    r_perp = r - (ur / np.where(np.abs(u2) > 1.0e-300, u2, np.nan))[..., None] * u
+    r_perp_up = np.einsum("...ab,...b->...a", g_inv, r_perp, optimize=True)
+    r_perp2 = np.einsum("...a,...a->...", r_perp_up, r_perp, optimize=True)
+
+    e0_cov = u / np.sqrt(np.maximum(u2, 1.0e-300))[..., None]
+    e1_cov = r_perp / np.sqrt(np.maximum(-r_perp2, 1.0e-300))[..., None]
+    e0_up = np.einsum("...ab,...b->...a", g_inv, e0_cov, optimize=True)
+    e1_up = np.einsum("...ab,...b->...a", g_inv, e1_cov, optimize=True)
+    qe = (
+        np.einsum("...a,...b->...ab", e0_up, e0_up, optimize=True)
+        + np.einsum("...a,...b->...ab", e1_up, e1_up, optimize=True)
+    )
+
+    out = np.zeros(case.rho_a.shape + (len(base.ATOM_NAMES),), dtype=float)
+    for apos, atom_name in enumerate(base.ATOM_NAMES):
+        out[..., apos] = np.einsum("...ab,...ab->...", qe, atoms[atom_name], optimize=True)
+    bad = (~np.isfinite(u2)) | (~np.isfinite(r_perp2)) | (u2 <= 0.0) | (r_perp2 >= 0.0)
+    out[bad, :] = np.nan
+    return out
+
+
+def closure_coefficients(case, closure: str) -> np.ndarray:
+    if closure.startswith("qe"):
+        return qe_trace_coefficients(case)
+    return trace_coefficients(case)
+
+
 def make_closure_constraints(
     cases: dict[int, object],
     meta: dict[str, object],
@@ -72,13 +116,15 @@ def make_closure_constraints(
     col = np.asarray(meta["column_index"], dtype=int)
     n_base = int(meta["ncols"])
     extra_names: list[str] = []
-    if closure in {"zero", "shear0"}:
+    if closure in {"zero", "shear0", "qe0"}:
         n_extra = 0
-    elif closure == "q1":
-        extra_names = ["trace_q1_alpha"]
+    elif closure in {"q1", "qe_q1"}:
+        prefix = "qe_trace" if closure.startswith("qe") else "trace"
+        extra_names = [f"{prefix}_q1_alpha"]
         n_extra = 1
-    elif closure == "q2":
-        extra_names = ["trace_q1_alpha", "trace_q2_beta"]
+    elif closure in {"q2", "qe_q2"}:
+        prefix = "qe_trace" if closure.startswith("qe") else "trace"
+        extra_names = [f"{prefix}_q1_alpha", f"{prefix}_q2_beta"]
         n_extra = 2
     else:
         raise ValueError(f"unknown closure: {closure}")
@@ -86,7 +132,7 @@ def make_closure_constraints(
     rows: list[np.ndarray] = []
     for tpos, key in enumerate(TIME_KEYS):
         case = cases[key]
-        coeffs = trace_coefficients(case)
+        coeffs = closure_coefficients(case, closure)
         q_hat = flat_q_from_case(case, cases["mass"]) / max(abs(q_scale), 1.0e-300)
         mask = getattr(case, region)
         rho_w = np.sqrt(np.maximum(case.rho_a, 0.0) / max(float(np.max(case.rho_a)), 1.0e-300))
@@ -102,14 +148,14 @@ def make_closure_constraints(
             else:
                 for apos in range(len(base.ATOM_NAMES)):
                     c = int(col[tpos, apos, i, j])
-                    if c >= 0:
+                    if c >= 0 and np.isfinite(coeffs[i, j, apos]):
                         row[c] = coeffs[i, j, apos]
-                if closure in {"q1", "q2"}:
+                if closure in {"q1", "q2", "qe_q1", "qe_q2"}:
                     row[n_base] = -q_hat[i, j]
-                if closure == "q2":
+                if closure in {"q2", "qe_q2"}:
                     row[n_base + 1] = -(q_hat[i, j] ** 2)
             norm = np.linalg.norm(row)
-            if norm > 0.0:
+            if np.isfinite(norm) and norm > 0.0:
                 # The row is a hard equality.  This normalization improves the
                 # nullspace SVD without changing the constraint surface.
                 row *= float(rho_w[i, j]) / norm
@@ -160,12 +206,13 @@ def evaluate_closure(cases: dict[int, object], coeff: np.ndarray, meta: dict[str
             value = fields[key][..., base.ATOM_NAMES.index("ur")]
             target = np.zeros_like(value)
         else:
+            coeffs = closure_coefficients(case, closure)
             value = np.einsum("...a,...a->...", fields[key], coeffs, optimize=True)
             q_hat = flat_q_from_case(case, cases["mass"]) / max(abs(q_scale), 1.0e-300)
             target = np.zeros_like(value)
-            if closure in {"q1", "q2"}:
+            if closure in {"q1", "q2", "qe_q1", "qe_q2"}:
                 target += coeff[n_base] * q_hat
-            if closure == "q2":
+            if closure in {"q2", "qe_q2"}:
                 target += coeff[n_base + 1] * q_hat**2
         mask = getattr(case, region)
         weights = np.sqrt(np.maximum(case.rho_a[mask], 0.0) / max(float(np.max(case.rho_a)), 1.0e-300))
@@ -192,7 +239,7 @@ def closure_row_at(case, closure: str, i: int, j: int) -> np.ndarray:
         row = np.zeros(4, dtype=float)
         row[base.ATOM_NAMES.index("ur")] = 1.0
         return row
-    return trace_coefficients(case)[i, j]
+    return closure_coefficients(case, closure)[i, j]
 
 
 def analyze_reduced_symbol(cases: dict[int, object], region: str, closure: str) -> dict[str, object]:
@@ -210,7 +257,10 @@ def analyze_reduced_symbol(cases: dict[int, object], region: str, closure: str) 
             ranks = []
             conds = []
             for i, j in np.argwhere(mask):
-                n = trace_nullspace_basis(closure_row_at(case, closure, int(i), int(j)))
+                closure_row = closure_row_at(case, closure, int(i), int(j))
+                if not np.all(np.isfinite(closure_row)) or np.linalg.norm(closure_row) <= 0.0:
+                    continue
+                n = trace_nullspace_basis(closure_row)
                 reduced = p[int(i), int(j)] @ n
                 s = np.linalg.svd(reduced, compute_uv=False)
                 tol = max(reduced.shape) * np.finfo(float).eps * (float(s[0]) if s.size else 0.0)
@@ -358,6 +408,7 @@ def run(args: argparse.Namespace) -> dict[str, object]:
         },
         "definition": {
             "trace_closure": "C^mu_mu = F(Q), with F(0)=0. zero: F=0; q1: F=alpha Q/q_scale; q2: F=alpha Q/q_scale + beta (Q/q_scale)^2.",
+            "qe_trace_closure": "q_E^{mu nu} C_mn = F(Q), where q_E is the positive contraction tensor on the u-r two-plane. qe0: F=0; qe_q1/qe_q2 use the same Q polynomial targets.",
             "shear0_closure": "D=0 in C_mn=A g_mn+B uu+C rr+D u_(m r_n), i.e. no u-r shear in this chosen matter basis.",
             "hard_constraints": "Full conservation rows plus trace-closure rows are imposed through a nullspace solve.",
             "residual": "Algebraic residual compares C_mn to Gtilde_mn-Ttilde_mn/Mp^2 on the fixed A-reference generated gtilde.",
