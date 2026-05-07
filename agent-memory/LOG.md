@@ -5261,8 +5261,11 @@
 
 - Git 状态：
   - 已本地初始化仓库并提交 `8cf55c0 Initial project snapshot`；
+  - 本轮新增内容已提交 `11a3ff0 Add joint D initial projection diagnostics`；
   - 已配置远端 `https://github.com/ustc-wyf/geometrized_qm.git`；
-  - 推送时终端到 GitHub 超时，`curl` 10 秒超时，未完成远端 push；本地提交和远端配置保留。
+  - 初次推送时终端到 GitHub 超时；网络恢复后 HTTPS push 报 `could not read Username for 'https://github.com'`，说明命令行 Git 缺少 GitHub token/credential；
+  - SSH 测试显示本机有 `~/.ssh/id_ed25519`，但未绑定 GitHub：`Permission denied (publickey)`；
+  - 因此远端 push 尚未完成，本地仓库干净，远端配置保留。
 - 新建 `kg_examples/solve_gbcd_joint_initial_projection_sparse.py`：
   - 同一稀疏线性系统中求 \(\delta\tilde g\) 与可选 \(\eta=\delta\log(\sqrt{|\tilde g|}\tilde\rho)\)；
   - 求解后重新计算 \(\sqrt{|\tilde g|}\)、\(\tilde\rho\)、质量壳 \(u_t\)、\(\tilde T_{\mu\nu}\)，并做完整 nonlinear back-substitution。
