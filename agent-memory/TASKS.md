@@ -124,6 +124,15 @@
 - 每一轮继续研究前，先按长记忆协议重读 `README.md`、`TASKS.md`、`LOG.md`、`DECISIONS.md` 与最新 handoff，再进入当前理论/数值主线
 - 当前主线下一步：不要把完整 \(\mathcal R_{\rm need}\) 的平凡 pure-geometry 拟合当作成功；应继续分析剥离 EH 主项后的非平凡剩余，尤其是 \(T^A-T^{(\tilde m)}\)、\(u,r,\rho\)-dependent gravitational sector，以及其 action-level metric/S/rho 变分是否可闭合。
 - 当前数值下一步：先把 `no-active-edge + auto_bad_zero` 流程扩展到 `tau=0,+3.5`，确认干涉中心和右侧分离态也能形成 guarded package；随后把每一步 metric solve 的局部可容许性守卫升级为正式强约束/patch 边界，而不是只做后处理。
+- 已完成 `tau=0,+3.5` 扩展：
+  - `tau=0` residual weighted mean `6.60e-5`，冻结点 `0`，一步 \(g_+\) 加权测度偏差 `3.00e-5`；
+  - `tau=+3.5` residual weighted mean `0.01324`，冻结支撑点 `2` 且不在 core10，一步 \(g_+\) 加权测度偏差 `2.88e-5`；
+  - 三切片均无负质量壳判别式。
+- 当前数值下一步更新为：
+  - 以三切片 guarded package 为标准验证集，实现多步推进原型；
+  - 每一步执行 plus-only metric solve、matter step、可容许性守卫、D residual 与测度偏差记录；
+  - 将 `auto_bad_zero` 从后处理升级为求解器内部 active-set/强约束；
+  - 继续单独优化 `tau=-3.5` 的高 residual 来源。
 - 若继续检查 pure-\(\tilde g\) 希望，应从 action-level 必要条件入手：\(\tilde\nabla\)-守恒、Helmholtz/self-adjoint integrability、以及可能的高阶曲率/非局域泛函，而不是只做低阶曲率多项式拟合。
 - 若继续 pure-\(\tilde g\) 局域路线，优先级应改为：quadratic curvature basis -> 导数不变量 -> action-level integrability；不要再把单变量 \(f(\tilde R)\) 的高次多项式当主线。
 - 当前对“需要到多少阶才可能较好拟合”的经验判断已经更新：标准 4 阶 quadratic local action 仍几乎失败，最轻量 6 阶 pure-\(f(\tilde R)\) 复查也几乎没有改善，且最小真 6 阶 finite-jet 局域基底 \(\{1,\tilde R,I_2,\tilde R^2,\tilde R I_2,\tilde R^3\}\) 仍给出总体加权残差 \(\sim0.9987\)。因此下一步若继续 pure-\(\tilde g\) 局域路线，应扩到 \(I_3\) 与显式导数不变量，而不是继续在这些最小基底内打转。

@@ -5357,3 +5357,30 @@
   - `python3 -m py_compile` 覆盖新增/修改脚本，通过。
 - 新建研究笔记：
   - `research-notes/162-plus-only初始加速度包与可容许性守卫.md`。
+
+### 2026-05-07 三切片 guarded plus-only 初始包验证
+
+- 按计划把 `no-active-edge + auto_bad_zero` guarded 初始加速度流程扩展到三组关键切片：`tau=-3.5,0,+3.5`。
+- `tau=0`：
+  - 重新求解输出 `visualizations/equation_first_gbcd_sparse_pipeline_n384_tau0_core10_pen1e4_noactiveedge_coeff_cg6000/`；
+  - D 方程 exact residual weighted mean `6.604e-5`；
+  - `auto_bad_zero` 冻结点 `0`；
+  - 一步 \(g_+\) 测度偏差 `4.994e-4`，加权偏差 `2.999e-5`；
+  - 负判别式比例 `0`。
+- `tau=+3.5`：
+  - 重新求解输出 `visualizations/equation_first_gbcd_sparse_pipeline_n384_taup3p5_core10_pen1e4_noactiveedge_coeff_cg6000/`；
+  - D 方程 exact residual weighted mean `0.01324`；
+  - `auto_bad_zero` 冻结支撑点 `2`，core10 冻结点 `0`；
+  - 一步 \(g_+\) 测度偏差 `2.464e-4`，加权偏差 `2.884e-5`；
+  - 负判别式比例 `0`。
+- 三切片汇总：
+  - 输出 `visualizations/equation_first_gbcd_guarded_three_tau_summary/summary.json`；
+  - 线性图 `visualizations/equation_first_gbcd_guarded_three_tau_summary/guarded_three_tau_summary_linear.png`；
+  - 对数图 `visualizations/equation_first_gbcd_guarded_three_tau_summary/guarded_three_tau_summary_log.png`。
+- 当前判断：
+  - guarded plus-only 初始包不是只在单个切片偶然可用；
+  - 三切片一步物质重构均无负判别式；
+  - 左侧分离态 `tau=-3.5` 仍是残差最高的瓶颈，但已经可推进；
+  - 下一步应实现多步推进原型，并把 `auto_bad_zero` 升级为求解器内的活动集/强约束。
+- 新建研究笔记：
+  - `research-notes/163-三切片guarded-plus-only初始包验证.md`。

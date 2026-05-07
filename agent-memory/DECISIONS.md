@@ -3142,3 +3142,16 @@
   - 当前把 `no-active-edge + auto_bad_zero` 作为 D 初始加速度包的默认原型；
   - 下一步先在 `tau=0,+3.5` 复现，再进入多步演化；
   - 每次报告必须说明守卫冻结了多少点，以及 residual 代价是多少，避免把数值守卫伪装成物理方程。
+
+## 决策 247：三切片验证后，guarded plus-only 可作为标准初值验证集
+
+- 背景：
+  - 已在 `tau=-3.5,0,+3.5` 三个关键切片上运行同一 `no-active-edge + auto_bad_zero` 流程。
+- 结果：
+  - `tau=-3.5` residual weighted mean `0.13220`，一步 \(g_+\) 加权测度偏差 `1.04e-4`，负判别式 `0`；
+  - `tau=0` residual weighted mean `6.60e-5`，一步 \(g_+\) 加权测度偏差 `3.00e-5`，负判别式 `0`；
+  - `tau=+3.5` residual weighted mean `0.01324`，一步 \(g_+\) 加权测度偏差 `2.88e-5`，负判别式 `0`。
+- 决策：
+  - guarded plus-only 初始包作为当前多步 D 演化器的标准起点；
+  - 多步推进前不再回到 `center_plus+source` 或纯全局阻尼路线；
+  - `tau=-3.5` 的 residual 明显偏高，应作为求解器/代表元/patch 边界优化对象，而不是作为否定 guarded plus-only 的理由。

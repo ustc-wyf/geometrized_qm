@@ -88,6 +88,7 @@
 - `160-tau负3p5残差来源与center-plus初值投影检验.md`：对左侧分离态做残差分层，确认边缘层最差但非唯一根因；测试 edge-force、`time_weight=0`、`matter6_normal` 和 `center_plus` 初值投影，结论是只改几何的 center-plus 在线性层面有用但非线性不自洽，下一步必须联合处理几何、辅助应力、物质源和 \(\rho^\tilde\) 拉回。
 - `161-D初值联合投影与plus-only主自由度.md`：实现联合投影原型与 trust-region 扫描，确认 `center_plus+source` 会要求荒唐的 \(\eta=\delta\log(\sqrt{|\tilde g|}\tilde\rho)\) 且破坏 \(\rho\) pullback；当前健康自由度是 `plus-only`，即保持初始物质/中心度规不变，由 D 方程确定下一切片或初始加速度。
 - `162-plus-only初始加速度包与可容许性守卫.md`：把 `plus-only` 升级成可导出的 D 初始加速度包；确认旧 active-edge 失败来自局部边界/退化点可容许性问题，`metric_active_dilation=0 + auto_bad_zero` 在 `tau=-3.5,n=384,core10` 上给出 residual 约 `0.132`、一步测度偏差约 `1.1e-4`、负判别式比例 `0` 的当前最佳可推进初态。
+- `163-三切片guarded-plus-only初始包验证.md`：把同一 guarded plus-only 流程扩展到 `tau=-3.5,0,+3.5`，确认三切片均能生成可推进初始包；干涉中心 residual 约 `6.6e-5`，右侧分离态约 `0.013`，左侧分离态约 `0.132`，三者一步物质重构均无负判别式。
 
 补充说明：
 

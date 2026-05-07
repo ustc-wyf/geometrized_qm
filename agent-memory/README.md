@@ -663,6 +663,12 @@
   - 一步 \(g_+\) 测度偏差约 `1.09e-4`；
   - 负质量壳判别式比例 `0`；
   - 输出在 `visualizations/equation_first_gbcd_plus_initial_package_n384_taum3p5_core10_noactiveedge_guarded/` 和 `visualizations/equation_first_gbcd_plus_initial_package_one_step_n384_taum3p5_core10_noactiveedge_guarded/`。
+- 三切片 guarded package 验证：
+  - 汇总输出在 `visualizations/equation_first_gbcd_guarded_three_tau_summary/`；
+  - `tau=-3.5` residual `0.13220`，一步加权测度偏差 `1.04e-4`；
+  - `tau=0` residual `6.60e-5`，一步加权测度偏差 `3.00e-5`；
+  - `tau=+3.5` residual `0.01324`，一步加权测度偏差 `2.88e-5`；
+  - 三者一步 \(g_+\) 重构负质量壳判别式比例均为 `0`。
 - 重要结论：
   - `matter6_normal` 改善 projection system residual，但不改善完整非线性回代；
   - `center_plus` 只改几何会出现“线性残差低、非线性残差高”的不自洽；
