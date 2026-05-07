@@ -697,6 +697,8 @@
   `research-notes/171-最小辅助应力场action原型.md`
 - shadow-field 分支：
   `research-notes/172-shadow-field分支的最小方程组.md`
+- shadow stress 与分支传播：
+  `research-notes/173-shadow-stress与物理分支传播条件.md`
 - 当前最小候选：
   \[
   \tilde G_{\mu\nu}
@@ -728,4 +730,5 @@
   - action 化时真正重要的是辅助 sector 的有效能动量 \(\Theta_{\mu\nu}\)，不是裸 \(\lambda_I E^I_{\mu\nu}\)；
   - 若辅助 action 显含 \(u,r,\tilde\rho,S\)，通常会改写物质变分；保持测地线需要补偿或独立 \(U,R\) shadow fields；
   - shadow-field 分支引入独立 \((\Phi,\sigma)\)，用 \(U=d\Phi,R=d\ln\sqrt\sigma\) 构造 \(E_{\rm sh}\)，并通过同型动力学和初始/边界条件选择 \(U=u,R=r\) 的物理分支；
-  - 下一步理论任务是检查 shadow stress 与分支传播，并做 `n=384` 复检。
+  - shadow stress 检查显示线性乘子和 \(Q_{\rm sh}\)-门控 variational weight 会产生额外 source；物理分支传播要求状态项对 \(\Phi,\sigma\) 一阶静默；
+  - 下一步理论任务是 stealth-state action 候选，并做 `n=384` 复检。

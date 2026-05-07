@@ -1357,7 +1357,8 @@
   - 已完成 trace=0 投影方程的 Helmholtz/self-adjoint 必要条件检查，见 `research-notes/170-trace0投影方程的Helmholtz检查.md`；
   - 已写出最小辅助应力场 action 原型，见 `research-notes/171-最小辅助应力场action原型.md`；
   - 已分析 shadow-field 分支，见 `research-notes/172-shadow-field分支的最小方程组.md`；
-  - 下一步理论任务是检查 shadow stress 是否仍落在 \(E_{\rm sh}\) 或可由 \(C_{\mu\nu}\) 状态方程吸收，并检查 \((\Phi,\sigma)=(S,\tilde\rho)\) 分支在完整耦合系统中的传播；
+  - 已检查 shadow stress 和物理分支传播条件，见 `research-notes/173-shadow-stress与物理分支传播条件.md`；
+  - 下一步理论任务是构造具体 stealth-state action 候选，检查其 \(\delta_C\) 方程能否给出非零、无迹、守恒、位于 \(E_{\rm sh}\) 内的 \(C_{\mu\nu}\)；
   - 下一步在 `n=384` 可信条纹分辨率上复查 trace=0 最小闭合，确认 `n=96` 结论不是低分辨率误导；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：

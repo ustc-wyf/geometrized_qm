@@ -3354,3 +3354,19 @@
 - 风险：
   - 该路线引入额外自由度和 off-branch 解；
   - 必须证明物理分支在完整耦合系统中传播，且 shadow stress 可被辅助状态方程吸收。
+
+## 决策 258：shadow action 需要 stealth-state 条件
+
+- 结果：
+  - 线性乘子约束可强制 \(C\in E_{\rm sh}\)、trace=0、守恒，但约束成立时乘子项仍可贡献 metric stress；
+  - 投影乘子项 \(\Lambda_\perp\Pi^\perp C\) 会通过 \(\delta\Pi^\perp\) 给 \(\Phi,\sigma\) 方程加源；
+  - \(Q_{\rm sh}\)-门控项 \(\mu(Q_{\rm sh})C^2\) 一般通过 \(\mu'(Q_{\rm sh})C^2\delta Q_{\rm sh}\) 改写 shadow density 方程。
+- 决策：
+  - 物理分支传播需要
+    \[
+    \mathcal E_\Phi^{\rm state}|_{\rm phys}=0,\qquad
+    \mathcal E_\sigma^{\rm state}|_{\rm phys}=0.
+    \]
+  - 将这个条件称为 stealth-state：状态项在目标分支上对 shadow fields 的一阶变分为零；
+  - \(Q\to0\Rightarrow C\to0\) 暂时应作为分支/边界/正则性条件，而不是直接放入 \(\mu(Q_{\rm sh})C^2\) variational weight；
+  - 若无法构造 stealth-state action，则 action 化应暂停，trace=0 投影理论继续作为 equation-first 候选。

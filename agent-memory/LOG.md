@@ -5668,3 +5668,24 @@
   - shadow-field 分支可以保护测地线解释；
   - 代价是引入额外自由度和物理分支选择；
   - 下一步要检查 shadow stress 是否可被 \(C_{\mu\nu}\) 状态方程吸收，以及分支传播是否成立。
+
+### 2026-05-08 shadow stress 与物理分支传播检查
+
+- 新建研究笔记：
+  - `research-notes/173-shadow-stress与物理分支传播条件.md`。
+- 检查结论：
+  - shadow-field 分支只保证 \(S_{\rm aux}\) 不直接变分 \(S,\tilde\rho\)；
+  - 但 \(S_{\rm state}\) 对 \(\tilde g,\Phi,\sigma\) 的变分仍会产生 shadow stress 和 shadow-source；
+  - 线性乘子约束即使在约束成立时也会贡献 metric stress，并且 \(\Lambda_\perp(\Pi^\perp C)\) 会通过 \(\delta\Pi^\perp\) 给 \(\Phi,\sigma\) 加源；
+  - \(\mu(Q_{\rm sh})C^2\) 会通过 \(\mu'(Q_{\rm sh})C^2\delta Q_{\rm sh}\) 改写 \(\sigma\) 方程，所以 \(Q\to0\Rightarrow C\to0\) 暂应作为分支/边界条件，而不是直接作为 variational 权重。
+- 新条件：
+  \[
+  \mathcal E_\Phi^{\rm state}|_{\rm phys}=0,
+  \qquad
+  \mathcal E_\sigma^{\rm state}|_{\rm phys}=0.
+  \]
+  即状态项在物理分支上对 shadow fields “一阶静默”。
+- 当前判断：
+  - shadow-field 分支仍可行，但需要 stealth-state action；
+  - 简单线性乘子或 \(Q_{\rm sh}\)-门控 action 都不够健康；
+  - 下一步应构造具体 stealth-state action 候选，或承认 action 化暂时失败并退回 equation-first。
