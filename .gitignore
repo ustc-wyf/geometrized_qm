@@ -1,0 +1,26 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+*.so
+
+# Local runtime/dependency caches
+.agent-deps/
+.venv/
+venv/
+env/
+
+# Generated numerical outputs and rendered artifacts
+visualizations/
+presentation-workspaces/
+
+# Large or regenerated data products
+*.npz
+*.npy
+*.h5
+*.hdf5
+*.mat
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak

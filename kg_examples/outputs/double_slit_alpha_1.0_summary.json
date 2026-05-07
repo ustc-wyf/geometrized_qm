@@ -1,0 +1,21 @@
+{
+  "params": {
+    "m": 1.0,
+    "alpha": 1.0,
+    "k0": 10.0,
+    "omega0": 10.04987562112089,
+    "w0": 1.0,
+    "sigma_over_k0": 0.1,
+    "theta_deg": 45.0,
+    "phi0": 0.0,
+    "x_min": -5.0,
+    "x_max": 5.0,
+    "z_min": -5.0,
+    "z_max": 5.0,
+    "t": 0.0
+  },
+  "summary": {
+    "rho_max": 1.0,
+    "rho_boundary_over_max": 0.5811326617384617
+  }
+}

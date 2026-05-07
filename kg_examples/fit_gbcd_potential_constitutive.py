@@ -1,0 +1,325 @@
+from __future__ import annotations
+
+import argparse
+import json
+from itertools import combinations_with_replacement
+from pathlib import Path
+
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+
+from diagnose_mathcal_r_pure_geometry import build_case, symmetric_rows, tensor_norm
+from fit_equation_first_tensor_couplings import tensor_atoms
+from physical_units import HBAR_C_EV_M, PLANCK_MASS_EV
+from simulate_d_local_window_from_a_snapshot import build_physical_reference
+
+
+SYMMETRIC_COMPONENTS = ((0, 0), (0, 1), (0, 2), (1, 1), (1, 2), (2, 2))
+
+
+def stats(values: np.ndarray, weights: np.ndarray | None = None) -> dict[str, float]:
+    vals = np.asarray(values, dtype=float)
+    mask = np.isfinite(vals)
+    vals = vals[mask]
+    if vals.size == 0:
+        return {"count": 0, "mean": 0.0, "p50": 0.0, "p95": 0.0, "max": 0.0}
+    out = {
+        "count": int(vals.size),
+        "mean": float(np.mean(vals)),
+        "p50": float(np.percentile(vals, 50.0)),
+        "p95": float(np.percentile(vals, 95.0)),
+        "max": float(np.max(vals)),
+    }
+    if weights is not None:
+        w = np.asarray(weights, dtype=float)[mask]
+        denom = float(np.sum(np.maximum(w, 0.0)))
+        if denom > 0.0:
+            out["weighted_mean"] = float(np.sum(np.maximum(w, 0.0) * vals) / denom)
+    return out
+
+
+def invariant_features(case, family: str) -> tuple[dict[str, np.ndarray], list[str], list[str]]:
+    u = case.u_cov
+    r = case.r_cov
+    ginv = case.metric_inv
+    u2 = np.einsum("...a,...ab,...b->...", u, ginv, u, optimize=True)
+    r2 = np.einsum("...a,...ab,...b->...", r, ginv, r, optimize=True)
+    ur = np.einsum("...a,...ab,...b->...", u, ginv, r, optimize=True)
+    rho_rel = case.rho_a / max(float(np.max(case.rho_a)), 1.0e-300)
+    features = {
+        "log_rho_rel": np.log10(np.maximum(rho_rel, 1.0e-300)),
+        "u2": u2,
+        "r2": r2,
+        "ur": ur,
+    }
+    if family == "matter":
+        return features, ["log_rho_rel", "u2", "r2", "ur"], ["u2", "r2", "ur"]
+    if family == "kinematic":
+        return features, ["u2", "r2", "ur"], ["u2", "r2", "ur"]
+    raise ValueError(f"unknown feature family: {family}")
+
+
+def monomial_powers(n_features: int, degree: int) -> list[tuple[int, ...]]:
+    powers = [tuple(0 for _ in range(n_features))]
+    for deg in range(1, int(degree) + 1):
+        for combo in combinations_with_replacement(range(n_features), deg):
+            p = [0] * n_features
+            for idx in combo:
+                p[idx] += 1
+            powers.append(tuple(p))
+    return powers
+
+
+def monomial_values_and_derivatives(
+    x_scaled: np.ndarray,
+    powers: list[tuple[int, ...]],
+    feature_scales: np.ndarray,
+    metric_feature_indices: list[int],
+) -> tuple[np.ndarray, dict[int, np.ndarray]]:
+    n = x_scaled.shape[0]
+    vals = np.ones((n, len(powers)), dtype=float)
+    derivs = {idx: np.zeros((n, len(powers)), dtype=float) for idx in metric_feature_indices}
+    for col, power in enumerate(powers):
+        val = np.ones(n, dtype=float)
+        for k, pk in enumerate(power):
+            if pk:
+                val *= x_scaled[:, k] ** pk
+        vals[:, col] = val
+        for idx in metric_feature_indices:
+            pk = power[idx]
+            if pk == 0:
+                continue
+            dval = np.full(n, float(pk), dtype=float)
+            for k, qk in enumerate(power):
+                exp = qk - (1 if k == idx else 0)
+                if exp:
+                    dval *= x_scaled[:, k] ** exp
+            derivs[idx][:, col] = dval / max(float(feature_scales[idx]), 1.0e-300)
+    return vals, derivs
+
+
+def rows_for_case(case, mask: np.ndarray, powers, feature_names, metric_feature_names, feature_scales, sign: float, target_floor_frac: float):
+    flat_idx = np.where(mask.reshape(-1))[0]
+    atoms = tensor_atoms(case, "matter4")
+    features, _, _ = invariant_features(case, "matter")
+    x = np.stack([features[name].reshape(-1)[flat_idx] for name in feature_names], axis=1)
+    x_scaled = x / feature_scales[None, :]
+    metric_indices = [feature_names.index(name) for name in metric_feature_names]
+    phi, derivs = monomial_values_and_derivatives(x_scaled, powers, feature_scales, metric_indices)
+
+    g_rows = symmetric_rows(atoms["g"], flat_idx)
+    uu_rows = symmetric_rows(atoms["uu"], flat_idx)
+    rr_rows = symmetric_rows(atoms["rr"], flat_idx)
+    ur_rows = symmetric_rows(atoms["ur"], flat_idx)
+    target_rows = symmetric_rows(case.r_need, flat_idx)
+    target_norm = np.sqrt(np.sum(target_rows**2, axis=1))
+    finite = target_norm[np.isfinite(target_norm)]
+    floor = float(target_floor_frac) * max(float(np.percentile(finite, 95.0)) if finite.size else 0.0, 1.0e-300)
+    rho_w = np.sqrt(np.maximum(case.rho_a.reshape(-1)[flat_idx], 0.0) / max(float(np.max(case.rho_a)), 1.0e-300))
+    point_w = rho_w / np.maximum(target_norm, floor)
+
+    basis = np.zeros((flat_idx.size, len(SYMMETRIC_COMPONENTS), len(powers)), dtype=float)
+    # If C_mn is generated by an effective scalar L, then, up to an overall
+    # sign convention, C_mn = L g_mn - 2 L_U uu - 2 L_V rr - 2 L_W ur.
+    basis += phi[:, None, :] * g_rows[:, :, None]
+    for name, atom_rows in [("u2", uu_rows), ("r2", rr_rows), ("ur", ur_rows)]:
+        didx = feature_names.index(name)
+        basis += sign * 2.0 * derivs[didx][:, None, :] * atom_rows[:, :, None]
+    a = basis.reshape(flat_idx.size * len(SYMMETRIC_COMPONENTS), len(powers))
+    b = target_rows.reshape(flat_idx.size * len(SYMMETRIC_COMPONENTS))
+    w_rows = np.repeat(point_w, len(SYMMETRIC_COMPONENTS))
+    return a * w_rows[:, None], b * w_rows, flat_idx, target_rows, point_w
+
+
+def fit_potential(cases, feature_family: str, degree: int, fit_region: str, target_floor_frac: float, sign: float):
+    feature_dicts = []
+    for case in cases:
+        f, feature_names, metric_feature_names = invariant_features(case, feature_family)
+        feature_dicts.append(f)
+    all_features = []
+    for case, feats in zip(cases, feature_dicts):
+        mask = getattr(case, fit_region)
+        idx = np.where(mask.reshape(-1))[0]
+        all_features.append(np.stack([feats[name].reshape(-1)[idx] for name in feature_names], axis=1))
+    feature_scales = np.percentile(np.abs(np.vstack(all_features)), 95.0, axis=0)
+    feature_scales = np.where(feature_scales > 0.0, feature_scales, 1.0)
+    powers = monomial_powers(len(feature_names), degree)
+    matrices = []
+    targets = []
+    for case in cases:
+        a, b, *_ = rows_for_case(
+            case,
+            getattr(case, fit_region),
+            powers,
+            feature_names,
+            metric_feature_names,
+            feature_scales,
+            sign,
+            target_floor_frac,
+        )
+        matrices.append(a)
+        targets.append(b)
+    a_all = np.vstack(matrices)
+    b_all = np.concatenate(targets)
+    col_scale = np.linalg.norm(a_all, axis=0)
+    col_scale = np.where(col_scale > 0.0, col_scale, 1.0)
+    coeff_scaled, residuals, rank, singular = np.linalg.lstsq(a_all / col_scale[None, :], b_all, rcond=1.0e-12)
+    coeff = coeff_scaled / col_scale
+    residual = a_all @ coeff - b_all
+    return {
+        "feature_names": feature_names,
+        "metric_feature_names": metric_feature_names,
+        "feature_scales": feature_scales,
+        "powers": powers,
+        "coeff": coeff,
+        "rank": int(rank),
+        "condition_scaled": float(np.max(singular) / max(np.min(singular), 1.0e-300)) if singular.size else 0.0,
+        "weighted_relative_residual": float(np.linalg.norm(residual) / max(np.linalg.norm(b_all), 1.0e-300)),
+        "weighted_residual_sum": float(residuals[0]) if residuals.size else 0.0,
+        "sign": sign,
+    }
+
+
+def predict_case(case, fit, fit_region: str, target_floor_frac: float) -> tuple[np.ndarray, np.ndarray]:
+    a, b, flat_idx, target_rows, point_w = rows_for_case(
+        case,
+        getattr(case, fit_region),
+        fit["powers"],
+        fit["feature_names"],
+        fit["metric_feature_names"],
+        fit["feature_scales"],
+        fit["sign"],
+        target_floor_frac,
+    )
+    pred_rows = (a / np.repeat(point_w, len(SYMMETRIC_COMPONENTS))[:, None]) @ fit["coeff"]
+    pred_tensor = np.zeros_like(case.r_need)
+    for k, (mu, nu) in enumerate(SYMMETRIC_COMPONENTS):
+        values = pred_rows.reshape(flat_idx.size, len(SYMMETRIC_COMPONENTS))[:, k]
+        flat = pred_tensor.reshape(-1, 3, 3)
+        flat[flat_idx, mu, nu] = values
+        flat[flat_idx, nu, mu] = values
+    return pred_tensor, flat_idx
+
+
+def evaluate_case(case, fit, fit_region: str, target_floor_frac: float) -> dict[str, object]:
+    pred, _ = predict_case(case, fit, fit_region, target_floor_frac)
+    rel = tensor_norm(pred - case.r_need) / np.maximum(tensor_norm(case.r_need), 1.0e-300)
+    mask = getattr(case, fit_region)
+    weights = np.sqrt(np.maximum(case.rho_a[mask], 0.0) / max(float(np.max(case.rho_a)), 1.0e-300))
+    return {
+        "count": int(np.count_nonzero(mask)),
+        "relative_residual": stats(rel[mask], weights),
+        "target_norm": stats(tensor_norm(case.r_need)[mask], weights),
+        "prediction_norm": stats(tensor_norm(pred)[mask], weights),
+    }
+
+
+def render_plot(out_path: Path, cases, fit, fit_region: str, target_floor_frac: float) -> None:
+    fig, axes = plt.subplots(1, len(cases), figsize=(5.2 * len(cases), 4.5), constrained_layout=True)
+    if len(cases) == 1:
+        axes = [axes]
+    for ax, case in zip(axes, cases):
+        pred, _ = predict_case(case, fit, fit_region, target_floor_frac)
+        rel = tensor_norm(pred - case.r_need) / np.maximum(tensor_norm(case.r_need), 1.0e-300)
+        mask = getattr(case, fit_region)
+        x_um = case.x * HBAR_C_EV_M * 1.0e6
+        z_um = case.z * HBAR_C_EV_M * 1.0e6
+        xg, zg = np.meshgrid(x_um, z_um, indexing="ij")
+        finite = rel[mask & np.isfinite(rel)]
+        vmax = max(float(np.percentile(finite, 95.0)) if finite.size else 1.0, 1.0e-12)
+        im = ax.pcolormesh(xg, zg, np.clip(rel, 0.0, vmax), shading="auto", cmap="inferno", vmin=0.0, vmax=vmax)
+        ax.contour(xg, zg, mask.astype(float), levels=[0.5], colors="white", linewidths=0.6)
+        ax.set_title(f"tau={case.tau_old:g}")
+        ax.set_xlabel("x [um]")
+        ax.set_ylabel("z [um]")
+        ax.set_aspect("equal")
+        fig.colorbar(im, ax=ax, fraction=0.046)
+    fig.savefig(out_path, dpi=180)
+    plt.close(fig)
+
+
+def run(args: argparse.Namespace) -> dict[str, object]:
+    args.output.mkdir(parents=True, exist_ok=True)
+    if args.mp is None:
+        args.mp = PLANCK_MASS_EV
+    ref = build_physical_reference(args)
+    taus = [float(x) for x in args.taus.split(",") if x.strip()]
+    cases = [build_case(args, ref, tau) for tau in taus]
+    fits = []
+    for sign in (-1.0, 1.0):
+        fit = fit_potential(cases, args.feature_family, int(args.degree), args.fit_region, float(args.target_floor_frac), sign)
+        fit["by_case"] = {f"tau={case.tau_old:g}": evaluate_case(case, fit, args.fit_region, float(args.target_floor_frac)) for case in cases}
+        fits.append(fit)
+    best = min(fits, key=lambda item: item["weighted_relative_residual"])
+    plot_path = args.output / "gbcd_potential_constitutive_residual_maps.png"
+    render_plot(plot_path, cases, best, args.fit_region, float(args.target_floor_frac))
+    report = {
+        "parameters": {
+            "taus": taus,
+            "feature_family": args.feature_family,
+            "degree": int(args.degree),
+            "fit_region": args.fit_region,
+            "full_resolution": int(args.full_resolution),
+            "window_um": float(args.window_um),
+            "target_floor_frac": float(args.target_floor_frac),
+        },
+        "definition": {
+            "mechanism": "A local scalar potential L(q) generates gBCD by metric variation: C_mn = L g_mn +/- 2 L_U uu +/- 2 L_V rr +/- 2 L_W ur.",
+            "feature_family_matter": "q=(log rho_rel, u2, r2, ur); only u2,r2,ur are differentiated with respect to the metric.",
+            "interpretation": "If this fit is good, gBCD coefficients can come from a no-new-tensor-degree scalar potential. If poor, one needs derivative features, auxiliary fields, or a nonlocal mechanism.",
+        },
+        "fits": [
+            {
+                key: (value.tolist() if isinstance(value, np.ndarray) else value)
+                for key, value in fit.items()
+                if key not in {"coeff", "powers"}
+            }
+            | {
+                "coefficients": [float(x) for x in fit["coeff"]],
+                "powers": [list(p) for p in fit["powers"]],
+            }
+            for fit in fits
+        ],
+        "best_sign": float(best["sign"]),
+        "outputs": {
+            "summary_json": str((args.output / "summary.json").resolve()),
+            "residual_maps_png": str(plot_path.resolve()),
+        },
+    }
+    (args.output / "summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(json.dumps(report, ensure_ascii=False, indent=2), flush=True)
+    return report
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--taus", type=str, default="-3.5,0,3.5")
+    parser.add_argument("--feature-family", choices=["matter", "kinematic"], default="matter")
+    parser.add_argument("--degree", type=int, default=2)
+    parser.add_argument("--fit-region", choices=["support", "trusted", "core10"], default="trusted")
+    parser.add_argument("--target-floor-frac", type=float, default=0.05)
+    parser.add_argument("--full-resolution", type=int, default=96)
+    parser.add_argument("--window-um", type=float, default=9.0)
+    parser.add_argument("--dt-old", type=float, default=2.5e-7)
+    parser.add_argument("--wavelength-nm", type=float, default=1550.0)
+    parser.add_argument("--mass-over-omega", type=float, default=0.1)
+    parser.add_argument("--mp", type=float, default=None)
+    parser.add_argument("--alpha", type=float, default=0.5)
+    parser.add_argument("--phi0", type=float, default=0.0)
+    parser.add_argument("--normalize-kg", action=argparse.BooleanOptionalAction, default=True)
+    parser.add_argument("--rho-floor", type=float, default=1.0e-12)
+    parser.add_argument("--x-floor", type=float, default=1.0e-10)
+    parser.add_argument("--pinv-rcond", type=float, default=1.0e-10)
+    parser.add_argument("--support-rho-frac", type=float, default=1.0e-3)
+    parser.add_argument("--support-measure-frac", type=float, default=1.0e-3)
+    parser.add_argument("--trusted-erosion", type=int, default=1)
+    args = parser.parse_args()
+    run(args)
+
+
+if __name__ == "__main__":
+    main()

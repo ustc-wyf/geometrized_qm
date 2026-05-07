@@ -1,0 +1,36 @@
+{
+  "params": {
+    "m": 1.0,
+    "alpha": 0.6,
+    "sigma_kx": 0.2,
+    "sigma_ky": 0.1,
+    "sigma_kz": 0.35,
+    "sigma_kx_over_k0": 0.025,
+    "sigma_ky_over_k0": 0.0125,
+    "sigma_kz_over_k0": 0.04375,
+    "k0": 8.0,
+    "omega0": 8.06225774829855,
+    "phi0": 0.7,
+    "slit_separation_a": 4.0,
+    "screen_half_width_b": 3.0,
+    "z0": -8.0,
+    "y0": 0.0,
+    "z_screen": 22.0,
+    "t": 30.23346655611956,
+    "x_min": -20.0,
+    "x_max": 20.0
+  },
+  "summary": {
+    "rho_max_screen_line": 0.09353709780134285,
+    "rho_min_screen_line": 1.636600044602911e-12,
+    "visibility_like": 0.9999999999648995,
+    "X_min_screen_line": -0.6515054147737942,
+    "X_max_screen_line": 1.0770603219492898,
+    "Q_abs_max_screen_line": 1.6515054140205736,
+    "eps_abs_max_screen_line": 1.6515054140205736,
+    "visible_fringe_count_estimate": 1,
+    "visible_fringe_positions": [
+      0.40000000000000213
+    ]
+  }
+}

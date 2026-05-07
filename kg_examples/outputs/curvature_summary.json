@@ -1,0 +1,16 @@
+{
+  "window": {
+    "x_min": -18.0,
+    "x_max": 18.0,
+    "t_min": 7.583148474999101,
+    "t_max": 11.583148474999101
+  },
+  "summary": {
+    "R_tilde_abs_max_all": 2.0916559450996736e+16,
+    "R_tilde_abs_max_support_1e-2": 1.8321737821006263,
+    "R_tilde_abs_max_support_1e-6": 2.0916559450996736e+16,
+    "eps_abs_max_support_1e-2": 0.24296025060083498,
+    "eps_abs_max_support_1e-6": 7.167881542617832,
+    "det_sign_flip_count": 1737
+  }
+}

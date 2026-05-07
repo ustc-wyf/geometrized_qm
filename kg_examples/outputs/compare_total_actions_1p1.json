@@ -1,0 +1,19 @@
+{
+  "statement": {
+    "eh_g_bulk_density": 0.0,
+    "eh_gtilde_bulk_density_nonzero": true,
+    "bulk_prediction_difference_for_pure_1p1_EH": "absent_in_bulk_topological_limit"
+  },
+  "summary": {
+    "R_tilde_abs_max_all": 23515168768.0,
+    "R_tilde_abs_max_support_1e-2": 1.9979878394918213,
+    "R_tilde_abs_max_support_1e-6": 23515168768.0,
+    "L_eh_tilde_abs_max_all": 4490154915.294849,
+    "L_eh_tilde_abs_max_support_1e-2": 1.8545891183732854,
+    "L_eh_tilde_abs_max_support_1e-6": 4490154915.294849,
+    "eh_tilde_box_integral": -7648268.430308898,
+    "eps_abs_max_support_1e-2": 0.2437484584496388,
+    "eps_abs_max_support_1e-6": 6.919053218215814,
+    "det_nonnegative_count": 229
+  }
+}

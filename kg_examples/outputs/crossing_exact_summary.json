@@ -1,0 +1,26 @@
+{
+  "params": {
+    "m": 1.0,
+    "k0": 6.0,
+    "sigma_k": 0.6,
+    "sigma_over_k0": 0.09999999999999999,
+    "slit_separation_a": 8.0,
+    "x_half_range": 10.0,
+    "z_half_range": 10.0,
+    "t": 5.734883511361751
+  },
+  "summaries": {
+    "0.0": {
+      "rho_max": 63.47900247475846,
+      "rho_boundary_over_max": 0.07245647230756201
+    },
+    "0.5": {
+      "rho_max": 92.32874372937457,
+      "rho_boundary_over_max": 0.05647125864180377
+    },
+    "1.0": {
+      "rho_max": 63.47900247475843,
+      "rho_boundary_over_max": 0.07245647230756341
+    }
+  }
+}
