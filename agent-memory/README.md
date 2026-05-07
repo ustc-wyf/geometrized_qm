@@ -701,6 +701,8 @@
   `research-notes/173-shadow-stress与物理分支传播条件.md`
 - stealth-state 最小 no-go：
   `research-notes/174-stealth-state-action候选的最小no-go.md`
+- n=384 trace=0 局部复检：
+  `research-notes/175-n384-trace0局部复检.md`
 - 当前最小候选：
   \[
   \tilde G_{\mu\nu}
@@ -734,4 +736,5 @@
   - shadow-field 分支引入独立 \((\Phi,\sigma)\)，用 \(U=d\Phi,R=d\ln\sqrt\sigma\) 构造 \(E_{\rm sh}\)，并通过同型动力学和初始/边界条件选择 \(U=u,R=r\) 的物理分支；
   - shadow stress 检查显示线性乘子和 \(Q_{\rm sh}\)-门控 variational weight 会产生额外 source；物理分支传播要求状态项对 \(\Phi,\sigma\) 一阶静默；
   - 具体 stealth-state action 候选检查显示最小局域 ansatz 有 no-go：抵消 \(C\)-变分会同时取消 metric 源；
-  - 下一步应转向真实辅助场 \(\chi\)-sector，或把 action 化降级并做 `n=384` 复检。
+  - `n=384` 局部复检支持普通 trace=0 继续作为主标量闭合，\(\mathsf q_E\) 暂降级为主符号/正定范数诊断工具；
+  - 下一步应检查 `trace0 + full conservation` 的高分辨率兼容性；action 化若继续则转向真实辅助场 \(\chi\)-sector。

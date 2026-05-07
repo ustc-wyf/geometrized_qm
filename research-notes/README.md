@@ -100,6 +100,7 @@
 - `172-shadow-field分支的最小方程组.md`：定义 shadow fields \((\Phi,\sigma)\) 及 \(U=d\Phi,R=d\ln\sqrt\sigma\)，给出不直接变分 \(S,\tilde\rho\) 的辅助 action 分支；结论是该路线可保护物质测地线方程，但需用同型动力学和初始/边界条件选择 \(U=u,R=r\) 的物理分支。
 - `173-shadow-stress与物理分支传播条件.md`：进一步检查 shadow-field action 的 stress 和分支传播；结论是线性乘子和 \(Q_{\rm sh}\)-门控 action 会产生额外 stress/source，物理分支传播要求状态项在目标分支上对 \(\Phi,\sigma\) 一阶静默，因此需要 stealth-state 构造或退回 equation-first。
 - `174-stealth-state-action候选的最小no-go.md`：尝试构造具体 stealth-state action，发现最小局域 ansatz 存在结构性冲突：线性源项能产生 metric 源但使 \(C\)-变分不成立，抵消 \(C\)-变分又会取消 metric 源；因此 action 化需转向真实辅助场 \(\chi\)-sector 或把 trace=0 投影方程作为 equation-first 理论。
+- `175-n384-trace0局部复检.md`：新增 `n=384` 轻量局部代数复检，比较普通 trace=0 与 \(\mathsf q_E\)-trace；结果支持普通 trace=0 继续作为最小 equation-first 标量闭合，\(\mathsf q_E\) 暂降级为主符号/正定范数诊断工具。
 
 补充说明：
 

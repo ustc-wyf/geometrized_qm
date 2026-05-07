@@ -5718,3 +5718,32 @@
   - 最小 stealth-state action 不能生成非零 trace=0 投影源；
   - action 化若继续，必须寻找真实辅助场 \(\chi\)-sector 的有效应力；
   - 否则应把 trace=0 投影方程作为 equation-first 理论继续推进，并优先做 `n=384` 复检。
+
+### 2026-05-08 n=384 trace=0 局部复检
+
+- 新增轻量诊断脚本：
+  - `kg_examples/diagnose_gbcd_trace_local_closure.py`。
+- 背景：
+  - 旧 `fit_gbcd_trace_closure.py` 在 `n=384` 下会构造很大的全局硬约束/nullspace 系统，进程被系统杀掉；
+  - 因此本轮先做逐点局部代数 sanity check，不声称已经满足完整守恒或时间耦合。
+- 新建研究笔记：
+  - `research-notes/175-n384-trace0局部复检.md`。
+- 运行输出：
+  - `visualizations/equation_first_gbcd_trace_local_closure_n384_trusted_3tau/summary.json`
+  - `visualizations/equation_first_gbcd_trace_local_closure_n384_trusted_3tau/local_trace_closure_summary.png`
+  - `visualizations/equation_first_gbcd_trace_local_closure_n384_core10_3tau/summary.json`
+  - `visualizations/equation_first_gbcd_trace_local_closure_n384_core10_3tau/local_trace_closure_summary.png`
+- 关键数据：
+  - `trusted` weighted mean residual：
+    - tau=-3.5：trace0 `0.014764`，qe0 `0.012302`，但 qe0 跳过 `1071/4999` 点；
+    - tau=0：trace0 `0.003195`，qe0 `0.019128`；
+    - tau=+3.5：trace0 `0.010518`，qe0 `0.015883`。
+  - `core10` weighted mean residual：
+    - tau=-3.5：trace0 `0.008586`，qe0 `0.004855`，但 qe0 跳过 `146/2550` 点；
+    - tau=0：trace0 `0.008569`，qe0 `0.132874`；
+    - tau=+3.5：trace0 `0.010399`，qe0 `0.013445`。
+- 当前判断：
+  - 四个张量方向 \(\{\tilde g,uu,rr,ur\}\) 的 unconstrained 局部拟合残差仍很低，支持 gBCD 投影壳；
+  - 普通 trace=0 在干涉中心和右侧分离态明显更稳；
+  - \(\mathsf q_E\)-trace 只在左侧分离态局部略优，且有不可定义/退化跳点，不应作为主闭合；
+  - 当前主候选仍是普通 trace=0 + full conservation + patch/branch 条件的 equation-first 方程。

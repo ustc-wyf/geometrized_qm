@@ -3382,3 +3382,25 @@
   - 最小局域 stealth-state action 不能 action 化当前 trace=0 投影方程；
   - 后续 action 化若继续，必须引入真实辅助场 \(\chi\)，由其有效应力 \(\Theta_{\mu\nu}\) 产生投影修正，而不是把 \(C_{\mu\nu}\) 当作可变分源；
   - 在没有 \(\chi\)-sector 前，trace=0 投影方程应按 equation-first 理论推进。
+
+## 决策 260：n=384 复检后，普通 trace=0 仍是主标量闭合
+
+- 复检口径：
+  - 使用 1550nm 高斯干涉三切片 `tau=-3.5,0,+3.5`、窗口 `[-9,9] um`、`n=384`；
+  - 先做逐点局部代数检查，不包含完整守恒或时间耦合 nullspace。
+- 结果判断：
+  - `unconstrained` 局部残差最低，说明 \(\{\tilde g,uu,rr,ur\}\) 张量壳仍有效；
+  - `trace0` 在干涉中点和右侧分离态稳定优于 `qe0`；
+  - `qe0` 只在左侧分离态局部略优，并且会跳过退化点，不具备稳定主闭合资格。
+- 决策：
+  - 普通
+    \[
+    \tilde g^{\mu\nu}\mathcal C_{\mu\nu}=0
+    \]
+    继续作为当前最小 equation-first 标量闭合；
+  - \(\mathsf q_E\)-trace 降级为主符号/正定范数诊断工具；
+  - 下一步要检查 trace0 与完整守恒
+    \[
+    \tilde\nabla^\mu\mathcal C_{\mu\nu}=0
+    \]
+    的高分辨率兼容性，而不是继续把 `qe0` 当主候选。
