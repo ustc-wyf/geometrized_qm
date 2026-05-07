@@ -165,6 +165,23 @@
   \]
   以及 \(Q\to0\) 时投影残差消失的分支条件共同使用；否则它只是“残差方向限制”，还不是完整理论。
 - 数值任务现在只能服务于这个方程候选：检查投影残差、守恒、近退化 patch 和 \(Q\to0\) 极限，不能把多步数值器本身当成主目标。
+- 已完成投影方程闭合条件首轮分析：
+  \[
+  \det H=\frac{d-2}{2}\left(u^2r^2-(u\cdot r)^2\right)^3.
+  \]
+  因此 \(d>2\) 且 \(u,r\) 张成的二平面非退化时，四方向投影良定义；严格 \(1+1d\) 必须单独处理。
+- \(W\) 的定位已明确：它不改变在壳成员关系，只影响离壳残差、数值权重和辅助场代表元规范。
+- 已完成 3+1d 方程计数与主部首轮分析：
+  \[
+  \dim\mathrm{Sym}^2=10,\qquad \dim E=4,\qquad \dim E^\perp=6.
+  \]
+  这与 metric theory 去掉 4 个坐标规范自由度后的计数一致；主部为
+  \[
+  \delta\mathcal E^{\rm prin}_{\mu\nu}
+  =
+  \Pi_E^\perp\delta\tilde G^{\rm prin}_{\mu\nu}.
+  \]
+  harmonic gauge 下近似为 \(-\frac12\Pi_E^\perp\tilde\square\bar h_{\mu\nu}\)。
 - 历史上先测试过的最小三项候选是
   \[
   \mathcal C_{\mu\nu}=Buu+Crr+D\,u_{(\mu}r_{\nu)}
@@ -1304,9 +1321,10 @@
   - `tau=-3.5` 阻尼线搜索显示 `alpha=1` 最优，欠阻尼不能解决残差；左侧分离态问题不是简单 Newton 过冲。
 - 下一步最高优先：
   - 暂停把 `plus-only` 包装成主目标，先完成投影型 Einstein-like 方程的理论闭合检查；
-  - 明确投影内积 \(W^{\mu\nu\rho\sigma}\) 的选择是否只是代表元规范，还是会改变物理预测；
-  - 推导 Gram 矩阵 \(H_{IJ}\) 退化时的 patch/branch 条件，避免把数值 `guard` 当成物理方程；
+  - 已明确投影内积 \(W^{\mu\nu\rho\sigma}\) 对在壳解集不是物理自由参数，下一步只需记录不同 \(W\) 对离壳诊断/代表元的影响；
+  - 已得到 Gram 矩阵 \(H_{IJ}\) 的退化条件，下一步要把 \(\Delta=0\) 写成 patch/branch 规则，避免把数值 `guard` 当成物理方程；
   - 检查 \(Q\to0\) 分支条件能否由 \(Q\)-门控辅助泛函、边界条件或正则化选择自然给出；
+  - 写出 gauge-fixed principal symbol 在 \(E^\perp\) 子空间上的双曲性/可逆性条件；
   - 对投影方程做 Helmholtz/self-adjoint integrability 检查，判断是否可能来自作用量；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：

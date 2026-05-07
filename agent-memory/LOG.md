@@ -46,6 +46,54 @@
   - \(Q\)-门控辅助泛函是否必要；
   - 该 equation-first 候选是否满足 Helmholtz/self-adjoint integrability、能否来自作用量。
 
+### 2026-05-07 gBCD 投影方程闭合条件
+
+- 已继续完成投影方程本身的理论闭合分析，并写入 `research-notes/165-gBCD投影方程闭合条件.md`。
+- 关键结论：
+  - 投影方程的本质是
+    \[
+    \mathcal R_{\mu\nu}\in\mathrm{span}\{\tilde g_{\mu\nu},u_\mu u_\nu,r_\mu r_\nu,u_{(\mu}r_{\nu)}\}.
+    \]
+  - 只要投影内积 \(W\) 非退化，且 Gram 矩阵 \(H_{IJ}\) 非退化，\(\Pi_E^\perp\mathcal R=0\) 的在壳解集不依赖 \(W\)；\(W\) 只影响离壳残差和代表元规范。
+  - 对内积 \(\langle X,Y\rangle=X_{\mu\nu}Y^{\mu\nu}\)，若
+    \[
+    a=u^2,\quad b=r^2,\quad c=u\cdot r,\quad \Delta=ab-c^2,
+    \]
+    则
+    \[
+    \det H=\frac{d-2}{2}\Delta^3.
+    \]
+  - 因此该四方向投影在 \(d>2\)、\(\Delta\neq0\) 的 patch 内非退化；严格 \(1+1d\) 中 \(A\tilde g_{\mu\nu}\) 不是独立方向，必须单独降维处理。
+  - HJ 壳方程 \(u^2=m^2\) 与 \(u=dS\) 本身已经推出 \(\tilde g\)-测地线；守恒条件的角色是保证引力侧修正与 Bianchi identity、物质连续性方程相容。
+  - \(Q\to0\) 分支可更明确写成 \(\lambda_I=\chi(\mathcal Q)\hat\lambda_I\)、\(\chi(0)=0\)、\(\hat\lambda_I\) regular。
+  - 是否存在局域作用量仍需 Helmholtz/self-adjoint 检查；当前只确认主部没有立刻显示不可变分。
+- 下一步理论任务更新为：先做 3+1d 方程计数/主部分析、\(\Delta=0\) patch 条件、\(Q\to0\) 分支实现和 Helmholtz 条件首轮检查，再回到数值例子验证。
+
+### 2026-05-07 gBCD 投影方程 3+1d 计数与主部
+
+- 已完成 3+1d 方程计数与主部首轮分析，并写入 `research-notes/166-gBCD投影方程的3加1计数与主部.md`。
+- 关键结论：
+  - 在 3+1d 中，对称二阶张量有 10 个分量，非退化 \(E=\{\tilde g,uu,rr,ur\}\) 子空间有 4 个方向；
+  - 因此 \(\Pi_E^\perp\mathcal R=0\) 给出 \(10-4=6\) 个独立条件，和 metric theory 去掉 4 个坐标规范自由度后的度规自由度数量一致；
+  - 这只是计数合理，不是 Cauchy 适定证明。
+- 主部结论：
+  \[
+  \delta\mathcal E_{\mu\nu}^{\rm prin}
+  =
+  \Pi_E^\perp\delta\tilde G_{\mu\nu}^{\rm prin}[h].
+  \]
+  在 harmonic gauge 下近似为
+  \[
+  \delta\mathcal E_{\mu\nu}^{\rm prin}
+  \simeq
+  -\frac12\Pi_E^\perp\tilde\square\bar h_{\mu\nu}.
+  \]
+- 物理含义：
+  - 最高阶传播结构仍来自 \(\tilde g\) 的 Einstein 主部；
+  - \(E\) 方向残差被解释为量子几何化诱导的有效源，而不是被设为零；
+  - \(Q\to0\) 分支条件 \(\lambda_I=\chi(\mathcal Q)\hat\lambda_I,\chi(0)=0\) 会把 \(E\) 方向也压回零，从而恢复完整 Einstein 方程。
+- 下一步剩余理论任务：写出 gauge-fixed principal symbol 在 \(\Pi_E^\perp\) 子空间上的双曲性条件，并继续做 Helmholtz/self-adjoint 检查。
+
 ### 2026-05-07 放宽 pure-gtilde 限制后的 u/r 引力作用量路线
 
 - 用户提出新路线：仍采用强约束，但暂时放开“引力作用量必须完全由 `gtilde` 衍生”的限制，允许在 `gtilde` 表象下显含 \(u^\mu\) 与 \(r^\mu\)。

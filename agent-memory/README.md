@@ -137,6 +137,8 @@
 - `research-notes/152-无Q门控的最小辅助场action扫描.md`：按用户要求暂不考虑 \(Q\)，扫描 norm/time/space 最小辅助 action；当前默认候选为 `norm_weight=1e-8,time_weight=1e-5,space_weight=0`
 - `research-notes/153-gBCD显式理论候选v0.md`：把当前结果整理成 equation-first 显式理论候选 v0：主场方程、守恒、辅助场最小泛函和受限变分方程
 - `research-notes/164-gBCD投影型Einstein-like方程候选.md`：当前 equation-first 主线的显式方程候选；把 Einstein 残差投影到 \(\{\tilde g,uu,rr,ur\}\) 张量子空间，并要求投影修正张量守恒和 \(Q\to0\) 回 Einstein 分支
+- `research-notes/165-gBCD投影方程闭合条件.md`：投影方程的首轮理论闭合检查；说明 \(W\) 不改变在壳成员关系，给出 \(\det H=\frac{d-2}{2}(u^2r^2-(u\cdot r)^2)^3\)，并明确 \(1+1d\)、\(\Delta=0\)、守恒/测地线和 Helmholtz 问题
+- `research-notes/166-gBCD投影方程的3加1计数与主部.md`：投影方程的 3+1d 方程计数与主部检查；说明 6 个投影方程和 4 个坐标规范自由度的关系，以及 harmonic gauge 下 \(\Pi_E^\perp\delta G\) 主部
 - `research-notes/159-n384三切片gBCD求解器升级与物理主线判断.md`：记录 `n=384,core10,tau=-3.5,0,+3.5` 三切片高分辨率 gBCD 求解器升级、残差结果和下一步物理主线判断
 - `kg_examples/plot_gbcd_metric_update_diagnostics.py`：读取 full-linear metric update 的 `.npz`，生成包含 `rho`、残差、\(\delta g_+\)、`det(corrected g+)` 的诊断图，并在图内说明 white contour 与 `core10` 定义
 - `visualizations/full_dynamics_2p1/`：`2+1d` 全动力学数值结果图和 `summary.json`

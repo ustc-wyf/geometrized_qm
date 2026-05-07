@@ -3193,3 +3193,34 @@
   - \(A,B,C,D\) 不再是理论的基本“拟合结果”，而是投影系数或辅助场代表元；
   - 数值工作应转为检验投影方程、守恒、退化 patch 和分支条件；
   - 下一步理论检查是投影内积选择、Gram 退化、\(Q\)-门控分支和 Helmholtz/self-adjoint integrability。
+
+## 决策 250：投影内积不是在壳物理参数，Gram 退化才是核心 patch 条件
+
+- 结论：
+  - 若 \(W\) 非退化，且 \(H_{IJ}\) 非退化，则 \(\Pi_E^\perp\mathcal R=0\) 等价于 \(\mathcal R\in\mathrm{span}\{E^I\}\)；
+  - 因此不同 \(W\) 不改变在壳解集，只改变离壳残差、投影诊断和辅助场代表元规范。
+- 关键公式：
+  \[
+  \det H=\frac{d-2}{2}\left(u^2r^2-(u\cdot r)^2\right)^3.
+  \]
+- 决策：
+  - 后续不要把 \(W\) 当成新的物理可调参数；
+  - 重点处理 \(d=2\) 和 \(\Delta=u^2r^2-(u\cdot r)^2=0\) 的 patch/branch 条件；
+  - 严格 \(1+1d\) 中 \(A\tilde g_{\mu\nu}\) 方向不独立，不能机械照搬 3+1d 的 gBCD 四方向投影。
+
+## 决策 251：3+1d 投影方程计数合理，但适定性仍未证明
+
+- 结论：
+  - 在 3+1d 非退化 patch 内，\(\Pi_E^\perp\mathcal R=0\) 给出 6 个独立张量条件；
+  - 这个数量与 metric theory 的 \(10\) 个度规分量减 \(4\) 个坐标规范自由度一致；
+  - 因此不能用“少了 4 个 Einstein 方程”直接否定投影型 gBCD。
+- 主部：
+  \[
+  \delta\mathcal E_{\mu\nu}^{\rm prin}
+  =
+  \Pi_E^\perp\delta\tilde G_{\mu\nu}^{\rm prin}[h],
+  \]
+  harmonic gauge 下为 Einstein 波算子的投影版本。
+- 风险：
+  - 计数合理不等于 Cauchy 适定；
+  - 下一步必须检查 gauge-fixed principal symbol 在 \(E^\perp\) 子空间上的双曲性、约束传播和 Helmholtz/self-adjoint integrability。
