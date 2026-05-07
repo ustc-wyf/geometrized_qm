@@ -20,7 +20,13 @@ from diagnose_equation_first_transverse_force import (
 from diagnose_gbcd_trace_local_closure import ATOM_NAMES, solve_local, trace_coefficients, weighted_stats
 from diagnose_mathcal_r_pure_geometry import build_case, symmetric_rows, tensor_norm
 from fit_equation_first_tensor_couplings import tensor_atoms
-from fit_gbcd_principal_constraint_projection_sparse import append_row, solve_sparse_lsqr, sparse_apply
+from fit_gbcd_principal_constraint_projection_sparse import (
+    append_row,
+    column_norms_from_rows,
+    solve_sparse_lsqr,
+    sparse_apply,
+    sparse_apply_t,
+)
 from fit_metric_fr_ricci2_universal_full import build_case as build_full_case
 from physical_units import PLANCK_MASS_EV
 from simulate_d_local_window_from_a_snapshot import build_physical_reference
@@ -222,6 +228,217 @@ def scaled_rows(
     return cols, vals, np.asarray(rhs, dtype=float)
 
 
+def force_projection(
+    initial: np.ndarray,
+    force_cols: list[np.ndarray],
+    force_vals: list[np.ndarray],
+    ncols: int,
+    *,
+    tol: float,
+    maxiter: int,
+) -> tuple[np.ndarray, dict[str, object]]:
+    rhs = -sparse_apply(force_cols, force_vals, initial)
+    delta, info = solve_sparse_lsqr(force_cols, force_vals, rhs, ncols, tol, maxiter)
+    coeff = initial + delta
+    residual = sparse_apply(force_cols, force_vals, coeff)
+    denom = max(float(np.linalg.norm(sparse_apply(force_cols, force_vals, initial))), 1.0e-300)
+    info = {
+        **info,
+        "mode": "hard_force_projection",
+        "initial_force_norm": float(denom),
+        "projected_force_norm": float(np.linalg.norm(residual)),
+        "projected_force_relative_norm": float(np.linalg.norm(residual) / denom),
+        "projected_force_max_abs": float(np.max(np.abs(residual))) if residual.size else 0.0,
+        "delta_norm": float(np.linalg.norm(delta)),
+        "initial_norm": float(np.linalg.norm(initial)),
+        "delta_over_initial_norm": float(np.linalg.norm(delta) / max(float(np.linalg.norm(initial)), 1.0e-300)),
+    }
+    return coeff, info
+
+
+def kkt_constrained_update(
+    initial: np.ndarray,
+    alg_cols: list[np.ndarray],
+    alg_vals: list[np.ndarray],
+    alg_rhs: list[float],
+    force_cols: list[np.ndarray],
+    force_vals: list[np.ndarray],
+    ncols: int,
+    *,
+    ridge: float,
+    tol: float,
+    maxiter: int,
+) -> tuple[np.ndarray, dict[str, object]]:
+    b_alg = np.asarray(alg_rhs, dtype=float)
+    r0 = sparse_apply(alg_cols, alg_vals, initial) - b_alg
+    f0 = sparse_apply(force_cols, force_vals, initial)
+    rhs_top = -sparse_apply_t(alg_cols, alg_vals, r0, ncols)
+    rhs_bottom = -f0
+    rhs = np.concatenate([rhs_top, rhs_bottom])
+    nforce = len(force_cols)
+    n_total = ncols + nforce
+    alg_col_norms = column_norms_from_rows(alg_cols, alg_vals, ncols)
+    force_col_norms = column_norms_from_rows(force_cols, force_vals, ncols)
+    delta_scale = np.sqrt(alg_col_norms**2 + force_col_norms**2 + max(float(ridge), 0.0))
+    force_row_norms = np.asarray([float(np.linalg.norm(v)) for v in force_vals], dtype=float)
+    finite_force = force_row_norms[np.isfinite(force_row_norms) & (force_row_norms > 0.0)]
+    force_floor = max(float(np.percentile(finite_force, 5.0)) * 1.0e-12 if finite_force.size else 0.0, 1.0e-30)
+    lambda_scale = np.where(force_row_norms > force_floor, force_row_norms, force_floor)
+    col_scale = np.concatenate([delta_scale, lambda_scale])
+
+    def matvec(z: np.ndarray) -> np.ndarray:
+        delta = z[:ncols]
+        lam = z[ncols:]
+        a_delta = sparse_apply(alg_cols, alg_vals, delta)
+        top = sparse_apply_t(alg_cols, alg_vals, a_delta, ncols)
+        if ridge > 0.0:
+            top = top + float(ridge) * delta
+        top = top + sparse_apply_t(force_cols, force_vals, lam, ncols)
+        bottom = sparse_apply(force_cols, force_vals, delta)
+        return np.concatenate([top, bottom])
+
+    sol, info = solve_kkt_lsqr(matvec, rhs, n_total, tol=tol, maxiter=maxiter, col_scale=col_scale)
+    delta = sol[:ncols]
+    multipliers = sol[ncols:]
+    coeff = initial + delta
+    force_residual = sparse_apply(force_cols, force_vals, coeff)
+    alg_residual = sparse_apply(alg_cols, alg_vals, coeff) - b_alg
+    initial_force_norm = max(float(np.linalg.norm(f0)), 1.0e-300)
+    info = {
+        **info,
+        "mode": "hard_kkt_lsq",
+        "ridge": float(ridge),
+        "initial_force_norm": float(initial_force_norm),
+        "projected_force_norm": float(np.linalg.norm(force_residual)),
+        "projected_force_relative_norm": float(np.linalg.norm(force_residual) / initial_force_norm),
+        "projected_force_max_abs": float(np.max(np.abs(force_residual))) if force_residual.size else 0.0,
+        "algebraic_residual_norm": float(np.linalg.norm(alg_residual)),
+        "algebraic_rhs_norm": float(np.linalg.norm(b_alg)),
+        "algebraic_relative_residual_norm": float(np.linalg.norm(alg_residual) / max(float(np.linalg.norm(b_alg)), 1.0e-300)),
+        "delta_norm": float(np.linalg.norm(delta)),
+        "initial_norm": float(np.linalg.norm(initial)),
+        "delta_over_initial_norm": float(np.linalg.norm(delta) / max(float(np.linalg.norm(initial)), 1.0e-300)),
+        "multiplier_norm": float(np.linalg.norm(multipliers)),
+        "kkt_column_scaling": "delta=sqrt(||A_col||^2+||F_col||^2+ridge), lambda=||F_row||",
+    }
+    return coeff, info
+
+
+def augmented_lagrangian_update(
+    initial: np.ndarray,
+    alg_cols: list[np.ndarray],
+    alg_vals: list[np.ndarray],
+    alg_rhs: list[float],
+    force_cols: list[np.ndarray],
+    force_vals: list[np.ndarray],
+    ncols: int,
+    *,
+    mu0: float,
+    growth: float,
+    outer: int,
+    tol: float,
+    maxiter: int,
+) -> tuple[np.ndarray, dict[str, object]]:
+    """Solve the hard conservation problem with positive least-squares substeps.
+
+    This is a method-of-multipliers fallback for the KKT saddle system.  It keeps
+    the same constrained problem, but avoids applying LSQR directly to an
+    indefinite KKT operator.
+    """
+    b_alg = np.asarray(alg_rhs, dtype=float)
+    a_initial = sparse_apply(alg_cols, alg_vals, initial)
+    f_initial = sparse_apply(force_cols, force_vals, initial)
+    alg_delta_rhs = b_alg - a_initial
+    lam = np.zeros(len(force_cols), dtype=float)
+    coeff = initial.copy()
+    records: list[dict[str, object]] = []
+    mu = float(mu0)
+    for outer_it in range(1, int(outer) + 1):
+        sqrt_mu = float(np.sqrt(max(mu, 0.0)))
+        row_cols = list(alg_cols)
+        row_vals = list(alg_vals)
+        rhs = list(alg_delta_rhs)
+        force_delta_rhs = -f_initial - lam / max(mu, 1.0e-300)
+        for c, v, b in zip(force_cols, force_vals, force_delta_rhs):
+            row_cols.append(c)
+            row_vals.append(sqrt_mu * v)
+            rhs.append(sqrt_mu * float(b))
+        delta, solve = solve_sparse_lsqr(row_cols, row_vals, np.asarray(rhs, dtype=float), ncols, tol, maxiter)
+        coeff = initial + delta
+        force_residual = sparse_apply(force_cols, force_vals, coeff)
+        alg_residual = sparse_apply(alg_cols, alg_vals, coeff) - b_alg
+        lam = lam + mu * force_residual
+        records.append(
+            {
+                "outer": int(outer_it),
+                "mu": float(mu),
+                "lsqr_iterations": int(solve.get("iterations", 0)),
+                "lsqr_relative_residual_estimate": float(solve.get("relative_residual_estimate", np.nan)),
+                "system_relative_residual": float(solve.get("system_relative_residual", np.nan)),
+                "force_norm": float(np.linalg.norm(force_residual)),
+                "force_relative_norm": float(
+                    np.linalg.norm(force_residual) / max(float(np.linalg.norm(f_initial)), 1.0e-300)
+                ),
+                "algebraic_norm": float(np.linalg.norm(alg_residual)),
+                "algebraic_relative_norm": float(np.linalg.norm(alg_residual) / max(float(np.linalg.norm(b_alg)), 1.0e-300)),
+                "delta_over_initial_norm": float(np.linalg.norm(delta) / max(float(np.linalg.norm(initial)), 1.0e-300)),
+            }
+        )
+        mu *= float(growth)
+    force_residual = sparse_apply(force_cols, force_vals, coeff)
+    alg_residual = sparse_apply(alg_cols, alg_vals, coeff) - b_alg
+    initial_force_norm = max(float(np.linalg.norm(f_initial)), 1.0e-300)
+    info = {
+        "mode": "hard_augmented_lagrangian",
+        "outer_iterations": int(outer),
+        "mu0": float(mu0),
+        "growth": float(growth),
+        "initial_force_norm": float(initial_force_norm),
+        "projected_force_norm": float(np.linalg.norm(force_residual)),
+        "projected_force_relative_norm": float(np.linalg.norm(force_residual) / initial_force_norm),
+        "projected_force_max_abs": float(np.max(np.abs(force_residual))) if force_residual.size else 0.0,
+        "algebraic_residual_norm": float(np.linalg.norm(alg_residual)),
+        "algebraic_rhs_norm": float(np.linalg.norm(b_alg)),
+        "algebraic_relative_residual_norm": float(np.linalg.norm(alg_residual) / max(float(np.linalg.norm(b_alg)), 1.0e-300)),
+        "delta_norm": float(np.linalg.norm(coeff - initial)),
+        "initial_norm": float(np.linalg.norm(initial)),
+        "delta_over_initial_norm": float(np.linalg.norm(coeff - initial) / max(float(np.linalg.norm(initial)), 1.0e-300)),
+        "multiplier_norm": float(np.linalg.norm(lam)),
+        "history": records,
+    }
+    return coeff, info
+
+
+def solve_kkt_lsqr(
+    matvec,
+    rhs: np.ndarray,
+    n: int,
+    *,
+    tol: float,
+    maxiter: int,
+    col_scale: np.ndarray | None = None,
+) -> tuple[np.ndarray, dict[str, object]]:
+    # The KKT operator used here is symmetric, so LSQR can use the same product
+    # for A and A^T.  This is a matrix-free fallback for environments without
+    # scipy.sparse.linalg.minres.
+    from solve_gbcd_full_linear_metric_update_sparse import lsqr_solve
+
+    if col_scale is None:
+        return lsqr_solve(matvec, matvec, rhs, n, tol=tol, maxiter=maxiter)
+    scale = np.asarray(col_scale, dtype=float)
+    scale = np.where(np.isfinite(scale) & (scale > 0.0), scale, 1.0)
+
+    def aprod(y: np.ndarray) -> np.ndarray:
+        return matvec(y / scale)
+
+    def atprod(u: np.ndarray) -> np.ndarray:
+        return matvec(u) / scale
+
+    y, info = lsqr_solve(aprod, atprod, rhs, n, tol=tol, maxiter=maxiter)
+    info["kkt_scaled_columns"] = True
+    return y / scale, info
+
+
 def coeff_to_lambda_fields(coeff: np.ndarray, col_index: np.ndarray, basis: dict[int, np.ndarray], shape: tuple[int, int]) -> dict[int, np.ndarray]:
     fields: dict[int, np.ndarray] = {}
     for tpos, key in enumerate(TIME_KEYS):
@@ -345,17 +562,17 @@ def evaluate_solution(
 
 
 def render(path: Path, records: list[dict[str, object]]) -> None:
-    weights = [float(r["force_weight"]) for r in records]
+    labels = [str(r["label"]) for r in records]
     alg = [float(r["evaluation"]["by_time"]["0"]["algebraic_row_floor_relative_residual"]["weighted_mean"]) for r in records]
     div = [float(r["evaluation"]["central_divergence"]["full_over_derivative_scale"]["weighted_mean"]) for r in records]
-    x = np.arange(len(weights))
+    x = np.arange(len(labels))
     fig, ax = plt.subplots(figsize=(8.5, 4.5), constrained_layout=True)
     ax.plot(x, alg, "o-", label="algebraic residual")
     ax.plot(x, div, "o-", label="full divergence scale")
     ax.set_yscale("log")
     ax.set_xticks(x)
-    ax.set_xticklabels([f"{w:g}" for w in weights], rotation=25, ha="right")
-    ax.set_xlabel("force weight")
+    ax.set_xticklabels(labels, rotation=25, ha="right")
+    ax.set_xlabel("solve mode")
     ax.set_title("trace0 hard-eliminated sparse conservation scan")
     ax.legend()
     fig.savefig(path, dpi=180)
@@ -428,9 +645,94 @@ def run(args: argparse.Namespace) -> dict[str, object]:
             dx,
             dz,
         )
-        record = {"force_weight": force_weight, "solve": solve, "evaluation": evaluation}
+        record = {"label": f"penalty:{force_weight:g}", "mode": "penalty", "force_weight": force_weight, "solve": solve, "evaluation": evaluation}
         records.append(record)
         coeff_arrays[f"coeff_force_{force_weight:g}"] = coeff
+    if args.hard_project:
+        print(f"[trace0-sparse] tau={tau:g} hard_project", flush=True)
+        coeff, solve = force_projection(
+            initial,
+            force_cols,
+            force_vals,
+            ncols,
+            tol=float(args.hard_project_tol),
+            maxiter=int(args.hard_project_maxiter),
+        )
+        evaluation = evaluate_solution(
+            cases,
+            full,
+            coeff,
+            col_index,
+            basis,
+            args.fit_region,
+            args.force_region,
+            int(args.force_mask_erosion),
+            dt,
+            dx,
+            dz,
+        )
+        records.append({"label": "hard-project", "mode": "hard_project", "force_weight": None, "solve": solve, "evaluation": evaluation})
+        coeff_arrays["coeff_hard_project"] = coeff
+    if args.hard_kkt:
+        print(f"[trace0-sparse] tau={tau:g} hard_kkt", flush=True)
+        coeff, solve = kkt_constrained_update(
+            initial,
+            alg_cols,
+            alg_vals,
+            alg_rhs,
+            force_cols,
+            force_vals,
+            ncols,
+            ridge=float(args.hard_kkt_ridge),
+            tol=float(args.hard_kkt_tol),
+            maxiter=int(args.hard_kkt_maxiter),
+        )
+        evaluation = evaluate_solution(
+            cases,
+            full,
+            coeff,
+            col_index,
+            basis,
+            args.fit_region,
+            args.force_region,
+            int(args.force_mask_erosion),
+            dt,
+            dx,
+            dz,
+        )
+        records.append({"label": "hard-kkt", "mode": "hard_kkt", "force_weight": None, "solve": solve, "evaluation": evaluation})
+        coeff_arrays["coeff_hard_kkt"] = coeff
+    if args.hard_alm:
+        print(f"[trace0-sparse] tau={tau:g} hard_alm", flush=True)
+        coeff, solve = augmented_lagrangian_update(
+            initial,
+            alg_cols,
+            alg_vals,
+            alg_rhs,
+            force_cols,
+            force_vals,
+            ncols,
+            mu0=float(args.hard_alm_mu0),
+            growth=float(args.hard_alm_growth),
+            outer=int(args.hard_alm_outer),
+            tol=float(args.hard_alm_tol),
+            maxiter=int(args.hard_alm_maxiter),
+        )
+        evaluation = evaluate_solution(
+            cases,
+            full,
+            coeff,
+            col_index,
+            basis,
+            args.fit_region,
+            args.force_region,
+            int(args.force_mask_erosion),
+            dt,
+            dx,
+            dz,
+        )
+        records.append({"label": "hard-alm", "mode": "hard_alm", "force_weight": None, "solve": solve, "evaluation": evaluation})
+        coeff_arrays["coeff_hard_alm"] = coeff
     plot_path = args.output / "trace0_sparse_conservation_scan.png"
     coeff_path = args.output / "trace0_sparse_conservation_coefficients.npz"
     render(plot_path, records)
@@ -438,7 +740,10 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     report = {
         "parameters": {
             "tau": tau,
-            "force_weights": [float(r["force_weight"]) for r in records],
+            "force_weights": [float(r["force_weight"]) for r in records if r["force_weight"] is not None],
+            "hard_project": bool(args.hard_project),
+            "hard_kkt": bool(args.hard_kkt),
+            "hard_alm": bool(args.hard_alm),
             "fit_region": args.fit_region,
             "force_region": args.force_region,
             "full_resolution": int(args.full_resolution),
@@ -453,6 +758,9 @@ def run(args: argparse.Namespace) -> dict[str, object]:
             "purpose": "Sparse high-resolution feasibility scan for trace0 + full conservation.",
             "trace0": "Imposed exactly by pointwise nullspace elimination of g^{mn} C_mn=0.",
             "force_weight": "Penalty weight on full conservation rows; this scan is not yet a hard-conservation saddle-point solve.",
+            "hard_project": "If enabled, solve F delta = -F x0 by LSQR from the local trace0 initial representative. This enforces conservation rows directly but is not yet algebraic-residual-optimal KKT.",
+            "hard_kkt": "If enabled, solve the matrix-free KKT equations for min ||A(x0+delta)-b||^2+ridge||delta||^2 subject to F(x0+delta)=0.",
+            "hard_alm": "If enabled, solve the same hard conservation problem by augmented Lagrangian positive least-squares substeps.",
             "next_if_successful": "Upgrade to matrix-free hard conservation/KKT after finding a stable force-weight regime.",
         },
         "records": records,
@@ -483,6 +791,19 @@ def main() -> None:
     parser.add_argument("--active-dilation", type=int, default=1)
     parser.add_argument("--lsqr-tol", type=float, default=1.0e-6)
     parser.add_argument("--lsqr-maxiter", type=int, default=1000)
+    parser.add_argument("--hard-project", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--hard-project-tol", type=float, default=1.0e-8)
+    parser.add_argument("--hard-project-maxiter", type=int, default=1000)
+    parser.add_argument("--hard-kkt", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--hard-kkt-ridge", type=float, default=1.0e-12)
+    parser.add_argument("--hard-kkt-tol", type=float, default=1.0e-8)
+    parser.add_argument("--hard-kkt-maxiter", type=int, default=1000)
+    parser.add_argument("--hard-alm", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--hard-alm-mu0", type=float, default=100.0)
+    parser.add_argument("--hard-alm-growth", type=float, default=10.0)
+    parser.add_argument("--hard-alm-outer", type=int, default=3)
+    parser.add_argument("--hard-alm-tol", type=float, default=1.0e-6)
+    parser.add_argument("--hard-alm-maxiter", type=int, default=300)
     parser.add_argument("--wavelength-nm", type=float, default=1550.0)
     parser.add_argument("--mass-over-omega", type=float, default=0.1)
     parser.add_argument("--mp", type=float, default=None)

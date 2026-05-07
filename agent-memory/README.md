@@ -707,6 +707,8 @@
   `research-notes/176-trace0局部守恒兼容性.md`
 - trace0 稀疏全局守恒扫描：
   `research-notes/177-trace0稀疏全局守恒扫描.md`
+- trace0 硬守恒 KKT 与 ALM 原型：
+  `research-notes/178-trace0硬守恒KKT与ALM原型.md`
 - 当前最小候选：
   \[
   \tilde G_{\mu\nu}
@@ -743,4 +745,5 @@
   - `n=384` 局部复检支持普通 trace=0 继续作为主标量闭合，\(\mathsf q_E\) 暂降级为主符号/正定范数诊断工具；
   - trace0 局部守恒检查显示干涉中点几乎自然守恒，但分离态自然散度很大；
   - trace0 稀疏全局守恒扫描显示 `trace0 + full conservation` 兼容；
-  - 下一步应把 sparse penalty 扫描升级为 hard conservation/saddle-point 矩阵自由求解器，并整理 equation-first 显式 proposal；action 化若继续则转向真实辅助场 \(\chi\)-sector。
+  - trace0 硬守恒原型显示 ALM 在三切片上比 penalty 进一步压低 full divergence，且只小幅增加代数残差；
+  - 下一步应整理 equation-first 显式 proposal；action 化若继续则转向真实辅助场 \(\chi\)-sector；严格 KKT 数值求解若继续则需要 MINRES/Schur complement/更强预条件器。

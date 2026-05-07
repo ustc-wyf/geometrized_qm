@@ -1365,9 +1365,12 @@
   - 守恒检查结论是干涉中点局部 trace0 几乎自然守恒，但分离态自然散度很大，因此 trace0 必须和 full conservation 联立求解；
   - 已实现 trace0 硬消元后的 sparse/global 守恒 penalty 扫描，见 `research-notes/177-trace0稀疏全局守恒扫描.md`；
   - 三切片扫描结论是 trace0 + full conservation 兼容，`force_weight=10` 可把两个分离态 full divergence 压到 `~0.0065-0.0077`，代数残差只轻微增加；
+  - 已把 sparse penalty 扫描升级为 hard-project、KKT 和 ALM 原型，见 `research-notes/178-trace0硬守恒KKT与ALM原型.md`；
+  - 当前最稳口径是 `hard-alm`：三切片 full divergence 进一步压到 `~2e-5` 到 `~2e-3`，中心代数残差只小幅增加；
+  - `hard-kkt` 在小规模有效，但当前 LSQR saddle-point 版本在左侧分离态病态，后续若追求严格 KKT 需 MINRES/Schur complement/预条件器；
   - 下一步理论任务若继续 action 化，应转向真实辅助场 \(\chi\)-sector 的有效应力；否则应正式降级 action 化并继续 equation-first；
-  - 下一步数值验证应把 sparse penalty 扫描升级成 hard conservation 或 saddle-point/KKT 矩阵自由求解器；
   - 下一步理论写作应把当前 equation-first 方程组整理成显式 proposal，包括变量、方程、patch、分支条件、测地线兼容条件和 action 化 no-go 关系；
+  - 下一步数值验证若继续，应使用 ALM 作为 hard conservation baseline，并只把 KKT 当作需要更好线性代数的严格求解方向；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：
   - 后续所有硬守恒/硬测地线投影默认用 nullspace 或等价约束保持算法；

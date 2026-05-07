@@ -3443,3 +3443,26 @@
     \tilde\nabla^\mu C_{\mu\nu}=0.
     \]
   - 下一步数值上应升级为 hard conservation/saddle-point 矩阵自由求解器；理论上应整理成显式 proposal。
+
+## 决策 263：trace0 + full conservation 可按硬约束实现，ALM 是当前稳健数值口径
+
+- 硬约束原型结果：
+  - `hard-project` 只能压守恒，可能破坏代数场方程，不能作为物理代表元选择；
+  - `hard-kkt` 在小规模和干涉中心有效，但在 `n=384,tau=-3.5` 的分离态上，当前 LSQR saddle-point 实现病态；
+  - `hard-alm` 在三个高分辨率切片上都能进一步压低 full divergence，且代数 residual 只小幅增加。
+- 决策：
+  - 当前 equation-first 候选继续写为
+    \[
+    \tilde G_{\mu\nu}
+    =
+    \tilde T_{\mu\nu}/M_P^2+C_{\mu\nu},
+    \quad
+    C\in\mathrm{span}\{\tilde g,uu,rr,ur\},
+    \quad
+    C^\mu{}_\mu=0,
+    \quad
+    \tilde\nabla^\mu C_{\mu\nu}=0.
+    \]
+  - `hard-alm` 是当前最稳的数值检查口径，但它只是实现等式约束的算法，不是额外物理规则；
+  - 若之后需要真正 saddle-point 精解，应引入 MINRES/Schur complement/更强预条件器，而不是用 LSQR 直接解不定 KKT；
+  - 这一步支持 equation-first 硬约束候选，不等于 action 化已经完成。

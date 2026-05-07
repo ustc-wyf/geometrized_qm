@@ -103,6 +103,7 @@
 - `175-n384-trace0局部复检.md`：新增 `n=384` 轻量局部代数复检，比较普通 trace=0 与 \(\mathsf q_E\)-trace；结果支持普通 trace=0 继续作为最小 equation-first 标量闭合，\(\mathsf q_E\) 暂降级为主符号/正定范数诊断工具。
 - `176-trace0局部守恒兼容性.md`：检查逐点 trace=0 代表元是否自然满足 \(\tilde\nabla^\mu C_{\mu\nu}=0\)；干涉中点自然守恒很好，但分离态散度很大，说明 trace=0 必须和完整守恒联立求解，不能分步后处理。
 - `177-trace0稀疏全局守恒扫描.md`：实现 trace=0 硬消元后的 sparse/global 守恒 penalty 扫描；三切片结果显示 full divergence 可压到 \(10^{-3}\sim10^{-2}\) 量级，而代数残差只轻微增加，因此支持 trace0 + full conservation 兼容。
+- `178-trace0硬守恒KKT与ALM原型.md`：把 trace0 + full conservation 从 penalty 扫描推进到 hard-project、KKT 和增广拉格朗日原型；KKT 在难切片受病态求解限制，ALM 在三切片上进一步压低 full divergence 且只小幅增加代数残差，支持将其作为 equation-first 硬约束候选。
 
 补充说明：
 

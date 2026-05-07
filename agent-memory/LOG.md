@@ -5793,3 +5793,27 @@
   - trace0 与完整守恒在高分辨率三切片上兼容；
   - 分离态的大自然散度不是理论矛盾，而是逐点后处理没有联立守恒；
   - 下一步应把 penalty scan 升级成 hard conservation 或 saddle-point/KKT 矩阵自由求解器。
+
+### 2026-05-08 trace0 硬守恒 KKT 与 ALM 原型
+
+- 已扩展 `kg_examples/fit_gbcd_trace0_sparse_conservation.py`：
+  - `--hard-project`：只投影到守恒面，不最小化代数残差；
+  - `--hard-kkt`：矩阵自由 KKT constrained least-squares；
+  - `--hard-alm`：增广拉格朗日/乘子法，把硬守恒问题转化为多轮正定 least-squares。
+- 新建研究笔记：
+  - `research-notes/178-trace0硬守恒KKT与ALM原型.md`。
+- 关键运行输出：
+  - `visualizations/equation_first_gbcd_trace0_hard_alm_n384_taum3p5_core10/`
+  - `visualizations/equation_first_gbcd_trace0_hard_alm_n384_tau0_core10/`
+  - `visualizations/equation_first_gbcd_trace0_hard_alm_n384_taup3p5_core10/`
+- `hard-kkt` 判断：
+  - 在 `n=96,tau=0` 上可把 full divergence 压到 `~3.6e-13`，代数残差保持 `~6.6e-4`；
+  - 但在 `n=384,tau=-3.5` 上，当前无 MINRES 的 LSQR saddle-point 实现病态，不能把该失败解读成理论矛盾。
+- `hard-alm` 三切片结果：
+  - `tau=-3.5`：full divergence `0.007740 -> 0.001987`，中心 row algebraic `0.005478 -> 0.006009`；
+  - `tau=0`：full divergence `0.000458 -> 0.0000239`，中心 row algebraic 基本不变 `~0.000675`；
+  - `tau=+3.5`：full divergence `0.006502 -> 0.001940`，中心 row algebraic `0.007698 -> 0.008172`。
+- 当前判断：
+  - `trace0 + full conservation` 可以作为 equation-first 候选的硬约束结构继续保留；
+  - ALM 只是数值实现，不改变物理方程；
+  - 这一步不是 action 化成功，也不是完整演化理论完成，而是说明当前候选没有被高斯干涉三切片硬守恒检验否定。
