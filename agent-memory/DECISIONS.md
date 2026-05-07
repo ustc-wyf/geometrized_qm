@@ -3316,3 +3316,21 @@
   - 当前 trace=0 投影方程继续作为 equation-first 候选；
   - 不再把“它来自某个纯 \(\tilde g\) 局域作用量”作为默认假设；
   - 若要 action 化，应优先尝试辅助应力场 action 或乘子约束 action，并清楚区分哪些方程来自 metric variation，哪些来自辅助场 variation。
+
+## 决策 256：action 化目标应是有效应力 \(\Theta_{\mu\nu}\)，不是裸 \(\lambda_I E^I_{\mu\nu}\)
+
+- 结论：
+  - action 中真正进入 metric 方程的是
+    \[
+    \Theta_{\mu\nu}
+    =
+    -2/\sqrt{|\tilde g|}\,
+    \delta S_{\rm aux}/\delta\tilde g^{\mu\nu}.
+    \]
+  - 因此应要求 \(\Theta_{\mu\nu}/M_P^2\) 满足投影、无迹、守恒和 \(Q\to0\) 分支，而不是预先要求裸辅助变量 \(C_{\mu\nu}\) 或 \(\lambda_I E^I_{\mu\nu}\) 满足后就结束。
+- 关键风险：
+  - 直接让辅助 action 显含 \(u_\mu=\partial_\mu S\)、\(r_\mu=\tilde\nabla_\mu\ln\sqrt{\tilde\rho}\) 会贡献 \(\delta S_{\rm aux}/\delta S\)、\(\delta S_{\rm aux}/\delta\tilde\rho\)，从而改写 HJ/连续性方程；
+  - 要保持隐变量测地线解释，必须让这些物质变分在目标壳上消失，或引入独立 \(U,R\) shadow fields。
+- 决策：
+  - 裸 \(\lambda_I E^I\) 作用量路线暂不作为主线；
+  - action 化主线应转为“辅助有效应力 \(\Theta\)”或“shadow-field 分支”。

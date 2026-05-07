@@ -5613,3 +5613,27 @@
   - 不能声称它已经来自普通局域纯 metric 作用量；
   - action 化更合理的路线是辅助应力场 action 或乘子约束系统；
   - 下一步应写最小辅助 action 原型，并在 `n=384` 复查 trace=0 优势。
+
+### 2026-05-08 最小辅助应力场 action 原型
+
+- 新建研究笔记：
+  - `research-notes/171-最小辅助应力场action原型.md`。
+- 关键修正：
+  - action 化时，真正进入 Einstein 方程右边的是
+    \[
+    \Theta_{\mu\nu}
+    =
+    -2/\sqrt{|\tilde g|}\,
+    \delta S_{\rm aux}/\delta\tilde g^{\mu\nu},
+    \]
+    不是裸 \(\lambda_I E^I_{\mu\nu}\)。
+  - 若 \(C_{\mu\nu}\) 是独立、无迹协变张量，源项
+    \[
+    -\frac{M_P^2}{2}\int\sqrt{|\tilde g|}\tilde g^{\mu\nu}C_{\mu\nu}
+    \]
+    可以产生 \(M_P^2 C_{\mu\nu}\) 作为 metric 源。
+  - 但一旦直接令 \(C_{\mu\nu}=\lambda_I E^I_{\mu\nu}[\tilde g,u,r]\)，metric 变分会产生额外项，物质变分也通常会改变 Hamilton-Jacobi/连续性方程。
+- 当前判断：
+  - 裸 \(\lambda_I E^I\) action 不是正确目标；
+  - 正确目标是寻找辅助 sector，使其有效能动量 \(\Theta_{\mu\nu}/M_P^2\) 满足投影、无迹、守恒和 \(Q\to0\) 分支；
+  - 若要保持物质测地线，必须要求 \(\delta S_{\rm aux}/\delta S\) 和 \(\delta S_{\rm aux}/\delta\tilde\rho\) 在目标物质壳上消失，或引入独立 \(U,R\) shadow fields。

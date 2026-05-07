@@ -96,6 +96,7 @@
 - `168-qEtrace闭合三切片检验.md`：在高斯干涉三切片上检验 \(\mathsf q_E\)-trace 标量闭合；结果显示它的零源或简单 \(Q,Q^2\) 硬闭合版本均不如普通 trace=0，因此 \(\mathsf q_E\) 暂降级为主符号/辅助场正定范数候选。
 - `169-trace0最小投影方程组与patch条件.md`：把当前数据支持的最小 equation-first 候选写成显式方程组：Einstein 残差等于一个落在 \(\{\tilde g,uu,rr,ur\}\) 子空间内的守恒、无迹修正张量，并明确 \(\rho\neq\tilde\rho\)、\(Q\to0\) 分支和 \(\Delta,w^2,r^\perp\) patch 条件。
 - `170-trace0投影方程的Helmholtz检查.md`：检查 trace=0 投影方程是否可能直接来自普通局域协变作用量；结论是裸投影因 \(\delta\Pi_E\cdot\mathcal R\)、自伴性和 Noether 计数压力而不太可能是纯 metric Euler 方程，更合理的 action 化路线是辅助应力场或乘子约束系统。
+- `171-最小辅助应力场action原型.md`：尝试 action 化 trace=0 投影方程，明确真正进入 Einstein 方程右边的应是辅助 sector 的有效能动量 \(\Theta_{\mu\nu}\)，而不是裸 \(\lambda_I E^I_{\mu\nu}\)；指出直接显含 \(u,r,\tilde\rho,S\) 的辅助 action 会改写物质变分，保持测地线需要补偿或独立 shadow fields。
 
 补充说明：
 

@@ -693,6 +693,8 @@
   `research-notes/169-trace0最小投影方程组与patch条件.md`
 - Helmholtz 检查笔记：
   `research-notes/170-trace0投影方程的Helmholtz检查.md`
+- 最小辅助 action 原型：
+  `research-notes/171-最小辅助应力场action原型.md`
 - 当前最小候选：
   \[
   \tilde G_{\mu\nu}
@@ -721,4 +723,6 @@
   - \(Q\to0\Rightarrow\mathcal C\to0\) 仍是分支/边界/正则性条件；
   - 非退化 patch 需要 \(d>2\)、\(\Delta=u^2r^2-(u\cdot r)^2\neq0\)，并处理 \(w^2=0\)、\(r^\perp=0\) 和严格 \(1+1d\)；
   - Helmholtz 检查显示裸投影方程不宜声称为普通纯 metric 作用量方程，因为 \((\delta\Pi_E)\mathcal R\) 一般破坏自伴性，且 7 条 metric 条件存在 Noether 计数压力；
-  - 下一步理论任务是最小辅助应力场 action 原型和 `n=384` 复检。
+  - action 化时真正重要的是辅助 sector 的有效能动量 \(\Theta_{\mu\nu}\)，不是裸 \(\lambda_I E^I_{\mu\nu}\)；
+  - 若辅助 action 显含 \(u,r,\tilde\rho,S\)，通常会改写物质变分；保持测地线需要补偿或独立 \(U,R\) shadow fields；
+  - 下一步理论任务是 shadow-field 分支分析和 `n=384` 复检。
