@@ -3302,3 +3302,17 @@
   - trace=0 不自动保证回 Einstein，仍需 \(Q\to0\Rightarrow\mathcal C_{\mu\nu}\to0\) 的分支/边界/正则性选择；
   - 非退化 patch 需要 \(d>2\)、\(\Delta\neq0\)，并处理 \(w^2=0\)、\(r^\perp=0\) 和严格 \(1+1d\)；
   - 该候选仍是 equation-first，是否可来自作用量要做 Helmholtz/self-adjoint 检查。
+
+## 决策 255：裸 trace=0 投影方程不宜声称为普通纯 metric 作用量方程
+
+- Helmholtz 检查结果：
+  - 若把方程写成 \(F=M[\tilde g,u,r]\mathcal R\)，则
+    \[
+    \delta F=M\delta\mathcal R+(\delta M)\mathcal R.
+    \]
+  - 原始 \(\delta\mathcal R\) 可继承 Einstein-Hilbert 的自伴性，但场依赖投影产生的 \((\delta M)\mathcal R\) 一般不自伴；
+  - 6 条投影方程 + 1 条 trace 方程作为 metric 约束，也与普通 diffeo-invariant metric action 的 \(10-4=6\) 独立 metric 方程存在计数压力。
+- 决策：
+  - 当前 trace=0 投影方程继续作为 equation-first 候选；
+  - 不再把“它来自某个纯 \(\tilde g\) 局域作用量”作为默认假设；
+  - 若要 action 化，应优先尝试辅助应力场 action 或乘子约束 action，并清楚区分哪些方程来自 metric variation，哪些来自辅助场 variation。

@@ -691,6 +691,8 @@
 - 当前主线不是构造 D 支数值器，而是寻找显式、可推广的 equation-first Einstein-like 方程；数值器只是检验工具。
 - 最新理论笔记：
   `research-notes/169-trace0最小投影方程组与patch条件.md`
+- Helmholtz 检查笔记：
+  `research-notes/170-trace0投影方程的Helmholtz检查.md`
 - 当前最小候选：
   \[
   \tilde G_{\mu\nu}
@@ -718,4 +720,5 @@
   - 不可混用 \(\rho\) 和 \(\tilde\rho\)；
   - \(Q\to0\Rightarrow\mathcal C\to0\) 仍是分支/边界/正则性条件；
   - 非退化 patch 需要 \(d>2\)、\(\Delta=u^2r^2-(u\cdot r)^2\neq0\)，并处理 \(w^2=0\)、\(r^\perp=0\) 和严格 \(1+1d\)；
-  - 下一步理论任务是 Helmholtz/self-adjoint integrability 检查和 `n=384` 复检。
+  - Helmholtz 检查显示裸投影方程不宜声称为普通纯 metric 作用量方程，因为 \((\delta\Pi_E)\mathcal R\) 一般破坏自伴性，且 7 条 metric 条件存在 Noether 计数压力；
+  - 下一步理论任务是最小辅助应力场 action 原型和 `n=384` 复检。

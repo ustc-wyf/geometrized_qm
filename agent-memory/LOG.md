@@ -5589,3 +5589,27 @@
   - trace=0 是目前最小 algebraic closure；
   - \(\mathsf q_E\) 暂保留为主符号/辅助场正定范数候选；
   - 仍需做 Helmholtz/self-adjoint 检查和 \(Q\to0\Rightarrow\mathcal C\to0\) 分支选择分析。
+
+### 2026-05-08 trace=0 投影方程 Helmholtz 检查
+
+- 新建研究笔记：
+  - `research-notes/170-trace0投影方程的Helmholtz检查.md`。
+- 检查对象：
+  \[
+  \Pi_E^\perp\mathcal R=0,\qquad
+  \tilde g^{\mu\nu}\Pi_E\mathcal R_{\mu\nu}=0.
+  \]
+- 主要判断：
+  - 把 6 条投影方程 + 1 条 trace 方程嵌为 tensor equation 时，需要选择 trace 代表方向 \(\Sigma_{\mu\nu}\)，这已经不像 Einstein 方程那样天然唯一；
+  - 线性化有
+    \[
+    \delta F=M\,\delta\mathcal R+(\delta M)\mathcal R,
+    \]
+    其中 \(M[\tilde g,u,r]\) 含投影算子；
+  - \((\delta M)\mathcal R\) 一般破坏 Frechet self-adjointness；
+  - 纯 metric/matter 协变作用量在物质壳上有 4 个 Noether 恒等式，而投影 6 条 + trace 1 条看起来有 7 条 metric 约束，存在计数压力。
+- 当前结论：
+  - trace=0 投影方程可继续作为 equation-first 候选；
+  - 不能声称它已经来自普通局域纯 metric 作用量；
+  - action 化更合理的路线是辅助应力场 action 或乘子约束系统；
+  - 下一步应写最小辅助 action 原型，并在 `n=384` 复查 trace=0 优势。
