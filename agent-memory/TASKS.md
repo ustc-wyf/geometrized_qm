@@ -154,7 +154,18 @@
 - 若继续 pure-\(\tilde g\) 局域路线，优先级应改为：quadratic curvature basis -> 导数不变量 -> action-level integrability；不要再把单变量 \(f(\tilde R)\) 的高次多项式当主线。
 - 当前对“需要到多少阶才可能较好拟合”的经验判断已经更新：标准 4 阶 quadratic local action 仍几乎失败，最轻量 6 阶 pure-\(f(\tilde R)\) 复查也几乎没有改善，且最小真 6 阶 finite-jet 局域基底 \(\{1,\tilde R,I_2,\tilde R^2,\tilde R I_2,\tilde R^3\}\) 仍给出总体加权残差 \(\sim0.9987\)。因此下一步若继续 pure-\(\tilde g\) 局域路线，应扩到 \(I_3\) 与显式导数不变量，而不是继续在这些最小基底内打转。
 - 现在可转入 equation-first 路线：先构造满足协变性、对称性、\(\tilde\nabla\)-守恒和正确平直极限的 pure-\(\tilde g\)+matter 闭合方程，再在后验检查它是否满足 Helmholtz/self-adjoint integrability、能否重建作用量。
-- equation-first 的当前最小候选优先测试
+- 当前显式方程候选已提升为投影型 Einstein-like 方程：
+  \[
+  \Pi_E^\perp\left(\tilde G_{\mu\nu}-\frac{1}{M_P^2}\tilde T_{\mu\nu}\right)=0,
+  \]
+  其中 \(\Pi_E\) 投影到 \(\{\tilde g_{\mu\nu},u_\mu u_\nu,r_\mu r_\nu,u_{(\mu}r_{\nu)}\}\) 张量子空间。
+- 该方程必须与守恒约束
+  \[
+  \tilde\nabla^\mu\Pi_E\left(\tilde G_{\mu\nu}-\frac{1}{M_P^2}\tilde T_{\mu\nu}\right)=0
+  \]
+  以及 \(Q\to0\) 时投影残差消失的分支条件共同使用；否则它只是“残差方向限制”，还不是完整理论。
+- 数值任务现在只能服务于这个方程候选：检查投影残差、守恒、近退化 patch 和 \(Q\to0\) 极限，不能把多步数值器本身当成主目标。
+- 历史上先测试过的最小三项候选是
   \[
   \mathcal C_{\mu\nu}=Buu+Crr+D\,u_{(\mu}r_{\nu)}
   \]
@@ -168,8 +179,8 @@
   \]
   且必须同时满足
   \(h^\nu{}_\alpha\tilde\nabla^\mu\mathcal C_\mu{}^\alpha=0\)。
-- 下一步优先任务：推导/实现 gBCD 的系数闭合方程，即如何由场方程、Bianchi 恒等式、横向力约束和连续性方程共同决定 \(A,B,C,D\) 的时间推进；不要再把每个时间切片独立投影误认为动力学。
-- 数值任务：用 `kg_examples/fit_equation_first_constrained_bcd.py --atoms g,uu,rr,ur --hard-constraint` 继续做 `tau=-3.5,0,3.5` 与更高分辨率 sanity check；若 n160 hard KKT 太慢，先优化 KKT/稀疏线性代数或分块求解。
+- 下一步优先任务已经从“逐点系数闭合”升级为“投影场方程闭合”：明确 \(\Pi_E\)、守恒约束、\(Q\to0\) 分支和 action/integrability 条件如何共同定义一个理论。
+- 数值任务：`kg_examples/fit_equation_first_constrained_bcd.py --atoms g,uu,rr,ur --hard-constraint` 等脚本只作为投影方程的诊断工具，不能把三切片系数拟合当作最终方程。
 - 已完成 `n=96` 三时刻 sanity check：
   - transverse hard 与 full divergence-free hard 均可通过；
   - full hard 的中心代数残差约 `1%~5%`，但相邻 probe 时间层残差约 `14%~23%`；
@@ -1261,6 +1272,7 @@
   - tau=0 \(Q\)-门控强度扫描已完成，输出 `visualizations/equation_first_gbcd_aux_qgated_scan_n96_tau0_summary/`；
   - 无 Q 门控最小辅助 action 扫描已完成，输出 `visualizations/equation_first_gbcd_aux_noq_time_scan_n96_3tau_summary/`；
   - 已写出 `research-notes/153-gBCD显式理论候选v0.md`；
+  - 已写出 `research-notes/164-gBCD投影型Einstein-like方程候选.md`，把 gBCD 从 \(A,B,C,D\) 逐点代表元推进为显式投影型场方程。
   - 已做 v0 三层离散时间差分诊断，确认 `rr/ur` 是时间推进风险分量；
   - 研究笔记 `research-notes/148-gBCD辅助应力场代表元规范与nullspace硬约束.md`。
   - 研究笔记 `research-notes/149-gBCD状态方程trace与剪切闭合首轮检验.md`。
@@ -1291,16 +1303,12 @@
   - full-linear metric update 与 sparse projection 的 matvec 已改为 entry-array 向量化，当前高分辨率三切片能在数分钟内调试。
   - `tau=-3.5` 阻尼线搜索显示 `alpha=1` 最优，欠阻尼不能解决残差；左侧分离态问题不是简单 Newton 过冲。
 - 下一步最高优先：
-  - 将 `plus-only` 解法包装为正式 D 初始加速度求解器：保持初始 \(\tilde g_0,\rho^\tilde,u_i\) 不变，由 D 场方程求 \(g_+\) 或 \(\partial_t^2\tilde g\)；
-  - 用充分迭代/预条件版本复现或超过 `tau=-3.5,core10` 既有 `plus-only+CG6000` exact residual weighted mean `0.13917`；
-  - 保存可被演化器直接读取的 \(g_-,g_0,g_+\)、\(\mathcal C_{\mu\nu}\)、\(\rho^\tilde,u_\mu\) 初始包；
-  - 在该初始包上推进一小步 D 物质方程，检查 \(\rho^\tilde\) 拉回偏差、D 方程 exact residual、\(\tilde\nabla^\mu\mathcal C_{\mu\nu}\)、质量壳判别式和 full tensor interface matching；
-  - 若一步演化后约束漂移明显，再把 soft penalty principal/full-conservation projection 升级为 sparse hard/nullspace 或 augmented-Lagrangian；
-  - 基于 `tau=0` 与 `tau=+3.5` 高分辨率核心结果继续物理解释，但不要回避 `tau=-3.5` 闭合缺口；
-  - 随后扩展到 `n=384,trusted`，并与 `n=512/640` 做收敛检查；
-  - 接入连续性方程、质量壳/测地线条件，推进 \((\rho,S)\)；
-  - A 支只作为初态近似和软目标，不再作为每步硬背景；
-  - 若 \((\rho,S,\lambda)\) 仍无法闭合，再加入 \(\delta\tilde g\) 或改变方程 ansatz。
+  - 暂停把 `plus-only` 包装成主目标，先完成投影型 Einstein-like 方程的理论闭合检查；
+  - 明确投影内积 \(W^{\mu\nu\rho\sigma}\) 的选择是否只是代表元规范，还是会改变物理预测；
+  - 推导 Gram 矩阵 \(H_{IJ}\) 退化时的 patch/branch 条件，避免把数值 `guard` 当成物理方程；
+  - 检查 \(Q\to0\) 分支条件能否由 \(Q\)-门控辅助泛函、边界条件或正则化选择自然给出；
+  - 对投影方程做 Helmholtz/self-adjoint integrability 检查，判断是否可能来自作用量；
+  - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：
   - 后续所有硬守恒/硬测地线投影默认用 nullspace 或等价约束保持算法；
   - 裸 KKT 只能做快速诊断；

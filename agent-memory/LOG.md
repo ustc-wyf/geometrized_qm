@@ -13,6 +13,39 @@
 
 ## 日志记录
 
+### 2026-05-07 gBCD 投影型 Einstein-like 方程候选
+
+- 用户再次明确纠偏：最终需要的是“显式可写、可一般化推广的方程或约束条件”，不是停留在数值计算器或逐点拟合。
+- 已把当前 equation-first 主线整理为投影型场方程，并写入 `research-notes/164-gBCD投影型Einstein-like方程候选.md`。
+- 核心候选：
+  \[
+  \Pi_E^\perp\left(\tilde G_{\mu\nu}-\frac{1}{M_P^2}\tilde T_{\mu\nu}\right)=0,
+  \]
+  其中 \(\Pi_E\) 投影到
+  \[
+  E^I_{\mu\nu}=\{\tilde g_{\mu\nu},u_\mu u_\nu,r_\mu r_\nu,u_{(\mu}r_{\nu)}\}.
+  \]
+- 守恒/测地线约束：
+  \[
+  \tilde\nabla^\mu\Pi_E\left(\tilde G_{\mu\nu}-\frac{1}{M_P^2}\tilde T_{\mu\nu}\right)=0.
+  \]
+  这等价于要求有效修正张量 \(\mathcal C_{\mu\nu}\) 单独守恒，从而结合物质连续性方程给出 \(\tilde g\)-测地线运动。
+- 物质方程沿用此前已证明等价的变换后 Madelung/KG 方程：
+  \[
+  \tilde g^{\mu\nu}\partial_\mu S\partial_\nu S=m^2,\qquad
+  \tilde\nabla_\mu(\tilde\rho\,\tilde g^{\mu\nu}\partial_\nu S)=0.
+  \]
+- 还必须加分支条件：
+  \[
+  Q\to0\Rightarrow \Pi_E\left(\tilde G_{\mu\nu}-\frac{1}{M_P^2}\tilde T_{\mu\nu}\right)\to0,
+  \]
+  否则投影方程只限制残差方向，不保证回到普通 Einstein 方程。
+- 当前未完成问题：
+  - 投影内积 \(W^{\mu\nu\rho\sigma}\) 的物理选择；
+  - Gram 矩阵近退化时的 patch/branch 处理；
+  - \(Q\)-门控辅助泛函是否必要；
+  - 该 equation-first 候选是否满足 Helmholtz/self-adjoint integrability、能否来自作用量。
+
 ### 2026-05-07 放宽 pure-gtilde 限制后的 u/r 引力作用量路线
 
 - 用户提出新路线：仍采用强约束，但暂时放开“引力作用量必须完全由 `gtilde` 衍生”的限制，允许在 `gtilde` 表象下显含 \(u^\mu\) 与 \(r^\mu\)。

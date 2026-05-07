@@ -136,6 +136,7 @@
 - `research-notes/151-gBCD辅助场变分闭合的Euler-Lagrange方程.md`：推导固定参考切片上的 saddle-point 辅助场闭合泛函和 Euler-Lagrange 方程，连接数值正则项与连续作用量
 - `research-notes/152-无Q门控的最小辅助场action扫描.md`：按用户要求暂不考虑 \(Q\)，扫描 norm/time/space 最小辅助 action；当前默认候选为 `norm_weight=1e-8,time_weight=1e-5,space_weight=0`
 - `research-notes/153-gBCD显式理论候选v0.md`：把当前结果整理成 equation-first 显式理论候选 v0：主场方程、守恒、辅助场最小泛函和受限变分方程
+- `research-notes/164-gBCD投影型Einstein-like方程候选.md`：当前 equation-first 主线的显式方程候选；把 Einstein 残差投影到 \(\{\tilde g,uu,rr,ur\}\) 张量子空间，并要求投影修正张量守恒和 \(Q\to0\) 回 Einstein 分支
 - `research-notes/159-n384三切片gBCD求解器升级与物理主线判断.md`：记录 `n=384,core10,tau=-3.5,0,+3.5` 三切片高分辨率 gBCD 求解器升级、残差结果和下一步物理主线判断
 - `kg_examples/plot_gbcd_metric_update_diagnostics.py`：读取 full-linear metric update 的 `.npz`，生成包含 `rho`、残差、\(\delta g_+\)、`det(corrected g+)` 的诊断图，并在图内说明 white contour 与 `core10` 定义
 - `visualizations/full_dynamics_2p1/`：`2+1d` 全动力学数值结果图和 `summary.json`
@@ -189,6 +190,11 @@
 - 当前新增主线：噪声基准比较已经完成；按当前最简单的 shot-noise / drift / normalization 模型，最实际的主通道不是差分量，而仍是 raw integrated intensity
 - 当前新增主线：`phase flip` 在当前口径下统计和系统误差代价都过高，适合当概念性 cross-check，不适合当前主打
 - 当前新增主线：已经整理出一份 14 页的完整技术汇报 deck，叙事顺序与当前论文主线一致，可直接作为后续写 paper 或精简组会版的骨架
+- 当前主线纠偏：数值器不是目标；目标是写出可一般化的变换后 Einstein-like 方程。当前候选是投影型方程
+  \[
+  \Pi_E^\perp(\tilde G_{\mu\nu}-\tilde T_{\mu\nu}/M_P^2)=0,
+  \]
+  配合投影修正张量守恒、物质壳方程/连续性方程和 \(Q\to0\) 回 Einstein 分支条件。
 
 ## 注意事项
 

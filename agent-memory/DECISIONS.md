@@ -3168,3 +3168,28 @@
   - 后续所有计划必须先说明“候选方程形式是什么、数值结果如何约束它”；
   - 多步演化器只能作为检验 gBCD 或其他候选方程闭合性的工具；
   - 不再把“能跑起来”本身当成物理目标或理论完成标志。
+
+## 决策 249：gBCD 应写成投影型 Einstein-like 方程，而不是逐点系数拟合
+
+- 背景：
+  - 用户要求最终对象必须是显式可写、可推广的方程或约束条件；
+  - 逐点求 \(A,B,C,D\) 容易退化成数值拟合，不能直接构成理论。
+- 决策：
+  - 当前 equation-first 主候选写成
+    \[
+    \Pi_E^\perp\left(\tilde G_{\mu\nu}-\frac{1}{M_P^2}\tilde T_{\mu\nu}\right)=0,
+    \]
+    其中 \(\Pi_E\) 投影到
+    \[
+    \{\tilde g_{\mu\nu},u_\mu u_\nu,r_\mu r_\nu,u_{(\mu}r_{\nu)}\}
+    \]
+    张量子空间。
+  - 守恒约束写成
+    \[
+    \tilde\nabla^\mu\Pi_E\left(\tilde G_{\mu\nu}-\frac{1}{M_P^2}\tilde T_{\mu\nu}\right)=0.
+    \]
+  - 必须额外加入 \(Q\to0\) 时投影残差消失的分支条件，才能回到普通 Einstein 方程。
+- 影响：
+  - \(A,B,C,D\) 不再是理论的基本“拟合结果”，而是投影系数或辅助场代表元；
+  - 数值工作应转为检验投影方程、守恒、退化 patch 和分支条件；
+  - 下一步理论检查是投影内积选择、Gram 退化、\(Q\)-门控分支和 Helmholtz/self-adjoint integrability。
