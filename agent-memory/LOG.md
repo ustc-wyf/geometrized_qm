@@ -5902,3 +5902,67 @@
 - 下一步数值/解析检查：
   - 在三切片上统计 \(\mathcal q\approx0\) 区域的 \(C/\chi\) 是否有界；
   - 在 \(\Delta\approx0,r^\perp\approx0\) 区域检查 \(\mathcal R\) 是否接近低维 patch \(E_u\)。
+
+### 2026-05-08 branch / patch 数值检查
+
+- 新增脚本：
+  - `kg_examples/diagnose_trace0_branch_patch.py`。
+- 新增研究笔记：
+  - `research-notes/182-branch-patch数值检查.md`。
+- 输出：
+  - `visualizations/trace0_branch_patch_check_n384_core10/summary.json`
+  - `visualizations/trace0_branch_patch_check_n384_core10/branch_patch_summary.png`
+  - `visualizations/trace0_branch_patch_check_n384_core10/branch_patch_taum3p5.png`
+  - `visualizations/trace0_branch_patch_check_n384_core10/branch_patch_tau0.png`
+  - `visualizations/trace0_branch_patch_check_n384_core10/branch_patch_taup3p5.png`
+- 诊断口径：
+  - 使用 `n=384, window=9um, core10`；
+  - 加载此前 hard-ALM 的 trace0 + full-conservation 代表元；
+  - 计算 \(\mathcal q=(\tilde\nabla_\mu r^\mu+r_\mu r^\mu)/m^2\)；
+  - 用 \(q_{\rm rel}=|\mathcal q|/\mathrm{p95}(|\mathcal q|)\) 和 \(\chi=q_{\rm rel}^2/(q_{\rm rel}^2+0.1^2)\) 测试 \(C/\chi\) 有界性；
+  - 逐点检查 \(\mathcal R\) 对 \(E_u=\mathrm{span}\{\tilde g,uu\}\) 与 trace0 单方向 \(uu-(u^2/3)\tilde g\) 的残差。
+- 主要结果：
+  - \(q_{\rm rel}\le0.1\) 点数：\(\tau=-3.5\) 为 2171，\(\tau=0\) 为 533，\(\tau=+3.5\) 为 2915；
+  - \(|C|/\chi\) weighted p95 分别约 `1.32e6`, `6.94e4`, `2.36e6`；
+  - 因此 trace0 + full conservation + hard-ALM 不会自动给出 \(Q\to0\Rightarrow C\to0\)；
+  - 低维 `Eu2` weighted p95 残差分别约 `3.73e-2`, `2.44e-1`, `9.28e-2`，说明分离态较接近 \(E_u\)，干涉中心需要完整四方向 patch；
+  - core10 内 \(\Delta_{\rm rel}\) p50/p95 基本为 1，真正低维退化点不多，patch transition 不是本组三切片的主矛盾。
+- 下一步：
+  - proposal v1 应升级为带 branch 正则性的 v1.1：
+    \[
+    \mathcal R_{\mu\nu}=\chi(\mathcal q)\hat C_{\mu\nu},
+    \quad
+    \hat C\in E,\quad \hat C\text{ 有界},\quad
+    \tilde\nabla^\mu(\chi\hat C_{\mu\nu})=0.
+    \]
+  - 数值上应实现带 \(\chi\)-branch 权重/有界性惩罚的 hard-ALM，检查是否仍能同时保持小代数 residual 与小守恒 residual。
+
+### 2026-05-08 branch 正则化 hard-ALM 首轮
+
+- 新增脚本：
+  - `kg_examples/fit_gbcd_trace0_branch_sparse_conservation.py`。
+- 新增研究笔记：
+  - `research-notes/183-branch正则化hard-ALM首轮.md`。
+- 方法：
+  - 直接令 \(C_{\mu\nu}=\chi(\mathcal q)\hat C_{\mu\nu}\)；
+  - 以 \(\hat C\) 的局部系数为未知量；
+  - trace0 仍用 nullspace 硬消元；
+  - full conservation 仍对 \(C=\chi\hat C\) 用 hard-ALM；
+  - 额外扫描 `branch_bound_weight`，作为 \(\hat C\) 有界性的数值测试。
+- \(\tau=0\) 结果：
+  - `branch_bound_weight=1e-4~5e-4` 是可用窗口；
+  - algebraic weighted mean 约 `0.0167~0.0295`；
+  - full divergence weighted mean 保持约 `2.7e-5~3.4e-5`；
+  - \(\hat C\) weighted mean 从未约束时的 `1.76e6` 降到约 `6e3~1.6e4`；
+  - `1e-2` 过强，algebraic p95 接近 1，不可接受。
+- \(\tau=-3.5\)：
+  - `branch_bound_weight=3e-4` 给出 algebraic weighted mean `0.0221`、full divergence weighted mean `0.0010`；
+  - 但 \(\chi\) p50 只有 `2.62e-3`，\(\hat C\) weighted mean 仍达 `5.48e5`。
+- \(\tau=+3.5\)：
+  - `bound=0` 时 full divergence weighted mean `3.27e-4` 但 \(\hat C\) weighted mean `2.35e8`；
+  - `bound=1e-4` 时 \(\hat C\) 降到 `2.53e5`，但 full divergence weighted mean 升到 `4.87e-3`；
+  - `bound=3e-4` 时 full divergence weighted mean 升到 `3.25e-2`。
+- 判断：
+  - v1.1 的 branch 写法在干涉中心可行，但右侧分离态显示 \(\hat C\) 有界性和守恒之间有真实张力；
+  - 不能用一个全局 constant L2 penalty 作为最终正则性实现；
+  - 下一步应改成局部不等式/投影式 \(\|\hat C\|_W\le K\)，并检查右侧 divergence outliers 是否集中于 \(\chi\ll1\)、低密度边缘或 patch 退化处。

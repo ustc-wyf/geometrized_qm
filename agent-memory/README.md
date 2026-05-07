@@ -754,5 +754,6 @@
   - trace0 硬守恒原型显示 ALM 在三切片上比 penalty 进一步压低 full divergence，且只小幅增加代数残差；
   - equation-first trace0 proposal v1 已整理完成，明确列出变量、物质测地线、几何方程、投影写法、patch/branch 条件、数值支持和 action caveat；
   - \(Q\to0\) 分支与约束传播已细化：\(Q\to0\Rightarrow C\to0\) 是 GR branch/边界/正则性选择，\(\tilde\nabla C=0\) 在精确方程中由 Bianchi 相容性推出但在数值初值中必须硬施加，trace0 才是真正的状态方程；
-  - branch preservation 与 patch transition 首轮已完成：推荐 \(\chi(0)=\chi'(0)=0\) 且 \(\hat C\) 有界；\(\Delta=0/r^\perp=0\) 可尝试低维 patch，\(w^2=0\) 是 trace0 主符号风险；
-  - 下一步应做对应数值检查：\(\mathcal q\approx0\) 区域的 \(C/\chi\) 有界性，以及 \(\Delta\approx0,r^\perp\approx0\) 区域是否接近 \(E_u=\mathrm{span}\{\tilde g,uu\}\)；action 化若继续则转向真实辅助场 \(\chi\)-sector。
+- branch preservation 与 patch transition 首轮已完成：推荐 \(\chi(0)=\chi'(0)=0\) 且 \(\hat C\) 有界；\(\Delta=0/r^\perp=0\) 可尝试低维 patch，\(w^2=0\) 是 trace0 主符号风险；
+  - branch / patch 数值检查已完成：未加 branch 正则性时，hard-ALM 代表元在 \(q_{\rm rel}\le0.1\) 区域的 \(|C|/\chi\) weighted p95 仍很大，因此 \(Q\to0\Rightarrow C\to0\) 必须显式写成 \(C=\chi(\mathcal q)\hat C\)、\(\hat C\) 有界；低维 \(E_u\) 对分离态较好，但干涉中心不能替代完整四方向 patch；
+  - branch 正则化 hard-ALM 首轮已完成：\(\tau=0\) 存在 `1e-4~5e-4` 的有界性惩罚可用窗口，但右侧分离态一旦压 \(\hat C\) 会显著恶化 full divergence；下一步不要把全局 L2 penalty 当最终规则，应转向局部不等式/投影条件 \(\|\hat C\|_W\le K\)，并固定物理 \(\chi\) 尺度。

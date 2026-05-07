@@ -1374,7 +1374,12 @@
   - 下一步理论写作应检查 branch preservation：\(\lambda_I=\chi(\mathcal q)\hat\lambda_I\) 中 \(\hat\lambda_I\) 的有界性是否随演化保持；
   - 下一步还应写 patch transition：在 \(\Delta=0,w^2=0,r^\perp=0\) 退化面附近寻找替代张量基底，避免把投影坐标奇点误当物理奇点；
   - 已完成 branch preservation 与 patch transition 首轮分析，见 `research-notes/181-branch-preservation与patch-transition首轮.md`；
-  - 下一步具体数值检查应统计 \(\mathcal q\approx0\) 区域的 \(C/\chi\) 是否有界，并检查 \(\Delta\approx0,r^\perp\approx0\) 区域的 \(\mathcal R\) 是否接近低维 patch \(E_u=\mathrm{span}\{\tilde g,uu\}\)；
+  - 已完成 branch / patch 数值检查，见 `research-notes/182-branch-patch数值检查.md` 和 `visualizations/trace0_branch_patch_check_n384_core10/`；
+  - 数值检查结论是 trace0 + full conservation + hard-ALM 不自动保证 \(Q\to0\Rightarrow C\to0\)，必须把 \(C=\chi(\mathcal q)\hat C\)、\(\hat C\) 有界写成显式 branch 正则性；
+  - 低维 \(E_u=\mathrm{span}\{\tilde g,uu\}\) 对分离态较好，但干涉中心仍需要完整四方向 patch，不能用 \(E_u\) 全局替代；
+  - 已完成 branch 正则化 hard-ALM 首轮，见 `research-notes/183-branch正则化hard-ALM首轮.md`；
+  - branch-v1.1 在 \(\tau=0\) 有可用窗口，但右侧分离态显示 \(\hat C\) 有界性与守恒存在张力；
+  - 下一步具体任务应把 \(\hat C\) 有界性从全局 L2 penalty 改成局部不等式/投影条件，并诊断右侧分离态 divergence outliers 的位置；
   - 下一步数值验证若继续，应使用 ALM 作为 hard conservation baseline，并只把 KKT 当作需要更好线性代数的严格求解方向；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：

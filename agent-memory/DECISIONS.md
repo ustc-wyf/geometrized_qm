@@ -3493,3 +3493,47 @@
   - \(\Delta=0\) 与 \(r^\perp=0\) 是张量基底降秩问题，可尝试低维 patch；
   - \(w^2=0\) 是 trace0 主符号退化，不是单纯换基底可解决的问题；
   - 若采用 \(\mathsf q_E\)-trace 或混合 trace 作为局部补丁，必须承认 theory 从 v1 升级为 patchwise scalar closure 版本，不能说完全同一方程。
+
+## 决策 266：\(Q\to0\) branch 不能只靠 trace0 + full conservation，必须显式加入 \(\chi\)-正则性
+
+- 数值依据：
+  - 在 `n=384, core10` 三切片 hard-ALM 代表元上，\(q_{\rm rel}\le0.1\) 区域仍有很大的 \(|C|/\chi\)；
+  - \(|C|/\chi\) weighted p95 约为 `1.32e6`, `6.94e4`, `2.36e6`；
+  - 因此 \(Q\to0\Rightarrow C\to0\) 不是当前最小代数/守恒系统的自动推论。
+- 决策：
+  - equation-first proposal v1 应升级为带 branch 正则性的 v1.1：
+    \[
+    \mathcal R_{\mu\nu}
+    =
+    \chi(\mathcal q)\hat C_{\mu\nu},
+    \quad
+    \hat C_{\mu\nu}\in E,\quad
+    \hat C\text{ 有界},\quad
+    \tilde\nabla^\mu(\chi\hat C_{\mu\nu})=0.
+    \]
+  - \(\chi(0)=\chi'(0)=0\) 仍是首选；若使用一阶零点，则必须补 \(\mathcal q=0\) 面上的无通量边界条件。
+  - 低维 \(E_u=\mathrm{span}\{\tilde g,uu\}\) 只作为 \(\Delta\to0\) patch 图；在干涉中心不能替代完整 \(E=\mathrm{span}\{\tilde g,uu,rr,ur\}\)。
+
+## 决策 267：branch-v1.1 有数值可行窗口，但有界性不能用全局常数 L2 惩罚定稿
+
+- 支持点：
+  - 在 \(\tau=0\) 干涉中心，直接求 \(C=\chi\hat C\) 的 hard-ALM 有稳定窗口；
+  - `branch_bound_weight=1e-4~5e-4` 可保持守恒残差约 `3e-5`，代数 weighted mean 约 `0.017~0.029`；
+  - \(\hat C\) weighted mean 可从 `1.76e6` 降到 `6e3~1.6e4`。
+- 风险点：
+  - 左右分离态 \(\chi\) 中位数很小，\(\hat C\) 有界性更苛刻；
+  - 右侧分离态一旦压 \(\hat C\)，full divergence 明显恶化；
+  - 因此单一全局 `branch_bound_weight` 不是最终物理规则。
+- 决策：
+  - proposal v1.1 继续保留：
+    \[
+    \mathcal R_{\mu\nu}=\chi(\mathcal q)\hat C_{\mu\nu},
+    \quad
+    \hat C\in E,
+    \quad
+    \mathrm{tr}_{\tilde g}\hat C=0,
+    \quad
+    \tilde\nabla^\mu(\chi\hat C_{\mu\nu})=0.
+    \]
+  - \(\hat C\) 有界性下一步应写成局部不等式/投影条件 \(\|\hat C\|_W\le K\)，而不是普通全局二次惩罚；
+  - 需要固定物理 \(\chi\) 尺度，不能长期依赖每个切片的 p95 归一化。
