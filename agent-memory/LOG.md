@@ -5770,3 +5770,26 @@
   - 干涉中点 trace0 局部代表元几乎自然守恒；
   - 分离态 trace0 局部代表元不自然守恒，且比 unconstrained 基线更差；
   - 因此 trace0 仍是主闭合，但必须和 full conservation 联立求解，不能先逐点 trace0 再事后检查守恒。
+
+### 2026-05-08 trace0 稀疏全局守恒扫描
+
+- 新增脚本：
+  - `kg_examples/fit_gbcd_trace0_sparse_conservation.py`。
+- 新建研究笔记：
+  - `research-notes/177-trace0稀疏全局守恒扫描.md`。
+- 方法：
+  - 逐点对 \(\tilde g^{\mu\nu}C_{\mu\nu}=0\) 做 SVD nullspace 硬消元；
+  - 在消元后三自由度上建立 sparse 线性系统；
+  - 扫描完整守恒行的 penalty 权重 `force_weight`。
+- 输出：
+  - `visualizations/equation_first_gbcd_trace0_sparse_conservation_n384_taum3p5_core10_scan/`
+  - `visualizations/equation_first_gbcd_trace0_sparse_conservation_n384_tau0_core10_scan/`
+  - `visualizations/equation_first_gbcd_trace0_sparse_conservation_n384_taup3p5_core10_scan/`
+- 关键数据：
+  - tau=-3.5：`force_weight=0` 时 row_alg `0.004797`、full_div `0.783756`；`force_weight=10` 时 row_alg `0.005478`、full_div `0.007740`。
+  - tau=0：`force_weight=0` 时 row_alg `0.000675`、full_div `0.000937`；`force_weight=10` 时 row_alg `0.000675`、full_div `0.000458`。
+  - tau=+3.5：`force_weight=0` 时 row_alg `0.007307`、full_div `0.254636`；`force_weight=10` 时 row_alg `0.007698`、full_div `0.006502`。
+- 当前判断：
+  - trace0 与完整守恒在高分辨率三切片上兼容；
+  - 分离态的大自然散度不是理论矛盾，而是逐点后处理没有联立守恒；
+  - 下一步应把 penalty scan 升级成 hard conservation 或 saddle-point/KKT 矩阵自由求解器。

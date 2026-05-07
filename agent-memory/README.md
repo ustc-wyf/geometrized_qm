@@ -705,6 +705,8 @@
   `research-notes/175-n384-trace0局部复检.md`
 - trace0 局部守恒兼容性：
   `research-notes/176-trace0局部守恒兼容性.md`
+- trace0 稀疏全局守恒扫描：
+  `research-notes/177-trace0稀疏全局守恒扫描.md`
 - 当前最小候选：
   \[
   \tilde G_{\mu\nu}
@@ -740,4 +742,5 @@
   - 具体 stealth-state action 候选检查显示最小局域 ansatz 有 no-go：抵消 \(C\)-变分会同时取消 metric 源；
   - `n=384` 局部复检支持普通 trace=0 继续作为主标量闭合，\(\mathsf q_E\) 暂降级为主符号/正定范数诊断工具；
   - trace0 局部守恒检查显示干涉中点几乎自然守恒，但分离态自然散度很大；
-  - 下一步应做 `trace0 + full conservation` 的 sparse/global 联立求解；action 化若继续则转向真实辅助场 \(\chi\)-sector。
+  - trace0 稀疏全局守恒扫描显示 `trace0 + full conservation` 兼容；
+  - 下一步应把 sparse penalty 扫描升级为 hard conservation/saddle-point 矩阵自由求解器，并整理 equation-first 显式 proposal；action 化若继续则转向真实辅助场 \(\chi\)-sector。

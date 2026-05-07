@@ -3420,3 +3420,26 @@
     \]
     不能先逐点求 trace0 再期待守恒自动成立；
   - 下一步应写高分辨率 sparse/global 求解器：先硬消元 trace0，再扫描完整守恒残差能否被压低。
+
+## 决策 262：trace0 + full conservation 在高分辨率三切片上兼容
+
+- 稀疏全局扫描结果：
+  - trace0 通过逐点 nullspace 硬消元保持；
+  - full conservation 以 penalty 行加入 sparse LSQR；
+  - 在 \(\tau=-3.5\) 和 \(\tau=+3.5\) 两个分离态，`force_weight=10` 可把 full divergence scale 分别压到约 `0.00774` 和 `0.00650`；
+  - 代数 row-floor residual 只从约 `0.00480 -> 0.00548`、`0.00731 -> 0.00770` 轻微增加。
+- 决策：
+  - trace0 与完整守恒不是互相矛盾的条件；
+  - 当前 equation-first 主候选继续保留：
+    \[
+    \tilde G_{\mu\nu}
+    =
+    \tilde T_{\mu\nu}/M_P^2+C_{\mu\nu},
+    \quad
+    C\in\mathrm{span}\{\tilde g,uu,rr,ur\},
+    \quad
+    C^\mu{}_\mu=0,
+    \quad
+    \tilde\nabla^\mu C_{\mu\nu}=0.
+    \]
+  - 下一步数值上应升级为 hard conservation/saddle-point 矩阵自由求解器；理论上应整理成显式 proposal。
