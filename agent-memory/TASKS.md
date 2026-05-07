@@ -1356,7 +1356,8 @@
   - 已写出普通 trace=0 + full conservation + patch/branch 的显式最小方程组，见 `research-notes/169-trace0最小投影方程组与patch条件.md`；
   - 已完成 trace=0 投影方程的 Helmholtz/self-adjoint 必要条件检查，见 `research-notes/170-trace0投影方程的Helmholtz检查.md`；
   - 已写出最小辅助应力场 action 原型，见 `research-notes/171-最小辅助应力场action原型.md`；
-  - 下一步理论任务是分析 shadow-field 分支：独立 \(U,R\) 如何与 \(u,r\) 选同一物理分支，同时不通过硬约束破坏物质变分；
+  - 已分析 shadow-field 分支，见 `research-notes/172-shadow-field分支的最小方程组.md`；
+  - 下一步理论任务是检查 shadow stress 是否仍落在 \(E_{\rm sh}\) 或可由 \(C_{\mu\nu}\) 状态方程吸收，并检查 \((\Phi,\sigma)=(S,\tilde\rho)\) 分支在完整耦合系统中的传播；
   - 下一步在 `n=384` 可信条纹分辨率上复查 trace=0 最小闭合，确认 `n=96` 结论不是低分辨率误导；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：

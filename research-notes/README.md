@@ -97,6 +97,7 @@
 - `169-trace0最小投影方程组与patch条件.md`：把当前数据支持的最小 equation-first 候选写成显式方程组：Einstein 残差等于一个落在 \(\{\tilde g,uu,rr,ur\}\) 子空间内的守恒、无迹修正张量，并明确 \(\rho\neq\tilde\rho\)、\(Q\to0\) 分支和 \(\Delta,w^2,r^\perp\) patch 条件。
 - `170-trace0投影方程的Helmholtz检查.md`：检查 trace=0 投影方程是否可能直接来自普通局域协变作用量；结论是裸投影因 \(\delta\Pi_E\cdot\mathcal R\)、自伴性和 Noether 计数压力而不太可能是纯 metric Euler 方程，更合理的 action 化路线是辅助应力场或乘子约束系统。
 - `171-最小辅助应力场action原型.md`：尝试 action 化 trace=0 投影方程，明确真正进入 Einstein 方程右边的应是辅助 sector 的有效能动量 \(\Theta_{\mu\nu}\)，而不是裸 \(\lambda_I E^I_{\mu\nu}\)；指出直接显含 \(u,r,\tilde\rho,S\) 的辅助 action 会改写物质变分，保持测地线需要补偿或独立 shadow fields。
+- `172-shadow-field分支的最小方程组.md`：定义 shadow fields \((\Phi,\sigma)\) 及 \(U=d\Phi,R=d\ln\sqrt\sigma\)，给出不直接变分 \(S,\tilde\rho\) 的辅助 action 分支；结论是该路线可保护物质测地线方程，但需用同型动力学和初始/边界条件选择 \(U=u,R=r\) 的物理分支。
 
 补充说明：
 

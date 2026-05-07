@@ -5637,3 +5637,34 @@
   - 裸 \(\lambda_I E^I\) action 不是正确目标；
   - 正确目标是寻找辅助 sector，使其有效能动量 \(\Theta_{\mu\nu}/M_P^2\) 满足投影、无迹、守恒和 \(Q\to0\) 分支；
   - 若要保持物质测地线，必须要求 \(\delta S_{\rm aux}/\delta S\) 和 \(\delta S_{\rm aux}/\delta\tilde\rho\) 在目标物质壳上消失，或引入独立 \(U,R\) shadow fields。
+
+### 2026-05-08 shadow-field 分支最小方程组
+
+- 新建研究笔记：
+  - `research-notes/172-shadow-field分支的最小方程组.md`。
+- 定义 shadow fields：
+  \[
+  \Phi,\sigma,\qquad
+  U_\mu=\partial_\mu\Phi,\qquad
+  R_\mu=\tilde\nabla_\mu\ln\sqrt{\sigma}.
+  \]
+- 目的：
+  - 让辅助 action 依赖 \((\Phi,\sigma)\)，而不是直接依赖物质变量 \((S,\tilde\rho)\)；
+  - 从而保持
+    \[
+    \delta S_{\rm aux}/\delta S=0,\qquad
+    \delta S_{\rm aux}/\delta\tilde\rho=0.
+    \]
+- 关键判断：
+  - 不能在 action 中用硬约束 \(U=u,R=r\)，否则乘子会重新改写物质变分；
+  - 应让 shadow fields 满足同型动力学
+    \[
+    U^2=m^2,\qquad
+    \tilde\nabla_\mu(\sigma U^\mu)=0,
+    \]
+    并通过初始/边界分支选择 \(\Phi=S+\mathrm{const},\sigma=\tilde\rho\)；
+  - 若完整耦合系统适定且唯一，物理分支上可保持 \(U=u,R=r,Q_{\rm sh}=Q\)。
+- 当前结论：
+  - shadow-field 分支可以保护测地线解释；
+  - 代价是引入额外自由度和物理分支选择；
+  - 下一步要检查 shadow stress 是否可被 \(C_{\mu\nu}\) 状态方程吸收，以及分支传播是否成立。

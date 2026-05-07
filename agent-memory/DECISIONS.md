@@ -3334,3 +3334,23 @@
 - 决策：
   - 裸 \(\lambda_I E^I\) 作用量路线暂不作为主线；
   - action 化主线应转为“辅助有效应力 \(\Theta\)”或“shadow-field 分支”。
+
+## 决策 257：shadow-field 分支可保护物质变分，但需要物理分支选择
+
+- 定义：
+  - 引入独立辅助场 \(\Phi,\sigma\)，定义
+    \[
+    U_\mu=\partial_\mu\Phi,\qquad
+    R_\mu=\tilde\nabla_\mu\ln\sqrt{\sigma}.
+    \]
+  - 辅助张量子空间改为
+    \[
+    E_{\rm sh}=\mathrm{span}\{\tilde g,UU,RR,UR\}.
+    \]
+- 结论：
+  - 若 \(S_{\rm aux}\) 不直接依赖 \(S,\tilde\rho\)，则不会直接改写物质 HJ/连续性方程；
+  - 不能用 action 硬约束 \(U=u,R=r\)，否则约束乘子会重新给 \(S,\tilde\rho\) 方程加源；
+  - 可行方式是让 shadow fields 满足与物质场同型的方程，并用初始/边界条件选择 \(\Phi=S+\mathrm{const},\sigma=\tilde\rho\) 的物理分支。
+- 风险：
+  - 该路线引入额外自由度和 off-branch 解；
+  - 必须证明物理分支在完整耦合系统中传播，且 shadow stress 可被辅助状态方程吸收。

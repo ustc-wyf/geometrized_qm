@@ -695,6 +695,8 @@
   `research-notes/170-trace0投影方程的Helmholtz检查.md`
 - 最小辅助 action 原型：
   `research-notes/171-最小辅助应力场action原型.md`
+- shadow-field 分支：
+  `research-notes/172-shadow-field分支的最小方程组.md`
 - 当前最小候选：
   \[
   \tilde G_{\mu\nu}
@@ -725,4 +727,5 @@
   - Helmholtz 检查显示裸投影方程不宜声称为普通纯 metric 作用量方程，因为 \((\delta\Pi_E)\mathcal R\) 一般破坏自伴性，且 7 条 metric 条件存在 Noether 计数压力；
   - action 化时真正重要的是辅助 sector 的有效能动量 \(\Theta_{\mu\nu}\)，不是裸 \(\lambda_I E^I_{\mu\nu}\)；
   - 若辅助 action 显含 \(u,r,\tilde\rho,S\)，通常会改写物质变分；保持测地线需要补偿或独立 \(U,R\) shadow fields；
-  - 下一步理论任务是 shadow-field 分支分析和 `n=384` 复检。
+  - shadow-field 分支引入独立 \((\Phi,\sigma)\)，用 \(U=d\Phi,R=d\ln\sqrt\sigma\) 构造 \(E_{\rm sh}\)，并通过同型动力学和初始/边界条件选择 \(U=u,R=r\) 的物理分支；
+  - 下一步理论任务是检查 shadow stress 与分支传播，并做 `n=384` 复检。
