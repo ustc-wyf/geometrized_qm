@@ -1358,7 +1358,8 @@
   - 已写出最小辅助应力场 action 原型，见 `research-notes/171-最小辅助应力场action原型.md`；
   - 已分析 shadow-field 分支，见 `research-notes/172-shadow-field分支的最小方程组.md`；
   - 已检查 shadow stress 和物理分支传播条件，见 `research-notes/173-shadow-stress与物理分支传播条件.md`；
-  - 下一步理论任务是构造具体 stealth-state action 候选，检查其 \(\delta_C\) 方程能否给出非零、无迹、守恒、位于 \(E_{\rm sh}\) 内的 \(C_{\mu\nu}\)；
+  - 已检查具体 stealth-state action 候选，见 `research-notes/174-stealth-state-action候选的最小no-go.md`，结论是最小局域 ansatz 不能生成非零 trace=0 投影源；
+  - 下一步理论任务若继续 action 化，应转向真实辅助场 \(\chi\)-sector 的有效应力；否则应正式降级 action 化并继续 equation-first；
   - 下一步在 `n=384` 可信条纹分辨率上复查 trace=0 最小闭合，确认 `n=96` 结论不是低分辨率误导；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
 - 数值注意：

@@ -5689,3 +5689,32 @@
   - shadow-field 分支仍可行，但需要 stealth-state action；
   - 简单线性乘子或 \(Q_{\rm sh}\)-门控 action 都不够健康；
   - 下一步应构造具体 stealth-state action 候选，或承认 action 化暂时失败并退回 equation-first。
+
+### 2026-05-08 stealth-state action 候选最小 no-go
+
+- 新建研究笔记：
+  - `research-notes/174-stealth-state-action候选的最小no-go.md`。
+- 检查候选：
+  \[
+  S_{\rm aux}^{\rm trial}
+  =
+  S_{\rm source}
+  +S_{\rm tr}
+  +S_{\rm stealth}^{(2)}
+  +S_{\rm sh}.
+  \]
+- 关键推导：
+  - 线性源项
+    \[
+    S_{\rm source}
+    =
+    -\frac{M_P^2}{2}\int\sqrt{|\tilde g|}\,\tilde g^{\mu\nu}C_{\mu\nu}
+    \]
+    可以产生 metric 源 \(M_P^2C_{\mu\nu}\)；
+  - 但若 \(C_{\mu\nu}\) 是自由变分场，\(C\)-变分给出 \(-M_P^2\tilde g^{\mu\nu}/2\)；
+  - 用无迹乘子抵消该项会令线性源整体在壳上消失，从而 metric 源也消失；
+  - 平方型 stealth-state 项在目标约束面上一阶变分为零，不能平衡这个线性源。
+- 当前结论：
+  - 最小 stealth-state action 不能生成非零 trace=0 投影源；
+  - action 化若继续，必须寻找真实辅助场 \(\chi\)-sector 的有效应力；
+  - 否则应把 trace=0 投影方程作为 equation-first 理论继续推进，并优先做 `n=384` 复检。

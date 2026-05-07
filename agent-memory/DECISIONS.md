@@ -3370,3 +3370,15 @@
   - 将这个条件称为 stealth-state：状态项在目标分支上对 shadow fields 的一阶变分为零；
   - \(Q\to0\Rightarrow C\to0\) 暂时应作为分支/边界/正则性条件，而不是直接放入 \(\mu(Q_{\rm sh})C^2\) variational weight；
   - 若无法构造 stealth-state action，则 action 化应暂停，trace=0 投影理论继续作为 equation-first 候选。
+
+## 决策 259：最小 stealth-state action 存在结构性 no-go
+
+- 结果：
+  - 线性源项 \(-M_P^2\int\sqrt{|g|}\,g^{\mu\nu}C_{\mu\nu}/2\) 可给 metric 方程产生 \(M_P^2C_{\mu\nu}\)；
+  - 但若 \(C_{\mu\nu}\) 是自由变分场，它的 \(C\)-变分产生纯 trace 源 \(-M_P^2 g^{\mu\nu}/2\)；
+  - 用 trace 乘子或 trace 势抵消该 \(C\)-变分，会把同一个线性 trace 源在壳上抵消，从而 metric 源也消失；
+  - stealth 平方项在目标约束面上一阶变分为零，不能平衡该线性源。
+- 决策：
+  - 最小局域 stealth-state action 不能 action 化当前 trace=0 投影方程；
+  - 后续 action 化若继续，必须引入真实辅助场 \(\chi\)，由其有效应力 \(\Theta_{\mu\nu}\) 产生投影修正，而不是把 \(C_{\mu\nu}\) 当作可变分源；
+  - 在没有 \(\chi\)-sector 前，trace=0 投影方程应按 equation-first 理论推进。
