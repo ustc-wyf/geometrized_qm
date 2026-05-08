@@ -98,6 +98,43 @@
 
 - 分支：D1-D2-E2-E3
 - 状态：当前主线已从“继续加密参考残差图”转为“先评估 C/D pure-`\tilde g` 作用量的理论健康性，再决定是否进入全作用量演化”。阶段性判断是：B 支在当前目标下基本排除；C 支保留为幂律饱和对照；D 支作为优先候选，但需先处理 `f_R -> 0`、过渡层导数项和 `f_{RR}<0` 稳定性风险。
+- 近期重点：`simulate_d_harmonic_standalone.py` 的 `global` \(C\)-update 已接入，但 2026-05-08 的短测说明 `trace0 + conservation` 若单独作用在固定 metric 未来层上会过度约束，下一步必须把 \(C\)-更新和 metric 未来层联立，或者重新判断 trace0 是否应降级为 patch 条件而不是全局硬约束。
+
+## 当前最近工作结论（2026-05-08）
+
+- 冻结 \(C\) 仅适合故障隔离，不适合主线物理推进。
+- `global + trace0 + penalty` 已能运行，但 D residual 约 `0.103`，比局部无 trace0 方案更差。
+- `global + trace0 + hard project` 虽能把守恒压到 `~1.8e-5`，却把代数残差推到灾难性量级，说明硬守恒不能独立成立。
+- `global + trace0 + ALM` 也只能缓解守恒，无法同时维持代数残差。
+- `linear-plus metric corrector` 直接接在当前 global trace0 上会显著恶化 \(\rho\) 偏差和残差，因此不能作为独立修补手段。
+- 下一步应优先做 `C + metric` 联立更新，或理论上重审 trace0 的地位。
+
+## 2026-05-08 support 守卫后当前数值状态
+
+- `simulate_d_harmonic_standalone.py` 已接入柔性质量壳判别式守卫和 `rho_tilde` 正性守卫。
+- 下一时间层全局 `C` 求解已修正为使用同步的新时间层变量。
+- `tau=0,support,steps=10,global+trace0+penalty+joint2` 同步柔性守卫版已完成：
+  - D residual core10 weighted mean `0.1002555`；
+  - support `rho_pullback_weighted_l1 = 2.9618e-4`；
+  - core10 `rho_pullback_weighted_l1 = 2.0538e-4`；
+  - core10 没有负判别式或负 `rho_tilde`；
+  - support 边缘有极少数坏点：负判别式 `2/4242`，负 `rho_tilde` `1/4242`。
+- 当前判断：
+  - 主物理区没有崩溃；
+  - 需要解决的是 support 边界正性/interface 规则；
+  - 全局 `C` 求解速度较慢，后续若要做长窗必须优化。
+
+## 当前数值下一步（更新）
+
+- 首先正式化边界正性/interface 规则：
+  - 不裁剪物理变量；
+  - 用 active-set 或贴体边界方式处理低密度 support 边缘；
+  - 让边界通量与质量壳实根条件共同决定可演化区域。
+- 其次加速全局 `C` 求解：
+  - 复用稀疏结构；
+  - 检查 LSQR 是否可预条件或降低重复构造成本；
+  - 再考虑多进程/并行化。
+- 暂不把 `linear-plus` corrector 作为主线，因为它在 trace0 框架下仍不可靠。
 
 ## 2026-05-07 当前 D/gBCD 数值主线更新
 
@@ -1393,6 +1430,19 @@
   - `186` 已承担文章级 proposition/theorem 草案功能；下一步代码任务是从该草案实现最小 harmonic solver，而不是再写一个 A-driven proxy；
   - 下一步数值验证若继续，应使用 ALM 作为 hard conservation baseline，并只把 KKT 当作需要更好线性代数的严格求解方向；
   - 数值器只保留为验证工具：检验投影残差、守恒、近退化点和三切片高斯干涉反例。
+- 2026-05-08 补充：
+  - 已实现 per-step 联立固定点 `--joint-outer-iterations` 与残差闸门 `--joint-residual-gate-rel`；
+  - `trace0 + penalty + joint2` 的 D residual core10 weighted mean 已回到约 `0.040`，说明联立循环本身可稳定；
+  - `trace0 + linear-plus + joint2 + gate` 仍出现灾难性 \(\rho\)/residual 恶化，说明这条 metric corrector 路线暂时不能作为默认更新；
+  - 下一步若继续保留 metric corrector，应重新设计其物理约束，或显式把它降级为仅诊断工具。
+- 2026-05-08 再补：
+  - `global + trace0 + penalty + joint2` 已做 `tau=-3.5,0,+3.5` 的 10 步扫描并补 `tau=0, steps=20`；
+  - `tau=0` 在 10/20 步之间 residual 基本不漂，说明当前基线可作为短窗骨架；
+  - 下一步优先做边界/interface 规则与更长窗验证，而不是继续加复杂 corrector。
+- 2026-05-08 再再补：
+  - `evolve-region=support` 的 2 步和 10 步诊断已经跑通；
+  - 默认硬停会在一个极小负判别式 `~-1e-8` 上过敏，但关闭硬停后仍可完成 10 步，residual 仍约 `0.100`；
+  - 下一步 interface 工作应优先把负判别式硬停改成柔性守卫，而不是把它当作物理失败。
 - 数值注意：
   - 后续所有硬守恒/硬测地线投影默认用 nullspace 或等价约束保持算法；
   - 裸 KKT 只能做快速诊断；

@@ -3602,3 +3602,75 @@
     \]
   - 只有当该 full-conservation \(C\)-update 接入后仍能保持小 residual，才可以继续拉长时间窗研究 D-A 差异；
   - metric corrector 应在全局 \(C\)-update 后再接入，否则会用错误 \(C\) 去校正几何。
+
+## 决策 272：冻结 \(C\) 只是一种诊断手段，不能当作物理规则
+
+- 背景：
+  - 用户直接质疑“冻结某一变量是为了做什么”，说明需要把诊断口径和物理口径明确分开；
+  - 2026-05-08 的短测已比较 `frozen`、`local`、`global penalty/project/ALM` 和 `linear-plus metric corrector`。
+- 关键观察：
+  - `frozen` 会迅速把 D residual 推高，能说明问题来自 \(C\)-sector，但不能作为最终演化规则；
+  - `global + trace0 + penalty` 在固定 metric 未来层上只能给出中等残差，说明只改 \(C\) 不够；
+  - `global + trace0 + hard project` 会把守恒压到极小，但把代数残差推到灾难性量级，说明 trace0+守恒不能在当前固定度规离散里单独硬投影成唯一解；
+  - `global + trace0 + ALM` 只能折中，仍无法同时保持代数与守恒都好；
+  - `linear-plus metric corrector` 若直接套在这种不一致的 \(C\) 上，会明显恶化 \(\rho\) 偏差和残差。
+- 决策：
+  - 冻结仅用于故障隔离，不得继续作为主路线；
+  - 若继续保留 trace0，它必须和 metric 未来层联立求解，或者被重新降级为 patch 条件/分支条件，而不是全局硬约束；
+  - 下一步优先级从“单独调 \(C\)”切换为“\(C\)+metric 联立更新”或“重审 trace0 的物理地位”。
+
+## 决策 273：联立固定点可稳定 `penalty` 级 \(C\)-更新，但 `linear-plus` metric corrector 在 trace0 框架下仍不可靠
+
+- 背景：
+  - 已在 `simulate_d_harmonic_standalone.py` 中加入 per-step 联立固定点和残差闸门；
+  - 进行了三组关键对照：`trace0 + penalty + joint2`、`no trace0 + penalty + joint2`、`trace0 + linear-plus + joint2 + gate`。
+- 关键观察：
+  - `trace0 + penalty + joint2` 的 D residual 回到约 `0.040`，与无 trace0 的稳定水平接近；
+  - `no trace0 + penalty + joint2` 也保持约 `0.042`，说明联立循环本身没有破坏主线；
+  - `linear-plus` 即便在 joint loop 和 residual gate 下，仍会在后续步把 \(\rho\) 与 D residual 拉到灾难性量级。
+- 决策：
+  - 联立固定点应该保留为默认框架；
+  - `linear-plus` 不能继续视为可用的通用 metric corrector；
+  - 若未来还想保留 metric corrector，必须重新设计其物理约束，或者明确只在无 trace0 的诊断模式下使用。
+
+## 决策 274：当前默认基线已通过 20 步稳健性扫描，可作为短窗骨架
+
+- 背景：
+  - 对 `global + trace0 + penalty + joint2` 做了 `tau=-3.5,0,+3.5` 的 10 步扫描，并补了 `tau=0, steps=20`。
+- 关键观察：
+  - `tau=0` 在 10 步和 20 步下 residual 基本不变，说明该基线没有明显长窗漂移；
+  - 分离态 residual 仍在 `0.09~0.12` 量级，但并未失控；
+  - \(\rho\) pullback 在分离态显著更大，说明这更像物理解偏差而不是数值爆炸。
+- 决策：
+  - 当前可把 `global + trace0 + penalty + joint2` 视为默认稳定短窗骨架；
+  - 但它不是最终生产版，因为边界/interface 处理和 metric corrector 仍未最终定型；
+  - 接下来优先做边界/interface 规则和更长窗验证，而不是继续加复杂 corrector。
+
+## 决策 275：support 边界可短窗推进，但负判别式硬停应改成柔性守卫
+
+- 背景：
+  - 对 `evolve-region=support` 做了 `tau=0, steps=2/10` 的诊断，并额外关闭负判别式硬停重跑 10 步。
+- 关键观察：
+  - support 2 步没有负判别式，residual 仍稳定；
+  - support 10 步默认硬停只因一个非常小的负判别式 `~-1e-8` 在第 8 步停止；
+  - 关闭硬停后，10 步仍可完成，residual 维持在 `~0.100`，没有出现失控迹象。
+- 决策：
+  - support 边界不是当前的数值崩点；
+  - 负判别式硬停阈值过敏，需要改成更柔性的 interface 守卫；
+  - 下一步 interface 工作应围绕阈值、过渡层和容差设计，而不是先加更复杂的 metric corrector。
+
+## 决策 276：柔性守卫是可信性判定，不是物理裁剪；当前坏点属于边界正性/interface 问题
+
+- 背景：
+  - 已在 `simulate_d_harmonic_standalone.py` 中实现质量壳判别式和 `rho_tilde` 的比例型柔性守卫；
+  - 同时修正了下一时间层全局 `C` 求解时旧时间层变量误传的问题。
+- 关键观察：
+  - 同步柔性守卫版 `tau=0,support,steps=10` 完成，D residual core10 weighted mean 仍为 `~0.1003`；
+  - support 负判别式比例为 `4.7148e-4`，低于默认容许比例 `1e-3`；
+  - core10 主支撑区没有负判别式和负 `rho_tilde`；
+  - 唯一负 `rho_tilde` 点在 support 边缘，且 `rho_A` 很小。
+- 决策：
+  - 不能把这些边界坏点解释成主物理区失败；
+  - 也不能把柔性守卫解释成“修正了物理方程”，它只负责决定是否中止诊断；
+  - 下一步需要正式边界正性/interface 规则，而不是降低分辨率或裁剪负密度；
+  - 若要跑长窗，必须优化全局 `C` 求解器，因为当前 `n=384,support,steps=10` 约需 8 分钟，单核 LSQR 是主要瓶颈。

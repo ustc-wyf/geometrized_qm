@@ -6077,3 +6077,112 @@
   - 物质差异短时很小，但完整 D 方程残差还没有压回初值水平；
   - 主瓶颈定位为每步 \(C\)-sector 更新：需要实现 \(C\in E,\mathrm{tr}C=0,\tilde\nabla C=0\) 的全局 ALM/KKT 更新；
   - 不应继续拉长当前 local-C 原型时间窗来冒充最终 D 支预测。
+
+### 2026-05-08 D 支 standalone 全局 C 更新与冻结诊断
+
+- 已在 `kg_examples/simulate_d_harmonic_standalone.py` 中加入 runtime 全局 \(C\)-update：
+  - `--auxiliary-update global`
+  - `--auxiliary-global-mode penalty|project|alm`
+  - `--global-conservation-weight`
+  - `--aux-lsqr-tol`
+  - `--aux-lsqr-maxiter`
+  - `--aux-alm-mu0`
+  - `--aux-alm-growth`
+  - `--aux-alm-outer`
+- 新增研究笔记：
+  - `research-notes/188-D支standalone全局C更新与trace0张力诊断.md`
+- 关键短测均使用同一输入包：
+  - `visualizations/equation_first_gbcd_plus_initial_package_n384_tau0_core10_noactiveedge_guarded/gbcd_plus_initial_package.npz`
+  - `tau=0`, `steps=2`, `core10`
+- 结果摘要：
+  - `global + trace0 + penalty`：D residual core10 weighted mean 约 `0.103`
+  - `global + trace0 + hard project`：守恒残差约 `1.8e-5`，但代数残差爆到 `1e6` 量级，说明硬投影不可独立作为物理更新
+  - `global + trace0 + ALM`：守恒改善，但代数残差仍明显变差
+  - `global + trace0 + linear-plus metric corrector`：\(\rho\) pullback 偏差和 D residual 都显著恶化
+  - `global + no trace0 + penalty`：D residual core10 weighted mean 回到约 `0.041`
+- 结论：
+  - 冻结 \(C\) 只是诊断，不是物理规则；
+  - 现在的真实瓶颈不是“有没有更新 \(C\)”，而是“\(C\) 与 metric 未来层是否必须联立”；
+  - trace0 若继续保留，不能再把它当作固定 metric 上的全局硬投影条件；
+  - 下一步应优先做 \(C\)+metric 联立更新，或重新审视 trace0 的物理地位。
+
+### 2026-05-08 D 支联立固定点与残差闸门
+
+- 已在 `simulate_d_harmonic_standalone.py` 中加入 per-step 联立固定点：
+  - `--joint-outer-iterations`
+  - `--joint-metric-relaxation`
+  - `--joint-residual-gate-rel`
+- 新增行为：
+  - `C` 的全局解和未来层 metric 在同一时间层内反复迭代；
+  - 若新一轮 D residual 比上一轮更差，则回滚到上一轮 metric，避免继续沿坏方向走。
+- 新短测结果：
+  - `global + trace0 + penalty + joint2`：D residual core10 weighted mean 约 `0.0404`，与无 trace0 的稳定水平接近；
+  - `global + no trace0 + penalty + joint2`：D residual core10 weighted mean 约 `0.0416`，说明联立循环本身是稳定的；
+  - `global + trace0 + linear-plus + joint2 + gate`：\(\rho\) 和 D residual 仍然灾难性恶化，gate 没能救回这条 corrector 路线。
+- 结论：
+  - 联立固定点有价值；
+  - `linear-plus` metric corrector 在 trace0 联立框架下仍不可靠；
+  - 后续若保留 metric corrector，必须重新设计其物理约束或接受它只适用于无 trace0 的诊断态。
+
+### 2026-05-08 D 支稳健性扫描
+
+- 新增研究笔记：
+  - `research-notes/189-D支standalone稳健性扫描.md`
+- 扫描设置：
+  - 默认基线为 `global + trace0 + penalty + joint2 + no metric corrector`
+  - 切片：`\tau=-3.5, 0, +3.5`
+  - 窗口：`steps=10`，并补 `\tau=0, steps=20`
+- 关键结果：
+  - `tau=0, steps=10`：D residual core10 weighted mean `0.0987`
+  - `tau=0, steps=20`：D residual core10 weighted mean `0.0977`
+  - `tau=-3.5, steps=10`：D residual core10 weighted mean `0.1176`，\(\rho\) pullback core10 weighted L1 `1.94`
+  - `tau=+3.5, steps=10`：D residual core10 weighted mean `0.0911`，\(\rho\) pullback core10 weighted L1 `2.25`
+- 结论：
+  - 基线在 10 到 20 步内没有明显漂移，可作为当前默认稳定骨架；
+  - 但它仍不是最终生产版，因为边界/interface 规则和 metric corrector 还未定型；
+  - 分离态的较大 \(\rho\) 偏差更像物理解差异，而不是数值失控。
+
+### 2026-05-08 D 支 support 边界短窗与判别式守卫
+
+- 新增研究笔记：
+  - `research-notes/190-D支support边界短窗与判别式守卫.md`
+- 关键短测：
+  - `tau=0, steps=2, evolve-region=support`：D residual core10 weighted mean `0.1003`，support pullback weighted L1 `4.34e-05`
+  - `tau=0, steps=10, evolve-region=support` 默认硬停：在第 8 步因 `negative mass-shell discriminant: -1.037741e-08` 停止，负判别式比例仅 `2.36e-4`
+  - 关闭硬停后同一 run 可完成 10 步：D residual core10 weighted mean `0.1002`，support pullback weighted L1 `2.96e-04`，最终负判别式最小值 `-4.45e-08`
+- 结论：
+  - support 边界不是立刻失控，而是需要把负判别式硬停改成更柔性的 interface 守卫；
+  - 当前默认短窗骨架可以从 core10 推到 support；
+  - 下一步优先级已经从“再加 corrector”转向“柔化判别式守卫与边界/interface 规则”。
+
+### 2026-05-08 12:23 D 支 support 柔性守卫与时间层同步修正
+
+- 修改 `kg_examples/simulate_d_harmonic_standalone.py`：
+  - 增加 `discriminant_guard` 与 `lower_bound_guard`；
+  - 新增 `--disc-fraction-tolerance`，默认 `1e-3`；
+  - 新增 `--stop-on-negative-rho-tilde`、`--rho-tilde-tolerance`、`--rho-tilde-fraction-tolerance`；
+  - `fields_final.npz` 现在保存 `n_cons` 和 `discriminant`；
+  - 报告中的 `auxiliary_solve_mode` 修正为读取 `solve_mode`；
+  - 修正下一时间层全局 `C` 求解的同步问题：使用 `new_minus,new_center,metric_next_work,next_rho,next_current_on_center`，上一层 `C` 作为后向守恒参照。
+- 验证：
+  - `python3 -m py_compile kg_examples/simulate_d_harmonic_standalone.py` 通过；
+  - `tau=0,support,steps=2,global+trace0+penalty+joint2` 带守卫版完成；
+  - `tau=0,support,steps=10,global+trace0+penalty+joint2` 同步柔性守卫版完成。
+- 10 步同步版输出：
+  - `visualizations/d_harmonic_scan_tau0_steps10_support_joint2_penalty_synced_softguard/summary.json`
+  - `visualizations/d_harmonic_scan_tau0_steps10_support_joint2_penalty_synced_softguard/d_harmonic_standalone_vs_a.png`
+  - `visualizations/d_harmonic_scan_tau0_steps10_support_joint2_penalty_synced_softguard/fields_final.npz`
+- 关键数字：
+  - D residual core10 weighted mean `0.1002555`；
+  - D residual core10 p95 `0.3455607`；
+  - support `rho_pullback_weighted_l1 = 2.9618e-4`；
+  - core10 `rho_pullback_weighted_l1 = 2.0538e-4`；
+  - support 负判别式比例 `4.7148e-4`，core10 负判别式点数 `0`；
+  - support 负 `rho_tilde` 点数 `1/4242`，core10 为 `0/1024`。
+- 坏点定位：
+  - 唯一负 `rho_tilde` 点在 `(x,z)=(-19.5337,1.5627)` 的 support 边缘；
+  - 该点不属于 core10，`rho_A=4.755e-6`。
+- 判断：
+  - 柔性守卫没有改变物理方程，只改变“何时因边界坏点停止”的可信性判定；
+  - 当前失败模式是边界正性/interface 问题，不是主物理区崩溃；
+  - 后续应优先正式化边界正性/interface 规则，并加速全局 `C` 求解。

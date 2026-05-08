@@ -129,7 +129,7 @@
 - `kg_examples/diagnose_gbcd_conservation_principal_symbol.py`：检查 gBCD full-conservation 方程对 \(\lambda_I=(A,B,C,D)\) 的一阶主符号；当前确认 `2+1` 约化下 rank=3、nullity=1，需要额外状态方程
 - `kg_examples/fit_gbcd_trace_closure.py`：在 gBCD/full-conservation/nullspace 上测试额外代数状态方程；当前 `trace=F(Q)` 与 `D=0` 均不理想
 - `kg_examples/diagnose_d_cauchy_patch_atlas.py`：检查当前高斯干涉切片是否满足 D 支 generalized-harmonic Cauchy 主 patch 条件，包括 \(\Delta,w^2,u^t\) 和 trace0 后 \(\lambda\)-sector 时间主符号 rank。
-- `kg_examples/simulate_d_harmonic_standalone.py`：首轮 D 支 standalone generalized-harmonic 原型；从 D 初值包推进 D 物质/几何/\(C\)，A/KG 只用于后验比较。当前结论是物质短时可推进但 full \(C\)-sector 仍需全局守恒更新。
+- `kg_examples/simulate_d_harmonic_standalone.py`：首轮 D 支 standalone generalized-harmonic 原型；从 D 初值包推进 D 物质/几何/\(C\)，A/KG 只用于后验比较。当前已接入 `frozen|local|global` 三种 \(C\)-更新，其中 `global` 细分 `penalty|project|alm`，并加入 per-step 联立固定点与残差闸门。诊断结论是：冻结只是隔离问题的工具，trace0+守恒若不和 metric 未来层同步，会把代数残差或几何校正一起拉坏；`linear-plus` 目前仍不可靠。2026-05-08 的稳健性扫描还表明，`global + trace0 + penalty + joint2` 可作为当前默认短窗骨架，10 到 20 步内没有明显漂移。当前已加入质量壳判别式柔性守卫和 `rho_tilde` 正性守卫，且修正了下一时间层全局 `C` 求解的时间层同步问题；`support` 10 步可完成，但坏点集中在 support 边缘，下一步应正式化边界/interface 规则。
 - `research-notes/146-equation-first-gBCD闭合方程与守恒检验.md`：gBCD 方程、守恒展开式、三时刻 hard constraint 检验和本构闭合问题的最新理论索引
 - `research-notes/147-gBCD系数ABCD的可能产生机制.md`：整理 gBCD 系数的三类产生机制：简单局部本构函数、单势函数 metric variation、辅助各向异性应力场；当前支持第三类
 - `research-notes/148-gBCD辅助应力场代表元规范与nullspace硬约束.md`：记录 KKT hard constraint 的数值泄漏问题、nullspace 修正、三切片 `norm/time` 代表元结果与下一步闭合任务
@@ -146,6 +146,9 @@
 - `research-notes/159-n384三切片gBCD求解器升级与物理主线判断.md`：记录 `n=384,core10,tau=-3.5,0,+3.5` 三切片高分辨率 gBCD 求解器升级、残差结果和下一步物理主线判断
 - `research-notes/186-D支harmonic闭合定理草案与当前例子可演化性.md`：把 generalized harmonic gauge、完整约束/演化分裂、约束传播证明、patch transition 和 `n=384,core10` 可演化性诊断整理成当前 D 支独立演化理论的入口笔记。
 - `research-notes/187-D支standalone求解器首轮原型.md`：记录 `simulate_d_harmonic_standalone.py` 的首轮结果；定位下一步为 runtime trace0+full-conservation \(C\)-update。
+- `research-notes/188-D支standalone全局C更新与trace0张力诊断.md`：记录 runtime 全局 \(C\)-update、hard project/ALM/penalty 对照，以及 trace0 和固定 metric 未来层之间的张力。
+- `research-notes/189-D支standalone稳健性扫描.md`：记录 `tau=-3.5,0,+3.5` 的 10 步/20 步稳健性扫描，确认当前短窗基线的漂移情况。
+- `research-notes/190-D支support边界短窗与判别式守卫.md`：记录 `support` 边界短窗、负判别式硬停过敏、柔性守卫实现、时间层同步修正，以及同步版 10 步验证。
 - `kg_examples/plot_gbcd_metric_update_diagnostics.py`：读取 full-linear metric update 的 `.npz`，生成包含 `rho`、残差、\(\delta g_+\)、`det(corrected g+)` 的诊断图，并在图内说明 white contour 与 `core10` 定义
 - `visualizations/full_dynamics_2p1/`：`2+1d` 全动力学数值结果图和 `summary.json`
 - `visualizations/boundary_driven_2p1/`：边界驱动版 A/B/C 三支结果
@@ -221,6 +224,7 @@
 - 当前更关键的新判断是：对 `±45°` 高斯波包初值，当前混合变换会 generically 生成 `t-x`、`t-z`、`x-z` 非对角分量，所以旧的对角 `τ,β` 全动力学数值器已经不对应当前模型；后续必须改用一般 `2+1 ADM` 度规
 - 当前 `B/C` 两支已经重新写成一般 `ADM` 初值问题；但 `A` 支的定义也已进一步澄清：它不是“引力在 `g` 上、物质在 `g~` 上”的混合作用量，而是 `g` 上的 Einstein-Klein-Gordon 系统
 - 作图规范新增硬规则：任何图中出现的轮廓线、掩膜、窗口名、变量符号，都必须在图注、图内文字或配套摘要中明确给出数学定义；不能默认用户知道白线/青线/热点/`chi`/`\delta chi`/`\mathcal T` 等符号含义。
+- 数值守卫口径新增规则：质量壳判别式守卫和 `rho_tilde` 正性守卫只用于判断当前离散演化是否可信；它们不能裁剪物理变量，也不能被写成物理方程的一部分。若坏点集中在 support 边缘，应称为边界正性/interface 问题，而不是直接宣称主物理区失败。
 - 因此当前 A 分支的真正未完成项，不再是“把混合作用量闭合”，而是：在一般 `2+1 ADM` 变量下，把 `g` 上的 Einstein-KG 系统写成可数值推进的约束—演化方程，并在每一步演化后由当前混合变换事后重构 `g~`
 - 当前方法已再次收束：不再依赖 `2+1` 共形重参数化来组织三支，而是统一改用四维 `ADM` 加 `y` 方向 Killing 对称；这样 `A/B/C` 的比较语言更直接，也避免约化共形因子带来的歧义
 - 当前数值阶段已真正开始：`A/B/C` 三支都已进入同一最小同步规范原型；其中 `A/B` 的短时间行为较一致，而 `C` 支虽然能推进，但 Hamilton 约束残差显著偏大，下一步应优先校正 `C` 支的 `ADM` 投影
@@ -763,3 +767,7 @@
   - branch 正则化 hard-ALM 首轮已完成：\(\tau=0\) 存在 `1e-4~5e-4` 的有界性惩罚可用窗口，但右侧分离态一旦压 \(\hat C\) 会显著恶化 full divergence；下一步不要把全局 L2 penalty 当最终规则，应转向局部不等式/投影条件 \(\|\hat C\|_W\le K\)，并固定物理 \(\chi\) 尺度。
   - 完整 D 支 Cauchy 闭合快查已完成：物质 HJ + continuity 加上当前几何候选后，在主非退化 massive patch 内方程主部/计数已经接近闭合；缺的是 gauge-fixed 约束传播证明、patch transition 和独立演化器，而不是再加一条随意的新方程。
   - generalized harmonic gauge 下的演化/约束传播与 patch 图册草案已完成：第一版理论适定性分析采用 harmonic reduced Einstein-like 方程，ADM 后置；图册切换以 \(C_{\mu\nu}\) 连续为原则，\(\lambda_I\) 只是局部坐标。
+  - `simulate_d_harmonic_standalone.py` 已扩展出 runtime `global` \(C\)-update，但 2026-05-08 的诊断显示：`trace0 + conservation` 若只对固定 metric 未来层做硬投影，会把代数残差或 metric corrector 一起拉坏，因此下一步必须把 \(C\) 和 metric 未来层联立，而不能把冻结/硬投影误当物理规则。
+  - 2026-05-08 又加了 per-step 联立固定点与残差闸门；`trace0 + penalty + joint2` 已回到稳定残差水平，但 `linear-plus` 仍会在 trace0 联立框架下把 \(\rho\) 与 residual 拉坏，暂不能作为默认 corrector。
+  - 2026-05-08 的稳健性扫描进一步确认：`global + trace0 + penalty + joint2` 在 `tau=-3.5,0,+3.5` 的 10 步扫描以及 `tau=0,20` 步扫描中没有明显漂移，可作为当前默认短窗骨架。
+  - 2026-05-08 的 support 边界诊断进一步确认：`evolve-region=support` 也能短窗推进，但一个约 `1e-8` 的小负判别式会触发过敏硬停，说明 interface 守卫需要柔化而不是继续加 corrector。
