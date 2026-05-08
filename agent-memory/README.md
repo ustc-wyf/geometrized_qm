@@ -129,7 +129,7 @@
 - `kg_examples/diagnose_gbcd_conservation_principal_symbol.py`：检查 gBCD full-conservation 方程对 \(\lambda_I=(A,B,C,D)\) 的一阶主符号；当前确认 `2+1` 约化下 rank=3、nullity=1，需要额外状态方程
 - `kg_examples/fit_gbcd_trace_closure.py`：在 gBCD/full-conservation/nullspace 上测试额外代数状态方程；当前 `trace=F(Q)` 与 `D=0` 均不理想
 - `kg_examples/diagnose_d_cauchy_patch_atlas.py`：检查当前高斯干涉切片是否满足 D 支 generalized-harmonic Cauchy 主 patch 条件，包括 \(\Delta,w^2,u^t\) 和 trace0 后 \(\lambda\)-sector 时间主符号 rank。
-- `kg_examples/simulate_d_harmonic_standalone.py`：首轮 D 支 standalone generalized-harmonic 原型；从 D 初值包推进 D 物质/几何/\(C\)，A/KG 只用于后验比较。当前已接入 `frozen|local|global` 三种 \(C\)-更新，其中 `global` 细分 `penalty|project|alm`，并加入 per-step 联立固定点与残差闸门。诊断结论是：冻结只是隔离问题的工具，trace0+守恒若不和 metric 未来层同步，会把代数残差或几何校正一起拉坏；`linear-plus` 目前仍不可靠。2026-05-08 的稳健性扫描还表明，`global + trace0 + penalty + joint2` 可作为当前默认短窗骨架，10 到 20 步内没有明显漂移。当前已加入质量壳判别式柔性守卫、`rho_tilde` 正性守卫、`matter_boundary_mode` 和 `active_set_mode=mass_shell_guard`，并修正了下一时间层全局 `C` 求解的时间层同步问题；最新判断是 `zero_flux` 不是主解，`mass_shell_guard` 是当前 support 边界/interface 候选。
+- `kg_examples/simulate_d_harmonic_standalone.py`：首轮 D 支 standalone generalized-harmonic 原型；从 D 初值包推进 D 物质/几何/\(C\)，A/KG 只用于后验比较。当前已接入 `frozen|local|global` 三种 \(C\)-更新，其中 `global` 细分 `penalty|project|alm`，并加入 per-step 联立固定点与残差闸门。诊断结论是：冻结只是隔离问题的工具，trace0+守恒若不和 metric 未来层同步，会把代数残差或几何校正一起拉坏；`linear-plus` 目前仍不可靠。2026-05-08 的稳健性扫描还表明，`global + trace0 + penalty + joint2` 可作为当前默认短窗骨架，10 到 20 步内没有明显漂移。当前已加入质量壳判别式柔性守卫、`rho_tilde` 正性守卫、`matter_boundary_mode` 和 `active_set_mode=mass_shell_guard`，并修正了下一时间层全局 `C` 求解的时间层同步问题；最新判断是 `zero_flux` 不是主解，`mass_shell_guard` 是当前 support 边界/interface 候选，默认建议参数为 `active_set_disc_margin=5e-8, active_set_rho_frac=5e-3`。
 - `research-notes/146-equation-first-gBCD闭合方程与守恒检验.md`：gBCD 方程、守恒展开式、三时刻 hard constraint 检验和本构闭合问题的最新理论索引
 - `research-notes/147-gBCD系数ABCD的可能产生机制.md`：整理 gBCD 系数的三类产生机制：简单局部本构函数、单势函数 metric variation、辅助各向异性应力场；当前支持第三类
 - `research-notes/148-gBCD辅助应力场代表元规范与nullspace硬约束.md`：记录 KKT hard constraint 的数值泄漏问题、nullspace 修正、三切片 `norm/time` 代表元结果与下一步闭合任务
@@ -150,6 +150,7 @@
 - `research-notes/189-D支standalone稳健性扫描.md`：记录 `tau=-3.5,0,+3.5` 的 10 步/20 步稳健性扫描，确认当前短窗基线的漂移情况。
 - `research-notes/190-D支support边界短窗与判别式守卫.md`：记录 `support` 边界短窗、负判别式硬停过敏、柔性守卫实现、时间层同步修正，以及同步版 10 步验证。
 - `research-notes/191-D支support边界active-set规则.md`：记录 `zero_flux` 对照失败、`mass_shell_guard` active-set 规则实现，以及移除 3 个低密度非 core10 点后 active 区负判别式/负 `rho_tilde` 清零的结果。
+- `research-notes/192-D支active-set阈值扫描.md`：记录 `mass_shell_guard` 阈值扫描，当前默认建议为 `disc_margin=5e-8,rho_frac=5e-3`。
 - `kg_examples/plot_gbcd_metric_update_diagnostics.py`：读取 full-linear metric update 的 `.npz`，生成包含 `rho`、残差、\(\delta g_+\)、`det(corrected g+)` 的诊断图，并在图内说明 white contour 与 `core10` 定义
 - `visualizations/full_dynamics_2p1/`：`2+1d` 全动力学数值结果图和 `summary.json`
 - `visualizations/boundary_driven_2p1/`：边界驱动版 A/B/C 三支结果

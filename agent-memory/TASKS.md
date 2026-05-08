@@ -140,14 +140,32 @@
 - 当前判断：
   - `mass_shell_guard` 是当前更合理的 support 边界/interface 候选；
   - 它是计算域规则，不是物理变量裁剪；
-  - 仍需阈值敏感性扫描。
+  - 阈值敏感性扫描已完成第一轮。
+
+## 2026-05-08 active-set 阈值扫描结论
+
+- `disc_margin=5e-8,rho_frac=5e-3`：
+  - 移除 2 个点；
+  - core10 缺失 0；
+  - active 负判别式 0；
+  - active 负 `rho_tilde` 0；
+  - D residual core10 weighted mean `0.1002546`。
+- `disc_margin=1e-7,rho_frac=5e-3`：
+  - 也有效，但移除 3 个点。
+- `disc_margin=2e-7,rho_frac=5e-3`：
+  - 也有效，但移除 12 个点，偏保守。
+- `disc_margin=1e-7,rho_frac=1e-3`：
+  - 无效，active 区仍有 1 个负判别式和 1 个负 `rho_tilde`。
+- 当前默认参数：
+  - `active_set_disc_margin=5e-8`
+  - `active_set_rho_frac=5e-3`
 
 ## 当前数值下一步（更新）
 
 - 首先正式化边界正性/interface 规则：
   - 以 `mass_shell_guard` 为当前候选默认；
   - 不裁剪物理变量，只调整 active 演化域；
-  - 扫描 `active_set_disc_margin` 与 `active_set_rho_frac`；
+  - 用默认参数检查 `tau=-3.5,+3.5`；
   - 确认被移除点始终不进入 `core10` 主支撑区。
 - 其次加速全局 `C` 求解：
   - 复用稀疏结构；

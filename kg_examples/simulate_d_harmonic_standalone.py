@@ -1492,7 +1492,7 @@ def main() -> None:
     parser.add_argument("--active-dilation", type=int, default=0)
     parser.add_argument("--matter-boundary-mode", choices=["open", "zero_flux"], default="open")
     parser.add_argument("--active-set-mode", choices=["fixed", "mass_shell_guard"], default="fixed")
-    parser.add_argument("--active-set-disc-margin", type=float, default=1.0e-7)
+    parser.add_argument("--active-set-disc-margin", type=float, default=5.0e-8)
     parser.add_argument("--active-set-rho-frac", type=float, default=5.0e-3)
     parser.add_argument("--stop-on-negative-discriminant", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--recompute-first-plus", action=argparse.BooleanOptionalAction, default=False)

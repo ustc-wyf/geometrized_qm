@@ -3689,3 +3689,17 @@
   - `zero_flux` 只保留为对照，不作为主边界规则；
   - active-set 是计算域选择规则，不是物理裁剪，也不是理论场方程；
   - 后续需要扫描 `active_set_disc_margin` 与 `active_set_rho_frac`，确认结论不依赖单个阈值。
+
+## 决策 278：当前 active-set 默认参数取 `disc_margin=5e-8,rho_frac=5e-3`
+
+- 背景：
+  - 对 `tau=0,support,steps=10` 做了 active-set 阈值扫描。
+- 关键观察：
+  - `rho_frac=1e-3` 太严格，会留下 active 区负判别式和负 `rho_tilde`；
+  - `rho_frac=5e-3` 的三组判别式阈值都能清除 active 坏点；
+  - `disc_margin=5e-8` 只移除 2 个点，是当前最小有效组合；
+  - `disc_margin=2e-7` 会移除 12 个点，偏保守；
+  - 所有有效组合都不损伤 core10，且 core10 残差几乎不变。
+- 决策：
+  - 当前默认建议为 `active_set_disc_margin=5e-8`、`active_set_rho_frac=5e-3`；
+  - 下一步不是继续在 `tau=0` 上细调，而是检查 `tau=-3.5,+3.5` 的同一规则是否也成立。

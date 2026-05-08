@@ -6222,3 +6222,22 @@
   - `mass_shell_guard` 是当前更合理的 support 边界/interface 候选；
   - 它仍是数值计算域规则，不是最终理论方程；
   - 下一步要扫描 active-set 阈值并加速全局 `C` 求解。
+
+### 2026-05-08 D 支 active-set 阈值扫描
+
+- 新增研究笔记：
+  - `research-notes/192-D支active-set阈值扫描.md`
+- 扫描共同设置：
+  - `tau=0,support,steps=10`
+  - `active-set-mode=mass_shell_guard`
+  - `global+trace0+penalty+joint2`
+  - `metric-corrector=none`
+- 扫描结果：
+  - `disc=1e-7,rho=5e-3`：移除 3 点，core10 缺失 0，active 负判别式 0，active 负 `rho_tilde` 0，D residual core10 wmean `0.1002552`；
+  - `disc=5e-8,rho=5e-3`：移除 2 点，core10 缺失 0，active 负判别式 0，active 负 `rho_tilde` 0，D residual core10 wmean `0.1002546`；
+  - `disc=2e-7,rho=5e-3`：移除 12 点，core10 缺失 0，active 负判别式 0，active 负 `rho_tilde` 0，D residual core10 wmean `0.1002570`；
+  - `disc=1e-7,rho=1e-3`：移除 2 点，但 active 仍有 1 个负判别式和 1 个负 `rho_tilde`，说明低密度阈值太严格。
+- 决定：
+  - 默认 `active_set_disc_margin` 改为 `5e-8`；
+  - 默认 `active_set_rho_frac` 保持 `5e-3`；
+  - 下一步用该默认参数检查 `tau=-3.5,+3.5`。
