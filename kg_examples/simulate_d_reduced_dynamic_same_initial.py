@@ -184,7 +184,11 @@ def rk4_matter_step(
     dt: float,
     u_t_reference: np.ndarray,
     active_mask: np.ndarray,
+    boundary_mode: str = "open",
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, dict[str, np.ndarray]]:
+    if boundary_mode not in ("open", "zero_flux"):
+        raise ValueError(f"unknown matter boundary mode: {boundary_mode}")
+
     def rusanov_density_rhs(rec: dict[str, np.ndarray], n0: np.ndarray) -> np.ndarray:
         n_safe = np.where(np.abs(n0) > 1.0e-300, n0, np.sign(n0) * 1.0e-300 + (n0 == 0.0) * 1.0e-300)
         vx = rec["flux_x"] / n_safe
@@ -198,6 +202,9 @@ def rk4_matter_step(
 
         fx = flux_1d(n0[:-1, :], n0[1:, :], vx[:-1, :], vx[1:, :])
         fz = flux_1d(n0[:, :-1], n0[:, 1:], vz[:, :-1], vz[:, 1:])
+        if boundary_mode == "zero_flux":
+            fx = np.where(active_mask[:-1, :] & active_mask[1:, :], fx, 0.0)
+            fz = np.where(active_mask[:, :-1] & active_mask[:, 1:], fz, 0.0)
         n_t = np.zeros_like(n0)
         n_t[1:-1, 1:-1] -= (fx[1:, 1:-1] - fx[:-1, 1:-1]) / dx
         n_t[1:-1, 1:-1] -= (fz[1:-1, 1:] - fz[1:-1, :-1]) / dz

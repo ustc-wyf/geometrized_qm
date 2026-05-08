@@ -6186,3 +6186,39 @@
   - 柔性守卫没有改变物理方程，只改变“何时因边界坏点停止”的可信性判定；
   - 当前失败模式是边界正性/interface 问题，不是主物理区崩溃；
   - 后续应优先正式化边界正性/interface 规则，并加速全局 `C` 求解。
+
+### 2026-05-08 12:58 D 支 support active-set 边界规则
+
+- 新增研究笔记：
+  - `research-notes/191-D支support边界active-set规则.md`
+- 修改：
+  - `simulate_d_reduced_dynamic_same_initial.py` 的 `rk4_matter_step` 增加 `boundary_mode=open|zero_flux`；
+  - `simulate_d_harmonic_standalone.py` 增加 `--matter-boundary-mode`；
+  - `simulate_d_harmonic_standalone.py` 增加 `--active-set-mode fixed|mass_shell_guard`；
+  - 新增 `--active-set-disc-margin` 与 `--active-set-rho-frac`。
+- zero-flux 对照：
+  - `tau=0,support,steps=10` 完成；
+  - 但最终坏点与 `open` 基本相同；
+  - support 负判别式仍为 `2/4242`，负 `rho_tilde` 仍为 `1/4242`；
+  - 说明坏点不是由 active 外真空密度通量主导。
+- active-set mass-shell guard：
+  - 条件：非 `core10`、低密度、质量壳判别式裕度低于阈值；
+  - 本轮参数：`active_set_disc_margin=1e-7`，`active_set_rho_frac=5e-3`。
+- active-set 10 步结果：
+  - 成功完成；
+  - active 点数 `4242 -> 4239`，总共移除 `3` 个点；
+  - `core10` 缺失点数 `0`；
+  - active 区负判别式点数 `0`；
+  - active 区负 `rho_tilde` 点数 `0`；
+  - D residual core10 weighted mean `0.1002552`；
+  - core10 `rho_pullback_weighted_l1 = 2.0539e-4`；
+  - support `rho_pullback_weighted_l1 = 2.1369e-4`。
+- 被移除点：
+  - `(-19.5337,0.7813)`，`rho_A=4.069e-6`；
+  - `(-19.5337,1.5627)`，`rho_A=4.755e-6`；
+  - `(-2.3440,-22.6591)`，`rho_A=3.331e-6`。
+- 判断：
+  - `zero_flux` 不是有效解决方案；
+  - `mass_shell_guard` 是当前更合理的 support 边界/interface 候选；
+  - 它仍是数值计算域规则，不是最终理论方程；
+  - 下一步要扫描 active-set 阈值并加速全局 `C` 求解。

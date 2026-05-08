@@ -107,6 +107,25 @@ def lower_bound_guard(values: np.ndarray, mask: np.ndarray, *, tolerance: float,
     }
 
 
+def active_set_mass_shell_drop(
+    *,
+    active: np.ndarray,
+    protected: np.ndarray,
+    rho_tilde: np.ndarray,
+    discriminant: np.ndarray,
+    disc_margin: float,
+    rho_frac: float,
+) -> np.ndarray:
+    """Drop low-density nonprotected points whose mass-shell root is nearly lost."""
+    if not np.any(active):
+        return np.zeros_like(active, dtype=bool)
+    active_rho = np.maximum(rho_tilde[active], 0.0)
+    rho_scale = max(float(np.nanmax(active_rho)) if active_rho.size else 0.0, 1.0e-300)
+    low_density = rho_tilde <= max(float(rho_frac), 0.0) * rho_scale
+    low_margin = discriminant <= max(float(disc_margin), 0.0)
+    return active & ~protected & low_density & low_margin
+
+
 def stats(values: np.ndarray, *, abs_value: bool = True) -> dict[str, float]:
     vals = np.asarray(values, dtype=float)
     vals = vals[np.isfinite(vals)]
@@ -949,6 +968,7 @@ def run(args: argparse.Namespace) -> dict[str, object]:
     current = None
     stopped_reason = "completed"
     steps_completed = 0
+    active_dropped_total = 0
     for step in range(int(args.steps) + 1):
         steps_completed = step
         tau = tau0 + step * float(args.dt_old)
@@ -1086,6 +1106,8 @@ def run(args: argparse.Namespace) -> dict[str, object]:
             "rho_tilde_large_negative_fraction_active": float(rho_guard["large_negative_fraction"]),
             "rho_tilde_negative_fraction_support": float(rho_support_guard["negative_fraction"]),
             "rho_tilde_large_negative_fraction_support": float(rho_support_guard["large_negative_fraction"]),
+            "active_points": float(np.count_nonzero(active)),
+            "active_dropped_total": float(active_dropped_total),
             "raw_y_abs_p95_core10": float(np.percentile(np.abs(r_scalar[core10]), 95.0)) if np.any(core10) else 0.0,
         }
         if aux_info.get("enabled", False):
@@ -1126,6 +1148,31 @@ def run(args: argparse.Namespace) -> dict[str, object]:
             )
             break
 
+        if args.active_set_mode == "mass_shell_guard":
+            drop_mask = active_set_mass_shell_drop(
+                active=active,
+                protected=core10,
+                rho_tilde=rho_tilde,
+                discriminant=current["discriminant"],
+                disc_margin=float(args.active_set_disc_margin),
+                rho_frac=float(args.active_set_rho_frac),
+            )
+            dropped_now = int(np.count_nonzero(drop_mask))
+            if dropped_now:
+                active = active & ~drop_mask
+                active_dropped_total += dropped_now
+                n_cons = np.where(active, n_cons, 0.0)
+                u_x = np.where(active, u_x, 0.0)
+                u_z = np.where(active, u_z, 0.0)
+                rho_tilde = np.where(active, rho_tilde, 0.0)
+                auxiliary = np.where(active[..., None, None], auxiliary, 0.0)
+                if records:
+                    records[-1]["active_dropped_now"] = float(dropped_now)
+                    records[-1]["active_points_after_drop"] = float(np.count_nonzero(active))
+            elif records:
+                records[-1]["active_dropped_now"] = 0.0
+                records[-1]["active_points_after_drop"] = float(np.count_nonzero(active))
+
         auxiliary_current = auxiliary.copy()
         try:
             n_next, ux_next, uz_next, current_next = rk4_matter_step(
@@ -1139,6 +1186,7 @@ def run(args: argparse.Namespace) -> dict[str, object]:
                 dt=dt,
                 u_t_reference=current["u_t"],
                 active_mask=active,
+                boundary_mode=str(args.matter_boundary_mode),
             )
         except FloatingPointError as exc:
             stopped_reason = f"matter step failed: {exc}"
@@ -1384,6 +1432,10 @@ def run(args: argparse.Namespace) -> dict[str, object]:
             "window_um": float(args.window_um),
             "evolve_region": str(args.evolve_region),
             "active_dilation": int(args.active_dilation),
+            "matter_boundary_mode": str(args.matter_boundary_mode),
+            "active_set_mode": str(args.active_set_mode),
+            "active_set_disc_margin": float(args.active_set_disc_margin),
+            "active_set_rho_frac": float(args.active_set_rho_frac),
             "mp_ev": float(args.mp),
             "mass_ev": float(mass),
             "stopped_reason": stopped_reason,
@@ -1438,6 +1490,10 @@ def main() -> None:
     parser.add_argument("--dt-old", type=float, default=2.5e-7)
     parser.add_argument("--evolve-region", choices=["support", "core10", "fit_mask"], default="core10")
     parser.add_argument("--active-dilation", type=int, default=0)
+    parser.add_argument("--matter-boundary-mode", choices=["open", "zero_flux"], default="open")
+    parser.add_argument("--active-set-mode", choices=["fixed", "mass_shell_guard"], default="fixed")
+    parser.add_argument("--active-set-disc-margin", type=float, default=1.0e-7)
+    parser.add_argument("--active-set-rho-frac", type=float, default=5.0e-3)
     parser.add_argument("--stop-on-negative-discriminant", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--recompute-first-plus", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("--trace-project-auxiliary", action=argparse.BooleanOptionalAction, default=False)

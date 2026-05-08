@@ -3674,3 +3674,18 @@
   - 也不能把柔性守卫解释成“修正了物理方程”，它只负责决定是否中止诊断；
   - 下一步需要正式边界正性/interface 规则，而不是降低分辨率或裁剪负密度；
   - 若要跑长窗，必须优化全局 `C` 求解器，因为当前 `n=384,support,steps=10` 约需 8 分钟，单核 LSQR 是主要瓶颈。
+
+## 决策 277：support 边缘坏点不是密度通量边界问题，而是质量壳实根裕度问题
+
+- 背景：
+  - 实现了 `matter_boundary_mode=zero_flux`，只禁止 active 与非 active 之间的密度通量；
+  - 同时实现了 `active_set_mode=mass_shell_guard`，允许低密度、非 core10、质量壳判别式裕度不足的点退出 active 演化域。
+- 关键观察：
+  - `zero_flux` 与 `open` 的最终坏点基本相同，说明坏点不主要来自人工边界的粒子数泄漏；
+  - `mass_shell_guard` 只移除 3 个低密度非 core10 点，就使 active 区负判别式与负 `rho_tilde` 都变为 0；
+  - core10 残差和 pullback 偏差几乎不变。
+- 决策：
+  - 当前 support 边界/interface 默认候选应转向 `mass_shell_guard`；
+  - `zero_flux` 只保留为对照，不作为主边界规则；
+  - active-set 是计算域选择规则，不是物理裁剪，也不是理论场方程；
+  - 后续需要扫描 `active_set_disc_margin` 与 `active_set_rho_frac`，确认结论不依赖单个阈值。

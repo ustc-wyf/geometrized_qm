@@ -124,12 +124,31 @@
   - 需要解决的是 support 边界正性/interface 规则；
   - 全局 `C` 求解速度较慢，后续若要做长窗必须优化。
 
+## 2026-05-08 active-set 边界规则更新
+
+- 已测试 `matter_boundary_mode=zero_flux`：
+  - 不能消除最终坏点；
+  - 因此 support 边缘坏点不是简单的密度通量穿越人工边界问题。
+- 已测试 `active_set_mode=mass_shell_guard`：
+  - `tau=0,support,steps=10` 完成；
+  - active 点数 `4242 -> 4239`；
+  - `core10` 缺失点数 `0`；
+  - active 区负判别式点数 `0`；
+  - active 区负 `rho_tilde` 点数 `0`；
+  - D residual core10 weighted mean `0.1002552`；
+  - core10 `rho_pullback_weighted_l1 = 2.0539e-4`。
+- 当前判断：
+  - `mass_shell_guard` 是当前更合理的 support 边界/interface 候选；
+  - 它是计算域规则，不是物理变量裁剪；
+  - 仍需阈值敏感性扫描。
+
 ## 当前数值下一步（更新）
 
 - 首先正式化边界正性/interface 规则：
-  - 不裁剪物理变量；
-  - 用 active-set 或贴体边界方式处理低密度 support 边缘；
-  - 让边界通量与质量壳实根条件共同决定可演化区域。
+  - 以 `mass_shell_guard` 为当前候选默认；
+  - 不裁剪物理变量，只调整 active 演化域；
+  - 扫描 `active_set_disc_margin` 与 `active_set_rho_frac`；
+  - 确认被移除点始终不进入 `core10` 主支撑区。
 - 其次加速全局 `C` 求解：
   - 复用稀疏结构；
   - 检查 LSQR 是否可预条件或降低重复构造成本；
